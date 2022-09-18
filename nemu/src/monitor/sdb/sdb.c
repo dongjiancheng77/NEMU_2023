@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include <memory/vaddr.h>
 
 static int is_batch_mode = false;
 
@@ -67,13 +68,38 @@ static int cmd_info(char *args) {
     isa_reg_display();
   }
   else {
-    printf("未知参数 [%s] \n", args);
+    printf("未知参数: [%s] \n", args);
   }
-
   return 0;
 }
 
+  int hex( char ch )
+{
+    if ( ch >='0' && ch <='9' )
+        return 1;
+    if ( ch >='A' && ch <='F' ) 
+        return 1;
+    if ( ch >='a' && ch <='f' ) 
+        return 1;
+    return 0; 
+}
+
 static int cmd_x(char *args) {
+
+
+  char *arg = strtok(NULL, " ");
+  int n;
+  sscanf(arg, "%d", &n);
+  //vaddr_t =32uint32
+  char* p = strtok(NULL, " ");
+  if (p[0]!=0 ||p[1]!='x')
+    return 0;
+  vaddr_t address;
+  sscanf( p, "%x", &address);
+  for(int i=0;i<n;i++){
+    printf("0x%02x\n",vaddr_read(address,1));
+    address+=1;
+  }
   return 0;
 }
 
