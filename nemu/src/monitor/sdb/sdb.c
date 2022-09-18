@@ -95,7 +95,9 @@ static int cmd_x(char *args) {
   vaddr_t address;
   sscanf( p, "%x", &address);
   for(int i=0;i<n;i++){
-    printf("RAM[0x%x]: 0x%02x\n",address,vaddr_read(address,1));
+    if (i%4==0)
+      printf("\n0x%x", address);
+    printf(" 0x%02x\n",vaddr_read(address,1));
     address+=1;
   }
   return 0;
