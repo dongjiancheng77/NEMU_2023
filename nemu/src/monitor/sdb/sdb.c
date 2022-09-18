@@ -60,6 +60,35 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+static int cmd_info(char *args) {
+    if (args == NULL){
+    printf("缺少参数\n");
+  }else if (strcmp(args, "r") == 0){
+    isa_reg_display();
+  }
+  else {
+    printf("未知参数 [%s] \n", args);
+  }
+
+  return 0;
+}
+
+static int cmd_x(char *args) {
+  return 0;
+}
+
+static int cmd_p(char *args) {
+  return 0;
+}
+
+static int cmd_w(char *args) {
+  return 0;
+}
+
+static int cmd_d(char *args) {
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -71,6 +100,11 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "si", "Single-step execution", cmd_si }, 
+  { "info SUBCMD", "Single-step execution", cmd_info }, 
+  { "x N EXPR", "Print program status", cmd_x }, 
+  { "p EXPR", "Expression evaluation", cmd_p }, 
+  { "w EXPR", "Set up a monitoring point", cmd_w }, 
+  { "d N", "Delete a surveillance point", cmd_d }, 
   /* TODO: Add more commands */
 
 };
