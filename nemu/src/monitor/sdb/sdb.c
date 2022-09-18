@@ -96,8 +96,8 @@ static int cmd_x(char *args) {
   sscanf( p, "%x", &address);
   for(int i=0;i<n;i++){
     if (i%4==0)
-      printf("\n0x%x", address);
-    printf(" 0x%02x\n",vaddr_read(address,1));
+      printf("\n0x%x:", address);
+    printf(" 0x%02x",vaddr_read(address,1));
     address+=1;
   }
   return 0;
