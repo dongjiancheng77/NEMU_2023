@@ -100,11 +100,11 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "si", "Single-step execution", cmd_si }, 
-  { "info SUBCMD", "Single-step execution", cmd_info }, 
-  { "x N EXPR", "Print program status", cmd_x }, 
-  { "p EXPR", "Expression evaluation", cmd_p }, 
-  { "w EXPR", "Set up a monitoring point", cmd_w }, 
-  { "d N", "Delete a surveillance point", cmd_d }, 
+  { "info", "Single-step execution", cmd_info }, 
+  { "x", "Print program status", cmd_x }, 
+  { "p", "Expression evaluation", cmd_p }, 
+  { "w", "Set up a monitoring point", cmd_w }, 
+  { "d", "Delete a surveillance point", cmd_d }, 
   /* TODO: Add more commands */
 
 };
