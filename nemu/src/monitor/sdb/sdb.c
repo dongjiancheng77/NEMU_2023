@@ -92,8 +92,6 @@ static int cmd_x(char *args) {
   sscanf(arg, "%d", &n);
   //vaddr_t =32uint32
   char* p = strtok(NULL, " ");
-  if (p[0]!=0 ||p[1]!='x')
-    return 0;
   vaddr_t address;
   sscanf( p, "%x", &address);
   for(int i=0;i<n;i++){
