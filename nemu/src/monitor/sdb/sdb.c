@@ -118,8 +118,17 @@ static int cmd_x(char *args)
 
 static int cmd_p(char *args)
 {
+   /* extract the first argument */
+  char *arg = strtok(NULL, "\0");
+  bool success;
+  int ans=expr(arg,&success);
+  if(success)
+    printf("%u\n",ans);
+  else 
+    printf("Error in expression\n");
   return 0;
 }
+
 
 static int cmd_w(char *args)
 {
