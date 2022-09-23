@@ -53,7 +53,6 @@ static struct rule
     {"[0-9]+", TK_NUM},
     {"^0x[0-9]+", TK_16},
     {"^\\$(\\S)+", '$'}, //[\S]表示，非空白就匹配
-    
 
 };
 
@@ -151,7 +150,6 @@ static bool make_token(char *e)
         break;
       }
     }
-    
 
     if (i == NR_REGEX)
     {
@@ -159,7 +157,6 @@ static bool make_token(char *e)
       return false;
     }
   }
-  printf("a");
 
   return true;
 }
@@ -221,6 +218,7 @@ word_t eval(int p, int q, bool *success)
     return eval(p + 1, q - 1, success);
   else if (tokens[p].type == '-' && p == q - 1 && (tokens[p - 1].type == '+' || tokens[p - 1].type == '-' || tokens[p - 1].type == '*' || tokens[p - 1].type == '/'))
   {
+    *success = true;
     return -1 * atoi(tokens[q].str);
   }
 
