@@ -53,6 +53,7 @@ static struct rule
     {"[0-9]+", TK_NUM},
     {"^0x[0-9]+", TK_16},
     {"^\\$(\\S)+", '$'}, //[\S]表示，非空白就匹配
+    
 
 };
 
@@ -150,6 +151,7 @@ static bool make_token(char *e)
         break;
       }
     }
+    printf("a");
 
     if (i == NR_REGEX)
     {
