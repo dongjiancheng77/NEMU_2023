@@ -24,7 +24,11 @@ enum
 {
   TK_NOTYPE = 256,
   TK_EQ,
-  TK_NUM
+  TK_NUM,
+  TK_16,
+  DEREF,
+  TK_AND,
+  TK_NEG
 
 };
 
@@ -38,15 +42,17 @@ static struct rule
      * Pay attention to the precedence level of different rules.
      */
 
-    {" +", TK_NOTYPE}, // spaces
-    {"\\+", '+'},      // plus
-    {"==", TK_EQ},     // equal
-    {"-", '-'},        // subtract
-    {"\\*", '*'},      // multiply
-    {"/", '/'},        // divide
-    {"\\(", '('},      // bracket
+    {" +", TK_NOTYPE},
+    {"\\+", '+'},
+    {"==", TK_EQ},
+    {"-", '-'},
+    {"\\*", '*'},
+    {"/", '/'}, //- is not a metacharacter
+    {"\\(", '('},
     {"\\)", ')'},
     {"[0-9]+", TK_NUM},
+    {"^0x[0-9]+", TK_16},
+    {"^\\$(\\S)+", '$'}, //[\S]表示，非空白就匹配
 
 };
 
@@ -125,6 +131,8 @@ static bool make_token(char *e)
           break;
         case TK_EQ:
           break;
+        case '$':
+        case TK_16:
         case TK_NUM:
           if (substr_len > 32)
             substr_len = 32;
@@ -211,7 +219,7 @@ word_t eval(int p, int q, bool *success)
     return eval(p + 1, q - 1, success);
   else
   {
-    int op=0;
+    int op = 0;
     int p_1 = 0;
     int sign = 0;
     for (int i = p; i <= q; i++)
@@ -270,7 +278,23 @@ word_t expr(char *e, bool *success)
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  /* TODO: *0x is what? */
+  /* TODO: Implement code to evaluate the expression. */
+
+  for (int i = 0; i < nr_token; i++)
+  {
+    if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type == ')'))
+      tokens[i].type = DEREF;
+
+    else if (tokens[i].type == '$')
+    {
+      bool success_reg = true;
+      int val = isa_reg_str2val(tokens[i].str + 1, &success_reg);
+      if (success_reg == false)
+        panic("not find this reg\n");
+      tokens[i].type = TK_16;
+      sprintf(tokens[i].str, "%x", val);
+    }
+  }
   *success = true;
   nr_token--;
   return eval(0, nr_token, success);

@@ -60,6 +60,7 @@ static int cmd_si(char *args)
     sscanf(args, "%d", &n);
   }
   cpu_exec(n);
+  // cmd_c(-1)
   return 0;
 }
 
@@ -118,17 +119,15 @@ static int cmd_x(char *args)
 
 static int cmd_p(char *args)
 {
-   /* extract the first argument */
   char *arg = strtok(NULL, "\0");
   bool success;
-  int ans=expr(arg,&success);
-  if(success)
-    printf("%u\n",ans);
-  else 
+  int ans = expr(arg, &success);
+  if (success)
+    printf("%u\n", ans);
+  else
     printf("Error in expression\n");
   return 0;
 }
-
 
 static int cmd_w(char *args)
 {
@@ -157,7 +156,6 @@ static struct
     {"p", "Expression evaluation", cmd_p},
     {"w", "Set up a monitoring point", cmd_w},
     {"d", "Delete a surveillance point", cmd_d},
-    /* TODO: Add more commands */
 
 };
 
