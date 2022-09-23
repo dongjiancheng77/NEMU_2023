@@ -215,8 +215,12 @@ word_t eval(int p, int q, bool *success)
   else if (check_parentheses(p, q))
     // Are you write a python?
     // (4 + 3) * (2 - 1) just let it go...
-
     return eval(p + 1, q - 1, success);
+  else if (tokens[p].type == '-' && p == q - 1 && (tokens[p - 1].type == '+' || tokens[p - 1].type == '-' || tokens[p - 1].type == '*' || tokens[p - 1].type == '/'))
+  {
+    return -1 * atoi(tokens[q].str);
+  }
+
   else
   {
     int op = 0;
