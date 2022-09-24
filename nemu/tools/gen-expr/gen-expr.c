@@ -19,7 +19,7 @@
 #include <time.h>
 #include <assert.h>
 #include <string.h>
-#define LEN_MAX 30
+#define LEN_MAX 20
 // this should be enough
 // TODO:check it
 static char buf[65536] = {};
@@ -32,21 +32,25 @@ static char *code_format =
     "  return 0; "
     "}";
 static int count = 0;
-static int expr_count=0;
+static int expr_count = 0;
 static int choose(unsigned int i)
 {
   return rand() % i;
 }
-static void gen(char c){
+static void gen(char c)
+{
 
-  buf[count++]=c;
+  buf[count++] = c;
 }
-static void gen_num(){
-  int len = rand()% (2)+1;
-  for(int i=0;i<len;i++){
-    int num_single = rand()%10;
-    if (num_single == 0 && i == 0)num_single = rand()%9 +1 ;
-    gen('0'+num_single);
+static void gen_num()
+{
+  int len = rand() % (2) + 1;
+  for (int i = 0; i < len; i++)
+  {
+    int num_single = rand() % 10;
+    if (num_single == 0 && i == 0)
+      num_single = rand() % 9 + 1;
+    gen('0' + num_single);
   }
 }
 static void gen_rand_op()
@@ -70,10 +74,10 @@ static void gen_rand_op()
 
 static void gen_rand_expr()
 {
-  //buf[0] = '\0';
-  int temp =choose(3);
-  if (count >=LEN_MAX)
-temp=0;
+  // buf[0] = '\0';
+  int temp = choose(3);
+  if (count >= LEN_MAX)
+    temp = 0;
   switch (temp)
   {
   case 0:
@@ -104,9 +108,9 @@ int main(int argc, char *argv[])
   int i;
   for (i = 0; i < loop; i++)
   {
-    count=expr_count=0;
+    count = expr_count = 0;
     gen_rand_expr();
-buf[count]='\0';
+    buf[count] = '\0';
     sprintf(code_buf, code_format, buf);
 
     FILE *fp = fopen("/tmp/.code.c", "w");

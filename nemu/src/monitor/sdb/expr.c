@@ -167,7 +167,7 @@ static bool check_parentheses(int p, int q)
 
     return false;
 
-  int sign = 0;
+  bool result = false;
   int count = 0;
 
   for (int i = p; i < q; i++)
@@ -182,16 +182,12 @@ static bool check_parentheses(int p, int q)
     }
     if (count == 0)
     {
-      sign = 1;
+      result = false;
     }
   }
-  if (count == 1 && sign == 0)
+  if (count == 1)
   {
-    return true;
-  }
-  if (count == 1 && sign == 1)
-  {
-    return false;
+    return result;
   }
   panic("Error expression for () ");
 }
