@@ -170,7 +170,7 @@ static bool check_parentheses(int p, int q)
   int sign = 0;
   int count = 0;
 
-  for (int i = p; i < q; i++)
+  for (int i = p; i <= q; i++)
   {
     if (tokens[i].type == '(')
     {
