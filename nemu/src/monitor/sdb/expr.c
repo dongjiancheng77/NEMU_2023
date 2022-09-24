@@ -221,7 +221,7 @@ word_t eval(int p, int q, bool *success)
   {
     int op = 0;
     int p_1 = 0;
-    int sign = -1;
+    int te = -1;
     for (int i = p; i <= q; i++)
     {
       if (tokens[i].type == '(')
@@ -230,26 +230,24 @@ word_t eval(int p, int q, bool *success)
         p_1--;
       else if (p_1 != 0)
         continue;
-      else if (sign == -1 && (tokens[i].type == TK_NEG))
+      else if (te == -1 && (tokens[i].type == TK_NEG))
+        op = i;
+      else if (te <= 1 && (tokens[i].type == '+' || tokens[i].type == '-'))
       {
         op = i;
+        te = 1;
       }
-      else if (sign <= 1 && (tokens[i].type == '+' || tokens[i].type == '-'))
+      else if (te <= 0 && (tokens[i].type == '*' || tokens[i].type == '/'))
       {
         op = i;
-        sign = 1;
-      }
-      else if (sign <= 0 && (tokens[i].type == '*' || tokens[i].type == '/'))
-      {
-        op = i;
-        sign = 0;
+        te = 0;
       }
     }
-    int te = 1;
+    int te1 = 1;
     int val1 = 0;
     if (tokens[p].type == '-' && (tokens[p - 1].type == '+' || tokens[p - 1].type == '-' || tokens[p - 1].type == '*' || tokens[p - 1].type == '/'))
       te = 0;
-    if (te == 1)
+    if (te1 == 1)
       val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
     switch (tokens[op].type)
@@ -291,7 +289,7 @@ word_t expr(char *e, bool *success)
   {
     if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type == ')'))
       tokens[i].type = DEREF;
-    if (tokens[i].type == '-' && tokens[i - 1].type != TK_NUM && tokens[i - 1].type != ')')
+    else if (tokens[i].type == '-' && tokens[i - 1].type != TK_NUM && tokens[i - 1].type != ')')
     {
       tokens[i].type = TK_NEG;
     }

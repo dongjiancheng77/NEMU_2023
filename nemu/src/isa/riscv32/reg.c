@@ -41,8 +41,7 @@ word_t isa_reg_str2val(const char *s, bool *success)
   if (strcmp("pc", s) == false)
     return cpu.pc;
   else
-  {
+
     *success = false;
-    return 0;
-  }
+  return 0;
 }
