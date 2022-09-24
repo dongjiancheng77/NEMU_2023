@@ -249,7 +249,7 @@ word_t eval(int p, int q, bool *success)
     int val1=0;
     if (tokens[p].type == '-' && (tokens[p - 1].type == '+' || tokens[p - 1].type == '-' || tokens[p - 1].type == '*' || tokens[p - 1].type == '/'))
       te = 0;
-    if (te)
+    if (te==1)
       val1 = eval(p, op - 1, success);
     if (tokens[p].type == '-')
       *success = true;
