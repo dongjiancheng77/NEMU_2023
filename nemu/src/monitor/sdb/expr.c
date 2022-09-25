@@ -311,7 +311,7 @@ word_t expr(char *e, bool *success)
     else if (tokens[i].type == TK_REG)
     {
       bool success_reg = true;
-      int val = isa_reg_str2val(tokens[i].str, &success_reg);
+      word_t val = isa_reg_str2val(tokens[i].str, &success_reg);
       if (success_reg == false)
         panic("not find this reg\n");
       tokens[i].type = TK_16;
