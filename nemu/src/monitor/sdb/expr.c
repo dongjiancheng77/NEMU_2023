@@ -185,6 +185,7 @@ static bool check_parentheses(int p, int q)
       result = true;
     }
   }
+  printf("%d",count);
   if (count != 1)
   {
     panic("Error expression for () ");
