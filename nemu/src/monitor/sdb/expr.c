@@ -185,12 +185,14 @@ static bool check_parentheses(int p, int q)
       result = true;
     }
   }
-  printf("a");
-  if (count == 1)
+  if (count != 1)
   {
-    return result;
+    panic("Error expression for () ");
   }
-  panic("Error expression for () ");
+  if (result)
+    return false;
+  else
+    return true;
 }
 
 word_t eval(int p, int q, bool *success)
