@@ -133,23 +133,10 @@ static bool make_token(char *e)
         case TK_EQ:
           break;
         case TK_REG:
-        if (substr_len > 31)
-            substr_len = 31;
-          tokens[nr_token].type = rules[i].token_type;
-          strncpy(tokens[nr_token].str, substr_start+1, substr_len-1);
-          nr_token++;
-          // avoid overflow
-          tokens[nr_token].str[substr_len] = '\0';
-          break;
         case TK_16:
         case TK_NUM:
-          if (substr_len > 31)
-            substr_len = 31;
-          tokens[nr_token].type = rules[i].token_type;
-          strncpy(tokens[nr_token].str, substr_start, substr_len);
-          nr_token++;
-          // avoid overflow
-          tokens[nr_token].str[substr_len] = '\0';
+          memcpy(tokens[nr_token].str, e + position - substr_len, (substr_len) * sizeof(char));
+            tokens[nr_token].str[substr_len] = '\0';
           break;
         default:
           tokens[nr_token].type = rules[i].token_type;
