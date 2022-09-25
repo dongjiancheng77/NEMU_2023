@@ -233,8 +233,6 @@ word_t eval(int p, int q, bool *success)
       else if (tokens[i].type == ')')
       {
         p_1--;
-        if (p_1 == 0)
-          continue;
       }
       else if (p_1 != 0)
         continue;
@@ -258,7 +256,6 @@ word_t eval(int p, int q, bool *success)
     if (te1 == 1)
       val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
-    printf("%x /n", tokens[op].type);
     switch (tokens[op].type)
     {
     case '+':
