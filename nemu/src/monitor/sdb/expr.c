@@ -185,12 +185,12 @@ static bool check_parentheses(int p, int q)
       result = true;
     }
   }
-  printf("%d",count);
+  // printf("%d", count);
   if (count != 1)
   {
     panic("Error expression for () ");
   }
-  if (result)
+  if (result == true)
     return false;
   else
     return true;
@@ -216,14 +216,15 @@ word_t eval(int p, int q, bool *success)
     // Are you write a python?
     // (4 + 3) * (2 - 1) just let it go...
     return eval(p + 1, q - 1, success);
-  else if (tokens[p].type == TK_NEG)
+  else if (tokens[p].type == TK_NEG && p == q + 1)
   {
     return -1 * atoi(tokens[q].str);
   }
 
   else
   {
-    int op = 0;
+    int op;
+    op=p;
     int p_1 = 0;
     int te = -1;
     for (int i = p; i <= q; i++)
@@ -231,11 +232,15 @@ word_t eval(int p, int q, bool *success)
       if (tokens[i].type == '(')
         p_1++;
       else if (tokens[i].type == ')')
+      {
         p_1--;
+        if (p_1 == 0)
+          continue;
+      }
       else if (p_1 != 0)
         continue;
-      else if (te == -1 && (tokens[i].type == TK_NEG))
-        op = i;
+      // else if (te == -1 && (tokens[i].type == TK_NEG))
+      // op = i;
       else if (te <= 1 && (tokens[i].type == '+' || tokens[i].type == '-'))
       {
         op = i;
@@ -249,8 +254,8 @@ word_t eval(int p, int q, bool *success)
     }
     int te1 = 1;
     int val1 = 0;
-    if (tokens[p].type == '-' && (tokens[p - 1].type == '+' || tokens[p - 1].type == '-' || tokens[p - 1].type == '*' || tokens[p - 1].type == '/'))
-      te = 0;
+    if (tokens[op].type == TK_NEG && (tokens[p - 1].type == '+' || tokens[p - 1].type == '-' || tokens[p - 1].type == '*' || tokens[p - 1].type == '/'))
+      te1 = 0;
     if (te1 == 1)
       val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
