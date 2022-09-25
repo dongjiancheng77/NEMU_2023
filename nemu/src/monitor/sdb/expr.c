@@ -136,7 +136,7 @@ static bool make_token(char *e)
         if (substr_len > 31)
             substr_len = 31;
           tokens[nr_token].type = rules[i].token_type;
-          strncpy(tokens[nr_token].str, substr_start, substr_len);
+          strncpy(tokens[nr_token].str, substr_start+1, substr_len-1);
           nr_token++;
           // avoid overflow
           tokens[nr_token].str[substr_len-1] = '\0';
