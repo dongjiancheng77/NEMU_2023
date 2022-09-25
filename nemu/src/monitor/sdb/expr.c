@@ -28,7 +28,8 @@ enum
   TK_16,
   DEREF,
   TK_AND,
-  TK_NEG
+  TK_NEG,
+  TK_REG
 
 };
 
@@ -52,7 +53,7 @@ static struct rule
     {"\\)", ')'},
     {"[0-9]+", TK_NUM},
     {"^0x[0-9]+", TK_16},
-    {"^\\$(\\S)+", '$'}, //[\S]表示，非空白就匹配
+    {"^\\$[0-9a-z]+", TK_REG}, //[\S]表示，非空白就匹配
 
 };
 
@@ -131,7 +132,7 @@ static bool make_token(char *e)
           break;
         case TK_EQ:
           break;
-        case '$':
+        case TK_REG:
         case TK_16:
         case TK_NUM:
           if (substr_len > 32)
