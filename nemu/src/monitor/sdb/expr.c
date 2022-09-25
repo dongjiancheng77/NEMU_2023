@@ -320,5 +320,8 @@ word_t expr(char *e, bool *success)
   }
   *success = true;
   nr_token--;
-  return eval(0, nr_token, success);
+  int a=eval(0, nr_token, success);
+  memset(tokens, 0, sizeof tokens); 
+
+  return a;
 }
