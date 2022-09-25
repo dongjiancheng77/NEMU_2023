@@ -139,7 +139,7 @@ static bool make_token(char *e)
           strncpy(tokens[nr_token].str, substr_start+1, substr_len-1);
           nr_token++;
           // avoid overflow
-          tokens[nr_token].str[substr_len-1] = '\0';
+          tokens[nr_token].str[substr_len] = '\0';
           break;
         case TK_16:
         case TK_NUM:
