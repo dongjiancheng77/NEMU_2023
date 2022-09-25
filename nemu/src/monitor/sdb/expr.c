@@ -317,7 +317,7 @@ word_t expr(char *e, bool *success)
       int val = isa_reg_str2val(tokens[i].str, &success_reg);
       if (success_reg == false)
         panic("not find this reg\n");
-      tokens[i].type = TK_NUM;
+      tokens[i].type = TK_16;
       sprintf(tokens[i].str, "%x", val);
     }
   }
