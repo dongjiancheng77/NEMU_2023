@@ -185,6 +185,7 @@ static bool check_parentheses(int p, int q)
       result = true;
     }
   }
+  printf("a");
   if (count == 1)
   {
     return result;
