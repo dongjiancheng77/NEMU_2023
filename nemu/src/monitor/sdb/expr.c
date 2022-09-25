@@ -53,7 +53,7 @@ static struct rule
     {"\\)", ')'},
     {"[0-9]+", TK_NUM},
     {"^0x[0-9]+", TK_16},
-    {"^\\$(\\S)+", TK_REG}, //[\S]表示，非空白就匹配
+    {"\\$[\\$a-z][0-9]+", TK_REG}, //[\S]表示，非空白就匹配
 
 };
 
@@ -307,7 +307,7 @@ word_t expr(char *e, bool *success)
       int val = isa_reg_str2val(tokens[i].str, &success_reg);
       if (success_reg == false)
         panic("not find this reg\n");
-      tokens[i].type = TK_16;
+      tokens[i].type = TK_NUM;
       sprintf(tokens[i].str, "%x", val);
     }
   }
