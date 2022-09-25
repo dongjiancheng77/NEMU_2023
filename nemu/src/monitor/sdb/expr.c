@@ -258,7 +258,7 @@ word_t eval(int p, int q, bool *success)
     if (te1 == 1)
       val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
-    printf("%d", tokens[op].type);
+    printf("%d /n", tokens[op].type);
     switch (tokens[op].type)
     {
     case '+':
