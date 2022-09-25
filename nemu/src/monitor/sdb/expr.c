@@ -227,7 +227,7 @@ word_t eval(int p, int q, bool *success)
     // Are you write a python?
     // (4 + 3) * (2 - 1) just let it go...
     return eval(p + 1, q - 1, success);
-  else if (tokens[p].type == TK_NEG && p == q + 1)
+  else if (tokens[p].type == TK_NEG && p == q - 1)
   {
     return -1 * atoi(tokens[q].str);
   }
