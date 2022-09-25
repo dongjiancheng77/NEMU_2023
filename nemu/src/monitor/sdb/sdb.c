@@ -120,9 +120,9 @@ static int cmd_x(char *args)
 
 static int cmd_p(char *args)
 {
-  char *arg = strtok(NULL, "\0");
+  //char *arg = strtok(NULL, "\0");
   bool success;
-  int ans = expr(arg, &success);
+  uint32_t ans = expr(args, &success);
   if (success)
     printf("%u\n", ans);
   else
