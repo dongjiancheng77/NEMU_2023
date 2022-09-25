@@ -182,7 +182,7 @@ static bool check_parentheses(int p, int q)
     }
     if (count == 0)
     {
-      result = false;
+      result = true;
     }
   }
   if (count == 1)
