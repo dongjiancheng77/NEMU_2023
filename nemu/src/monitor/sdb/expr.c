@@ -135,8 +135,8 @@ static bool make_token(char *e)
         case TK_REG:
         case TK_16:
         case TK_NUM:
-          if (substr_len > 32)
-            substr_len = 32;
+          if (substr_len > 31)
+            substr_len = 31;
           tokens[nr_token].type = rules[i].token_type;
           strncpy(tokens[nr_token].str, substr_start, substr_len);
           nr_token++;
