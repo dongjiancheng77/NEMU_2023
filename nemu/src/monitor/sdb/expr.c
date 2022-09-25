@@ -301,7 +301,7 @@ word_t expr(char *e, bool *success)
       tokens[i].type = TK_NEG;
     }
 
-    else if (tokens[i].type == '$')
+    else if (tokens[i].type == TK_REG)
     {
       bool success_reg = true;
       int val = isa_reg_str2val(tokens[i].str + 1, &success_reg);
