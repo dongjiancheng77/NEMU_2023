@@ -124,7 +124,7 @@ static int cmd_p(char *args)
   bool success;
   int ans = expr(arg, &success);
   if (success)
-    printf("%d\n", ans);
+    printf("%u\n", ans);
   else
     printf("Error in expression\n");
   return 0;
