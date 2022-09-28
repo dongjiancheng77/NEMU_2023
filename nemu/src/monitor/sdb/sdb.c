@@ -80,6 +80,9 @@ static int cmd_info(char *args)
   {
     isa_reg_display();
   }
+  else  if(strcmp(args,"w") == 0){
+    print_infowatchpoints();
+  }
   else
   {
     printf("未知参数: [%s] \n", args);
@@ -120,7 +123,7 @@ static int cmd_x(char *args)
 
 static int cmd_p(char *args)
 {
-  //char *arg = strtok(NULL, "\0");
+  // char *arg = strtok(NULL, "\0");
   bool success;
   uint32_t ans = expr(args, &success);
   if (success)
@@ -136,7 +139,9 @@ static int cmd_w(char *args)
 }
 
 static int cmd_d(char *args)
-{
+{  int NO;
+  sscanf(args, "%d", &NO);
+  de_wp(NO);
   return 0;
 }
 

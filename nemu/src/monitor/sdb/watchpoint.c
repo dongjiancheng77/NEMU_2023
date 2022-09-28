@@ -15,14 +15,14 @@
 
 #include "sdb.h"
 
-#define NR_WP 32
+#define NR_WP 64
 
 typedef struct watchpoint
 {
   int NO;
   struct watchpoint *next;
-
-
+  char expr[64];
+  uint32_t valve;
   /* TODO: Add more members if necessary */
 
 } WP;
@@ -44,3 +44,77 @@ void init_wp_pool()
 }
 
 /* TODO: Implement the functionality of watchpoint */
+void print_infowatchpoints()
+{
+
+  printf("infowatchpoints:\n");
+  WP *cur = head;
+  while (cur)
+  {
+    printf("NO: %d\tEXPR: %s\tVALVE: %u \n", cur->NO, cur->expr, cur->valve);
+    cur = cur->next;
+  }
+}
+
+WP *new_wp()
+{
+  if (free_ == NULL)
+    assert(0);
+  else
+  {
+    WP *tmp = free_;
+    free_ = free_->next;
+    tmp->next = head;
+    head = tmp;
+    return tmp;
+  }
+}
+
+void free_wp(WP *wp)
+{
+  WP *last = head;
+  // tmp is the latest element in the wp list
+  // e.g. null < 0 < 1 < 2 tmp=2
+  int sign = 0;
+  while (last)
+  {
+    if (last == wp)
+      break;
+    last = last->next;
+    sign++;
+  }
+
+  last = head;
+  for (int i = 1; i < sign; i++)
+  {
+    last = last->next;
+  }
+  last->next = last->next->next;
+
+  wp->next = free_;
+  free_ = wp;
+}
+void de_wp(int no)
+{
+  WP *last = head;
+  if (last->NO == no)
+  {
+    head = last->next;
+    last->next = free_;
+    free_ = last;
+    return;
+  }
+  while (last != NULL)
+  {
+    if (last->NO == no)
+      break;
+    if (last->next == NULL)
+    {
+      printf("Can't find NO.%d\n", no);
+      return;
+      last = last->next;
+    }
+    free_wp(last);
+  }
+  return;
+}

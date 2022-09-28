@@ -29,7 +29,9 @@ enum
   DEREF,
   TK_AND,
   TK_NEG,
-  TK_REG
+  TK_REG,
+  TK_UEQ,
+  TK_GQ,
 
 };
 
@@ -46,6 +48,10 @@ static struct rule
     {" +", TK_NOTYPE},
     {"\\+", '+'},
     {"==", TK_EQ},
+    {"<=", TK_GQ},
+    {"!=", TK_UEQ},
+    {"&&", '&'},
+    {"\\|\\|", '|'},
     {"-", '-'},
     {"\\*", '*'},
     {"/", '/'}, //- is not a metacharacter
@@ -139,7 +145,7 @@ static bool make_token(char *e)
           tokens[nr_token].str[substr_len] = '\0';
           nr_token++;
           // avoid overflow
-          
+
           break;
         case TK_16:
         case TK_NUM:
@@ -231,7 +237,7 @@ word_t eval(int p, int q, bool *success)
 
   else
   {
-    int op=0;
+    int op = 0;
     int p_1 = 0;
     int te = -1;
     for (int i = p; i <= q; i++)
@@ -320,8 +326,8 @@ word_t expr(char *e, bool *success)
   }
   *success = true;
   nr_token--;
-  int a=eval(0, nr_token, success);
-  memset(tokens, 0, sizeof tokens); 
+  int a = eval(0, nr_token, success);
+  memset(tokens, 0, sizeof tokens);
 
   return a;
 }
