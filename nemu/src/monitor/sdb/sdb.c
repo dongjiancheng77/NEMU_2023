@@ -80,7 +80,8 @@ static int cmd_info(char *args)
   {
     isa_reg_display();
   }
-  else  if(strcmp(args,"w") == 0){
+  else if (strcmp(args, "w") == 0)
+  {
     print_infowatchpoints();
   }
   else
@@ -135,11 +136,22 @@ static int cmd_p(char *args)
 
 static int cmd_w(char *args)
 {
+  bool success = true;
+  WP *point = new_wp(args, &success);
+  if (success)
+  {
+    printf("Created NO.%d expr:%s \n", point->NO, point->expr);
+  }
+  else
+  {
+    printf("Wrong in expr.\n");
+  }
   return 0;
 }
 
 static int cmd_d(char *args)
-{  int NO;
+{
+  int NO;
   sscanf(args, "%d", &NO);
   de_wp(NO);
   return 0;

@@ -17,15 +17,15 @@
 
 #define NR_WP 64
 
-typedef struct watchpoint
-{
-  int NO;
-  struct watchpoint *next;
-  char expr[64];
-  uint32_t valve;
-  /* TODO: Add more members if necessary */
+// typedef struct watchpoint
+// {
+//   int NO;
+//   struct watchpoint *next;
+//   char expr[64];
+//   uint32_t valve;
+//   /* TODO: Add more members if necessary */
 
-} WP;
+// } WP;
 
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
@@ -55,26 +55,37 @@ void print_infowatchpoints()
     cur = cur->next;
   }
 }
-
-WP *new_wp()
+static int count = 1;
+WP *new_wp(char *condation, bool *success)
 {
-  if (free_ == NULL)
+  if (free_->next == NULL)
+  
     assert(0);
+  
+
+  WP *result = free_->next;
+  result->NO = count++;
+  free_->next = result->next;
+  result->next = NULL;
+  expr(condation, success);
+  strcpy(result->expr, condation);
+
+  if (head == NULL)
+  {
+    head = result;
+  }
   else
   {
-    WP *tmp = free_;
-    free_ = free_->next;
-    tmp->next = head;
-    head = tmp;
-    return tmp;
+    result->next = head->next;
+    head->next = result;
   }
+
+  return result;
 }
 
 void free_wp(WP *wp)
 {
   WP *last = head;
-  // tmp is the latest element in the wp list
-  // e.g. null < 0 < 1 < 2 tmp=2
   int sign = 0;
   while (last)
   {
@@ -117,4 +128,20 @@ void de_wp(int no)
     free_wp(last);
   }
   return;
+}
+bool hook()
+{
+  bool state = false;
+  bool success;
+  for (WP *p = head; p != NULL; p = p->next)
+  {
+    int new_valve = expr(p->expr, &success);
+    if (new_valve != p->valve)
+    {
+      printf("%s  has changed!\n", p->expr);
+      printf("  0x%08x change to 0x%08x\n", p->valve, new_valve);
+      state = true;
+    }
+  }
+  return state;
 }

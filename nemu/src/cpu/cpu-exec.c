@@ -24,7 +24,7 @@
  * You can modify this value as you want.
  */
 #define MAX_INST_TO_PRINT 10
-
+  bool wp_state;
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
@@ -45,6 +45,12 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
   }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+
+       wp_state = hook();
+    if (wp_state)
+    {
+      nemu_state.state = NEMU_STOP;
+    }
 }
 
 static void exec_once(Decode *s, vaddr_t pc)
@@ -126,18 +132,7 @@ void cpu_exec(uint64_t n)
   uint64_t timer_start = get_time();
 
   execute(n);
-  bool wp_state;
-  Decode s;
-  uint64_t g_nr_guest_instr = 0;
-  for (; n > 0; n--)
-  {
-    fetch_decode_exec_updatepc(&s);
-    g_nr_guest_instr++;
-    trace_and_difftest(&s, cpu.pc);
-    if (nemu_state.state != NEMU_RUNNING)
-      break;
-    IFDEF(CONFIG_DEVICE, device_update());
-  }
+
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
 

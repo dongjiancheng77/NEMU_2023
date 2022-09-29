@@ -19,5 +19,17 @@
 #include <common.h>
 
 word_t expr(char *e, bool *success);
+typedef struct watchpoint {  int NO;
+  struct watchpoint *next;
+  char expr[64];
+  uint32_t valve;
+  /* TODO: Add more members if necessary */
+} WP;
+bool check_watchpoint(WP **point);
 
+WP* new_wp(char *expr, bool *success);
+void free_wp(WP *wp);
+void de_wp(int no);
+void print_infowatchpoints();
+bool hook();
 #endif
