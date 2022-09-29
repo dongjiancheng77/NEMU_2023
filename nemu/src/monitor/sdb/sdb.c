@@ -154,6 +154,7 @@ static int cmd_d(char *args)
   int NO;
   sscanf(args, "%d", &NO);
   de_wp(NO);
+  printf("delete a surveillance point: %d.\n",NO);
   return 0;
 }
 

@@ -56,7 +56,7 @@ void print_infowatchpoints()
   }
 }
 static int count = 1;
-WP *new_wp(char *condation, bool *success)
+WP *new_wp(char *expr_n, bool *success)
 {
   if (free_->next == NULL)
   
@@ -67,8 +67,8 @@ WP *new_wp(char *condation, bool *success)
   result->NO = count++;
   free_->next = result->next;
   result->next = NULL;
-  expr(condation, success);
-  strcpy(result->expr, condation);
+  expr(expr_n, success);
+  strcpy(result->expr, expr_n);
 
   if (head == NULL)
   {
