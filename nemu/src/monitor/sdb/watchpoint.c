@@ -14,7 +14,7 @@
  ***************************************************************************************/
 
 #include "sdb.h"
-
+#include "watchpoint.h"
 #define NR_WP 64
 
 // typedef struct watchpoint

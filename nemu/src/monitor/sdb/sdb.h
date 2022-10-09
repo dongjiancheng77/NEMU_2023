@@ -17,8 +17,6 @@
 #define __SDB_H__
 
 #include <common.h>
-
-word_t expr(char *e, bool *success);
 typedef struct watchpoint {  int NO;
   struct watchpoint *next;
   char expr[64];
@@ -32,4 +30,5 @@ void free_wp(WP *wp);
 void de_wp(int no);
 void print_infowatchpoints();
 bool hook();
+word_t expr(char *e, bool *success);
 #endif

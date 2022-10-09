@@ -138,6 +138,8 @@ static bool make_token(char *e)
           break;
         case TK_EQ:
           break;
+        case TK_GQ:
+          break;
         case TK_REG:
           tokens[nr_token].type = rules[i].token_type;
           strncpy(tokens[nr_token].str, substr_start, substr_len);
@@ -270,12 +272,23 @@ word_t eval(int p, int q, bool *success)
     if (te1 == 1)
       val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
+
     switch (tokens[op].type)
     {
     case '+':
       return val1 + val2;
     case '-':
       return val1 - val2;
+    case TK_EQ:
+      return val1 == val2;
+    case TK_UEQ:
+      return val1 != val2;
+    case TK_GQ:
+      return val1 <= val2;
+    case '|':
+      return val1 || val2;
+    case '&':
+      return val1 && val2;
     case '*':
       return val1 * val2;
     case '/':
