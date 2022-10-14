@@ -1,17 +1,17 @@
 /***************************************************************************************
-* Copyright (c) 2014-2022 Zihao Yu, Nanjing University
-*
-* NEMU is licensed under Mulan PSL v2.
-* You can use this software according to the terms and conditions of the Mulan PSL v2.
-* You may obtain a copy of Mulan PSL v2 at:
-*          http://license.coscl.org.cn/MulanPSL2
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*
-* See the Mulan PSL v2 for more details.
-***************************************************************************************/
+ * Copyright (c) 2014-2022 Zihao Yu, Nanjing University
+ *
+ * NEMU is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *          http://license.coscl.org.cn/MulanPSL2
+ *
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ *
+ * See the Mulan PSL v2 for more details.
+ ***************************************************************************************/
 
 #include <stdint.h>
 #include <stdio.h>
@@ -19,33 +19,98 @@
 #include <time.h>
 #include <assert.h>
 #include <string.h>
-
+#define LEN_MAX 20
 // this should be enough
+// TODO:check it
 static char buf[65536] = {};
 static char code_buf[65536 + 128] = {}; // a little larger than `buf`
 static char *code_format =
-"#include <stdio.h>\n"
-"int main() { "
-"  unsigned result = %s; "
-"  printf(\"%%u\", result); "
-"  return 0; "
-"}";
+    "#include <stdio.h>\n"
+    "int main() { "
+    "  unsigned result = %s; "
+    "  printf(\"%%u\", result); "
+    "  return 0; "
+    "}";
+static int count = 0;
+static int expr_count = 0;
+static int choose(unsigned int i)
+{
+  return rand() % i;
+}
+static void gen(char c)
+{
 
-static void gen_rand_expr() {
-  buf[0] = '\0';
+  buf[count++] = c;
+}
+static void gen_num()
+{
+  int len = rand() % (2) + 1;
+  for (int i = 0; i < len; i++)
+  {
+    int num_single = rand() % 10;
+    if (num_single == 0 && i == 0)
+      num_single = rand() % 9 + 1;
+    gen('0' + num_single);
+  }
+}
+static void gen_rand_op()
+{
+  switch (choose(4))
+  {
+  case 0:
+    gen('+');
+    break;
+  case 1:
+    gen('-');
+    break;
+  case 2:
+    gen('*');
+    break;
+  case 3:
+    gen('/');
+    break;
+  }
 }
 
-int main(int argc, char *argv[]) {
+static void gen_rand_expr()
+{
+  // buf[0] = '\0';
+  int temp = choose(3);
+  if (count >= LEN_MAX)
+    temp = 0;
+  switch (temp)
+  {
+  case 0:
+    gen_num();
+    break;
+  case 1:
+    gen('(');
+    gen_rand_expr();
+    gen(')');
+    break;
+  default:
+    gen_rand_expr();
+    gen_rand_op();
+    gen_rand_expr();
+    break;
+  }
+}
+
+int main(int argc, char *argv[])
+{
   int seed = time(0);
   srand(seed);
   int loop = 1;
-  if (argc > 1) {
+  if (argc > 1)
+  {
     sscanf(argv[1], "%d", &loop);
   }
   int i;
-  for (i = 0; i < loop; i ++) {
+  for (i = 0; i < loop; i++)
+  {
+    count = expr_count = 0;
     gen_rand_expr();
-
+    buf[count] = '\0';
     sprintf(code_buf, code_format, buf);
 
     FILE *fp = fopen("/tmp/.code.c", "w");
@@ -54,7 +119,8 @@ int main(int argc, char *argv[]) {
     fclose(fp);
 
     int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
-    if (ret != 0) continue;
+    if (ret != 0)
+      continue;
 
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
