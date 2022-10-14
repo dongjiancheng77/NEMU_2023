@@ -92,6 +92,7 @@ typedef struct token
 {
   int type;
   char str[32];
+  int num;
 } Token;
 
 static Token tokens[320] __attribute__((used)) = {};
@@ -139,11 +140,18 @@ static bool make_token(char *e)
           break;
 
         case TK_REG:
-        case PC:
+
           tokens[nr_token].type = rules[i].token_type;
           strncpy(tokens[nr_token].str, substr_start, substr_len);
 
           tokens[nr_token].str[substr_len] = '\0';
+          nr_token++;
+          // avoid overflow
+
+          break;
+        case PC:
+          tokens[nr_token].type = rules[i].token_type;
+          tokens[nr_token].num = cpu.pc;
           nr_token++;
           // avoid overflow
 
@@ -229,10 +237,13 @@ word_t eval(int p, int q, bool *success)
   {
     if (tokens[p].type == TK_NUM)
       return atoi(tokens[p].str);
+    if (tokens[p].type == PC)
+      return tokens[p].num;
     int x;
     sscanf(tokens[p].str, "%x", &x);
     return x;
   }
+
   else if (check_parentheses(p, q))
     // Are you write a python?
     // (4 + 3) * (2 - 1) just let it go...

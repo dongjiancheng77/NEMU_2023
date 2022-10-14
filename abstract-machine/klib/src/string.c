@@ -29,67 +29,68 @@ char *strcpy(char *dst, const char *src)
 
 char *strncpy(char *dst, const char *src, size_t n)
 {
-  int i=0;
+  int i = 0;
   for (; i < n && src[i] != '\0'; ++i)
   {
     dst[i] = src[i];
   }
-  for (; i < n; ++i)
-  {
-    dst[i] = '\0';
-  }
+  dst[i] = '\0';
+  // for (; i < n; ++i)
+  // {
+  //   dst[i] = '\0';
+  // }
 
   return dst;
 }
-
+// C 库函数 char *strcat(char *dest, const char *src) 把 src 所指向的字符串追加到 dest 所指向的字符串的结尾。
 char *strcat(char *dst, const char *src)
 {
   int i, j;
   for (i = 0; dst[i] != '\0'; ++i)
   {
   }
-  for (j = 0; src[j] != '\0'; ++j, ++i)
+  for (j = 0; src[j] != '\0'; ++j)
   {
-    dst[i] = src[j]; //追加
+    dst[i+j] = src[j];
   }
-  dst[i] = '\0';
+  dst[i+j] = '\0';
 
   return dst;
 }
 
 int strcmp(const char *s1, const char *s2)
 {
-  int i;
-  for (i = 0; s1[i] != '\0' && s2[i] != '\0'; ++i)
+  int i=0;
+  for (;; ++i)
   {
-    if (s1[i] != s2[i])
-      return (int)(s1[i]) - (int)(s2[i]);
+    if (s1[i] < s2[i])
+      return -1;
+    if (s1[i] > s2[i])
+      return 1;
+    if (s1[i] == '\0' && s2[i] != '\0')
+      return -1;
+    if (s1[i] != '\0' && s2[i] == '\0')
+      return 1;
+    if (s1[i] == '\0' && s2[i] == '\0')
+      return 0;
   }
-  // case 同时结束：为0
-  // case s1先结束，0-x < 0
-  // case s2先结束，x-0 > 0
-  return (int)(s1[i]) - (int)(s2[i]);
-  panic("Not implemented");
+  panic("strcmp!!");
 }
 
 int strncmp(const char *s1, const char *s2, size_t n)
 {
-  int i;
-  for (i = 0; i < n && s1[i] != '\0' && s2[i] != '\0'; ++i)
-  {
-    if (s1[i] != s2[i])
-      return (int)(s1[i]) - (int)(s2[i]);
-  }
-  // case 同时结束：为0
-  // case s1先结束，0-x < 0
-  // case s2先结束，x-0 > 0
-  // case 到达n，返回0
-  if (i == n)
-    return 0;
-  return (int)(s1[i]) - (int)(s2[i]);
-  panic("Not implemented");
+{
+	if (!n)
+		return 0;
+	while (--n && *s1 && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	return *s1 - *s2;
+  panic("strncmp!!Not implemented");
 }
-
+}
 void *memset(void *s, int c, size_t n)
 {
   unsigned char *target = (unsigned char *)s;
@@ -98,16 +99,17 @@ void *memset(void *s, int c, size_t n)
     target[i] = (unsigned char)c;
   }
   return s;
-  panic("Not implemented");
+  panic("memset!!Not implemented");
 }
-
+// C 库函数 void *memmove(void *str1, const void *str2, size_t n) 从 str2 复制 n 个字符到 str1，
+// 但是在重叠内存块这方面，memmove() 是比 memcpy() 更安全的方法。如果目标区域和源区域有重叠的话，
+// memmove() 能够保证源串在被覆盖之前将重叠区域的字节拷贝到目标区域中，复制后源区域的内容会被更改。
+// 如果目标区域与源区域没有重叠，则和 memcpy() 函数功能相同。
 void *memmove(void *dst, const void *src, size_t n)
 {
   char *char_dst = (char *)dst;
   char *char_src = (char *)src;
-  // 如果目标区域和源区域有重叠的话，
-  // memmove() 能够保证源串在被覆盖之前将重叠区域的字节拷贝到目标区域中，
-  // 复制后源区域的内容会被更改。
+
   if (dst < src)
   {
     for (int i = 0; i < n; ++i)
@@ -120,7 +122,7 @@ void *memmove(void *dst, const void *src, size_t n)
   } // else 不需要复制
 
   return dst;
-  panic("Not implemented");
+  panic("memmove!!Not implemented");
 }
 
 void *memcpy(void *out, const void *in, size_t n)
@@ -133,7 +135,7 @@ void *memcpy(void *out, const void *in, size_t n)
   }
 
   return out;
-  panic("Not implemented");
+  panic("memcpy!!Not implemented");
 }
 
 int memcmp(const void *s1, const void *s2, size_t n)
@@ -150,7 +152,7 @@ int memcmp(const void *s1, const void *s2, size_t n)
   if (i == n)
     return 0;
   return (int)(char_s1[i]) - (int)(char_s2[i]);
-  panic("Not implemented");
+  panic("memcmp!!Not implemented");
 }
 
 #endif
