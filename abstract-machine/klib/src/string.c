@@ -29,8 +29,8 @@ char *strcpy(char *dst, const char *src)
 
 char *strncpy(char *dst, const char *src, size_t n)
 {
-  int i;
-  for (i = 0; i < n && src[i] != '\0'; ++i)
+  int i=0;
+  for (; i < n && src[i] != '\0'; ++i)
   {
     dst[i] = src[i];
   }
