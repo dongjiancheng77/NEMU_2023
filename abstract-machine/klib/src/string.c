@@ -51,16 +51,16 @@ char *strcat(char *dst, const char *src)
   }
   for (j = 0; src[j] != '\0'; ++j)
   {
-    dst[i+j] = src[j];
+    dst[i + j] = src[j];
   }
-  dst[i+j] = '\0';
+  dst[i + j] = '\0';
 
   return dst;
 }
 
 int strcmp(const char *s1, const char *s2)
 {
-  int i=0;
+  int i = 0;
   for (;; ++i)
   {
     if (s1[i] < s2[i])
@@ -79,17 +79,17 @@ int strcmp(const char *s1, const char *s2)
 
 int strncmp(const char *s1, const char *s2, size_t n)
 {
-{
-	if (!n)
-		return 0;
-	while (--n && *s1 && *s1 == *s2)
-	{
-		s1++;
-		s2++;
-	}
-	return *s1 - *s2;
-  panic("strncmp!!Not implemented");
-}
+  {
+    if (!n)
+      return 0;
+    while (--n && *s1 && *s1 == *s2)
+    {
+      s1++;
+      s2++;
+    }
+    return *s1 - *s2;
+    panic("strncmp!!Not implemented");
+  }
 }
 void *memset(void *s, int c, size_t n)
 {
@@ -119,7 +119,7 @@ void *memmove(void *dst, const void *src, size_t n)
   {
     for (int i = n - 1; i >= 0; --i)
       char_dst[i] = char_src[i];
-  } // else 不需要复制
+  } 
 
   return dst;
   panic("memmove!!Not implemented");
@@ -143,14 +143,15 @@ int memcmp(const void *s1, const void *s2, size_t n)
   char *char_s1 = (char *)s1;
   char *char_s2 = (char *)s2;
 
-  int i;
-  for (i = 0; i < n; ++i)
+  int i = 0;
+  for (; i < n; ++i)
   {
     if (char_s1[i] != char_s2[i])
       return (int)(char_s1[i]) - (int)(char_s2[i]);
+    if (i == n - 1)
+      return 0;
   }
-  if (i == n)
-    return 0;
+
   return (int)(char_s1[i]) - (int)(char_s2[i]);
   panic("memcmp!!Not implemented");
 }
