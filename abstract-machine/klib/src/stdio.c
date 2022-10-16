@@ -106,27 +106,27 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
 
       case 'd':
         val = va_arg(ap, int);
-        // if (val == 0)
-        // {
-        //   out[j++] = '0';
-        //   break;
-        // }
-        // if (val < 0)
-        // {
-        //   val = (-1) * val;
-        //   out[j++] = '-';
-        // }
-        // for (len = 0; val; val /= 10, ++len)
-        //   buffer[len] = val % 10 + '0';
-        // for (int k = len - 1; k >= 0; --k)
-        //   out[j++] = buffer[k];
-
-        itoa(val,str,10);
-        k = 0;
-        while (str[k] != '\0')
+        if (val == 0)
         {
-          out[j++] = str[k++];
+          out[j++] = '0';
+          break;
         }
+        if (val < 0)
+        {
+          val = (-1) * val;
+          out[j++] = '-';
+        }
+        for (len = 0; val; val /= 10, ++len)
+          buffer[len] = val % 10 + '0';
+        for (int k = len - 1; k >= 0; --k)
+          out[j++] = buffer[k];
+
+        // itoa(val,str,10);
+        // k = 0;
+        // while (str[k] != '\0')
+        // {
+        //   out[j++] = str[k++];
+        // }
         break;
 
       case 'p':
