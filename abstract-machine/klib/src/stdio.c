@@ -13,7 +13,7 @@ int printf(const char *fmt, ...)
     int i; 
     char buf[256]; 
  
-    va_list arg = (va_list)((char*)(&fmt) + 4); 
+    va_list arg ; 
     va_start (arg, fmt);
     i = vsprintf(buf, fmt, arg); 
   putstr(buf);
@@ -25,68 +25,68 @@ static char HEX_CHARACTERS[] = "0123456789ABCDEF";
 #define BIT_WIDE_HEX 8
 
 //vsprintf return 要打印出来的字符串的长度
-// int vsprintf(char *out, const char *fmt, va_list ap) {
-//   return vsnprintf(out, -1, fmt, ap);
-// }
-char* itoa(int value, char *str, int radix){
-    char reverse[36];   
-    char *p = reverse;
-    bool sign = (value >= 0)?true:false;
-
-    value = (value >= 0)?value:-value;
-    *p++ = '\0';
-    while (value >= 0){
-        *p++ = "0123456789abcdef"[value%radix];
-        value /= radix;
-        if (value == 0) break;
-    }
-
-    if (!sign) {
-        *p = '-';
-    }
-    else {
-        p--;
-    }
-
-    while (p >= reverse){
-        *str++ = *p--;
-    }
-
-    return str;
+int vsprintf(char *out, const char *fmt, va_list ap) {
+  return vsnprintf(out, -1, fmt, ap);
 }
-int vsprintf(char *buf, const char *fmt, va_list args)
-{
-    char* p;
-    char tmp[256];
-    va_list p_next_arg = args;
+// char* itoa(int value, char *str, int radix){
+//     char reverse[36];   
+//     char *p = reverse;
+//     bool sign = (value >= 0)?true:false;
+
+//     value = (value >= 0)?value:-value;
+//     *p++ = '\0';
+//     while (value >= 0){
+//         *p++ = "0123456789abcdef"[value%radix];
+//         value /= radix;
+//         if (value == 0) break;
+//     }
+
+//     if (!sign) {
+//         *p = '-';
+//     }
+//     else {
+//         p--;
+//     }
+
+//     while (p >= reverse){
+//         *str++ = *p--;
+//     }
+
+//     return str;
+// }
+// int vsprintf(char *buf, const char *fmt, va_list args)
+// {
+//     char* p;
+//     char tmp[256];
+//     va_list p_next_arg = args;
  
-    for (p = buf; *fmt; fmt++)
-    {
-        if (*fmt != '%')
-        {
-            *p++ = *fmt;
-            continue;
-        }
+//     for (p = buf; *fmt; fmt++)
+//     {
+//         if (*fmt != '%')
+//         {
+//             *p++ = *fmt;
+//             continue;
+//         }
  
-        fmt++;
+//         fmt++;
  
-        switch (*fmt)
-        {
-            case 'x':
-                itoa(*((int*)p_next_arg),tmp, 10);
-                strcpy(p, tmp);
-                p_next_arg += 4;
-                p += strlen(tmp);
-                break;
-            case 's':
-                break;
-            default:
-                break;
-        }
-    }
+//         switch (*fmt)
+//         {
+//             case 'x':
+//                 itoa(*((int*)p_next_arg),tmp, 10);
+//                 strcpy(p, tmp);
+//                 p_next_arg += 4;
+//                 p += strlen(tmp);
+//                 break;
+//             case 's':
+//                 break;
+//             default:
+//                 break;
+//         }
+//     }
    
-    return (p - buf);
-} 
+//     return (p - buf);
+// } 
 int sprintf(char *out, const char *fmt, ...) {
   va_list valist;
   va_start(valist, fmt);
