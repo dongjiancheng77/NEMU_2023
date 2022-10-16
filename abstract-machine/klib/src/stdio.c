@@ -73,7 +73,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
   unsigned int unum;
   bool state = true;
   int i = 0, j = 0, k = 0;
-    uint32_t pointer;
+  uint32_t pointer;
   while (fmt[i] != '\0' && j + 1 < n)
   {
     if (state)
@@ -92,6 +92,15 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
       switch (fmt[i])
       {
 
+      case 'x':
+        unum = va_arg(ap, unsigned int);
+        uitoa(unum, str, 10);
+        k = 0;
+        while (str[k] != '\0')
+        {
+          out[j++] = str[k++];
+        }
+        break;
       case 'c':
         out[j++] = va_arg(ap, int);
         break;
@@ -106,6 +115,12 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
 
       case 'd':
         val = va_arg(ap, int);
+        // itoa(val,str,10);
+        // k = 0;
+        // while (str[k] != '\0')
+        // {
+        //   out[j++] = str[k++];
+        // }
         if (val == 0)
         {
           out[j++] = '0';
@@ -120,13 +135,6 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
           buffer[len] = val % 10 + '0';
         for (int k = len - 1; k >= 0; --k)
           out[j++] = buffer[k];
-
-        // itoa(val,str,10);
-        // k = 0;
-        // while (str[k] != '\0')
-        // {
-        //   out[j++] = str[k++];
-        // }
         break;
 
       case 'p':
@@ -138,16 +146,6 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
 
         for (int k = len - 1; k >= 0; --k)
           out[j++] = buffer[k];
-        break;
-
-      case 'x':
-        unum = va_arg(ap, unsigned int);
-        uitoa(unum, str, 10);
-        k = 0;
-        while (str[k] != '\0')
-        {
-          out[j++] = str[k++];
-        }
         break;
 
       default:
