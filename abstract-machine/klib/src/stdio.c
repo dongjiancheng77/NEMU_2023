@@ -2,8 +2,6 @@
 #include <klib.h>
 #include <klib-macros.h>
 #include <stdarg.h>
-#include <unistd.h>
-
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 static char HEX_CHARACTERS[] = "0123456789ABCDEF";
 #define BIT_WIDE_HEX 8
