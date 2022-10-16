@@ -132,20 +132,13 @@ void *memmove(void *dst, const void *src, size_t n)
 
 int memcmp(const void *s1, const void *s2, size_t n)
 {
-  char *char_s1 = (char *)s1;
-  char *char_s2 = (char *)s2;
-
-  int i = 0;
-  for (; i < n; ++i)
+  size_t i = 0;
+  while(((char*)s1)[i] == ((char *)s2)[i] && i < n)
   {
-    if (char_s1[i] != char_s2[i])
-      return (int)(char_s1[i]) - (int)(char_s2[i]);
-    if (i == n - 1)
-      return 0;
+    i++;
   }
-
-  return (int)(char_s1[i]) - (int)(char_s2[i]);
-  panic("memcmp!!Not implemented");
+  return i == n? 0:((char*)s1)[i] - ((char *)s2)[i];
+  
 }
 
 #endif
