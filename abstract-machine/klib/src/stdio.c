@@ -8,11 +8,43 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 #define BUF_LEN 256
+char *itoa(int value, char *str, int radix)
+{
+  char reverse[36];
+  char *p = reverse;
+  bool sign = (value >= 0) ? true : false;
+
+  value = (value >= 0) ? value : -value;
+  *p++ = '\0';
+  while (value >= 0)
+  {
+    *p++ = "0123456789abcdef"[value % radix];
+    value /= radix;
+    if (value == 0)
+      break;
+  }
+
+  if (!sign)
+  {
+    *p = '-';
+  }
+  else
+  {
+    p--;
+  }
+
+  while (p >= reverse)
+  {
+    *str++ = *p--;
+  }
+
+  return str;
+}
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
 {
   char buffer[128];
-  const char *str;
+char *str;
   int val, len;
   unsigned int unum;
   uint32_t pointer;
@@ -50,20 +82,24 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
 
       case 'd':
         val = va_arg(ap, int);
-        if (val == 0)
-        {
-          out[j++] = '0';
-          break;
-        }
-        if (val < 0)
-        {
-          val = (-1) * val;
-          out[j++] = '-';
-        }
-        for (len = 0; val; val /= 10, ++len)
-          buffer[len] = val % 10 + '0';
-        for (int k = len - 1; k >= 0; --k)
-          out[j++] = buffer[k];
+        // if (val == 0)
+        // {
+        //   out[j++] = '0';
+        //   break;
+        // }
+        // if (val < 0)
+        // {
+        //   val = (-1) * val;
+        //   out[j++] = '-';
+        // }
+        // for (len = 0; val; val /= 10, ++len)
+        //   buffer[len] = val % 10 + '0';
+        // for (int k = len - 1; k >= 0; --k)
+        //   out[j++] = buffer[k];
+
+          itoa(val,str,10);
+          for (; val; val /= 10)
+          j++;
         break;
 
       case 'p':
@@ -105,38 +141,6 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
 
 // itoa()函数把整数转换成字符串，并返回指向转换后的字符串的指针。
 
-char *itoa(int value, char *str, int radix)
-{
-  char reverse[36];
-  char *p = reverse;
-  bool sign = (value >= 0) ? true : false;
-
-  value = (value >= 0) ? value : -value;
-  *p++ = '\0';
-  while (value >= 0)
-  {
-    *p++ = "0123456789abcdef"[value % radix];
-    value /= radix;
-    if (value == 0)
-      break;
-  }
-
-  if (!sign)
-  {
-    *p = '-';
-  }
-  else
-  {
-    p--;
-  }
-
-  while (p >= reverse)
-  {
-    *str++ = *p--;
-  }
-
-  return str;
-}
 
 char *uitoa(uint32_t value, char *str, int radix)
 {
