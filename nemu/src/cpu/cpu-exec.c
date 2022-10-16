@@ -23,8 +23,8 @@
  * This is useful when you use the `si' command.
  * You can modify this value as you want.
  */
-#define MAX_INST_TO_PRINT 10
-  bool wp_state;
+#define MAX_INST_TO_PRINT 100
+bool wp_state;
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
@@ -46,11 +46,13 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
   }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 
-       wp_state = hook();
-    if (wp_state)
-    {
-      nemu_state.state = NEMU_STOP;
-    }
+#ifdef CONFIG_WATCHPOINT
+  wp_state = hook();
+  if (wp_state)
+  {
+    nemu_state.state = NEMU_STOP;
+  }
+#endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc)
