@@ -19,6 +19,8 @@
 /* http://en.wikibooks.org/wiki/Serial_Programming/8250_UART_Programming */
 // NOTE: this is compatible to 16550
 
+//djc visit here
+
 #define CH_OFFSET 0
 
 static uint8_t *serial_base = NULL;
