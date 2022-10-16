@@ -35,11 +35,6 @@ char *strncpy(char *dst, const char *src, size_t n)
     dst[i] = src[i];
   }
   dst[i] = '\0';
-  // for (; i < n; ++i)
-  // {
-  //   dst[i] = '\0';
-  // }
-
   return dst;
 }
 // C 库函数 char *strcat(char *dest, const char *src) 把 src 所指向的字符串追加到 dest 所指向的字符串的结尾。
