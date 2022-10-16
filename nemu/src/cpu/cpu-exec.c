@@ -29,6 +29,11 @@ CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
+#define RINGBUF_LINES 128
+#define RINGBUF_LENGTH 128
+char instr_ringbuf[RINGBUF_LINES][RINGBUF_LENGTH];
+long ringbuf_end = 0;
+#define RINGBUF_ELEMENT(index) (instr_ringbuf[index % RINGBUF_LINES])
 
 void device_update();
 
@@ -146,6 +151,7 @@ void cpu_exec(uint64_t n)
 
   case NEMU_END:
   case NEMU_ABORT:
+  
     Log("nemu: %s at pc = " FMT_WORD,
         (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) : (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) : ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
         nemu_state.halt_pc);
