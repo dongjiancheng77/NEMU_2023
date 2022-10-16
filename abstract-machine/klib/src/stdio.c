@@ -9,17 +9,16 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 #define BUF_LEN 256
 
-
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
 {
   char buffer[128];
-  char *txt, cha;
+  const char *str;
   int val, len;
   unsigned int unum;
   uint32_t pointer;
   bool state = true;
   int i = 0, j = 0;
-  while(fmt[i] != '\0'&& j+1 < n)
+  while (fmt[i] != '\0' && j + 1 < n)
   {
     if (state)
 
@@ -33,12 +32,20 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
     }
     else
     {
+
       switch (fmt[i])
       {
+
+      case 'c':
+        out[j++] = va_arg(ap, int);
+        break;
       case 's':
-        txt = va_arg(ap, char *);
-        for (int k = 0; txt[k] != '\0'; ++k)
-          out[j++] = txt[k];
+        str = va_arg(ap, char *);
+        int k = 0;
+        while (str[k] != '\0')
+        {
+          out[j++] = str[k++];
+        }
         break;
 
       case 'd':
@@ -50,18 +57,13 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
         }
         if (val < 0)
         {
-              val = (-1) * val;
-              out[j++] = '-';
+          val = (-1) * val;
+          out[j++] = '-';
         }
         for (len = 0; val; val /= 10, ++len)
           buffer[len] = val % 10 + '0';
         for (int k = len - 1; k >= 0; --k)
           out[j++] = buffer[k];
-        break;
-
-      case 'c':
-        cha = (char)va_arg(ap, int);
-        out[j++] = cha;
         break;
 
       case 'p':
