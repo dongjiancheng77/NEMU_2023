@@ -45,17 +45,14 @@ char *strncpy(char *dst, const char *src, size_t n)
 // C 库函数 char *strcat(char *dest, const char *src) 把 src 所指向的字符串追加到 dest 所指向的字符串的结尾。
 char *strcat(char *dst, const char *src)
 {
-  int i, j;
-  for (i = 0; dst[i] != '\0'; ++i)
-  {
-  }
-  for (j = 0; src[j] != '\0'; ++j)
-  {
-    dst[i + j] = src[j];
-  }
-  dst[i + j] = '\0';
+  char *addr = dst;
 
-  return dst;
+  while (*dst)
+    dst++;
+  do
+    *dst++ = *src++;
+  while (*src); // end by zero
+  return addr;
 }
 
 int strcmp(const char *s1, const char *s2)
@@ -93,13 +90,21 @@ int strncmp(const char *s1, const char *s2, size_t n)
 }
 void *memset(void *s, int c, size_t n)
 {
-  unsigned char *target = (unsigned char *)s;
-  for (int i = 0; i < n; ++i)
-  {
-    target[i] = (unsigned char)c;
-  }
+  uint8_t *temp = (uint8_t *)s;
+
+  for (; n != 0; n--)
+    *temp++ = c;
   return s;
-  panic("memset!!Not implemented");
+}
+void *memcpy(void *out, const void *in, size_t n)
+{
+  const uint8_t *sp = (const uint8_t *)in;
+  uint8_t *dp = (uint8_t *)out;
+
+  for (; n != 0; n--)
+    *dp++ = *sp++;
+  return out;
+  panic("memcpy!!Not implemented");
 }
 // C 库函数 void *memmove(void *str1, const void *str2, size_t n) 从 str2 复制 n 个字符到 str1，
 // 但是在重叠内存块这方面，memmove() 是比 memcpy() 更安全的方法。如果目标区域和源区域有重叠的话，
@@ -119,23 +124,10 @@ void *memmove(void *dst, const void *src, size_t n)
   {
     for (int i = n - 1; i >= 0; --i)
       char_dst[i] = char_src[i];
-  } 
+  }
 
   return dst;
   panic("memmove!!Not implemented");
-}
-
-void *memcpy(void *out, const void *in, size_t n)
-{
-  char *char_out = (char *)out;
-  const char *char_in = (const char *)in;
-  for (int i = 0; i < n; ++i)
-  {
-    char_out[i] = char_in[i];
-  }
-
-  return out;
-  panic("memcpy!!Not implemented");
 }
 
 int memcmp(const void *s1, const void *s2, size_t n)

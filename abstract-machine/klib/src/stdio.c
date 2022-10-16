@@ -2,24 +2,24 @@
 #include <klib.h>
 #include <klib-macros.h>
 #include <stdarg.h>
+#include <fcntl.h>
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int vsprintf(char *out, const char *fmt, va_list ap);
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap);
-
-int printf(const char *fmt, ...) {
-  char buffer[2048];
-  va_list arg;
-  va_start (arg, fmt);
-  
-  int done = vsprintf(buffer, fmt, arg);
-
-  putstr(buffer);
-
-  va_end(arg);
-  return done;
-}
+int printf(const char *fmt, ...) 
+{ 
+    int i; 
+    char buf[256]; 
+ 
+    va_list arg = (va_list)((char*)(&fmt) + 4); 
+    va_start (arg, fmt);
+    i = vsprintf(buf, fmt, arg); 
+  putstr(buf);
+   va_end(arg);
+    return i; 
+} 
 
 static char HEX_CHARACTERS[] = "0123456789ABCDEF";
 #define BIT_WIDE_HEX 8
