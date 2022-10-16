@@ -112,7 +112,7 @@ int printf(const char *fmt, ...)
   int i;
   char buf[BUF_LEN];
 
-  va_list arg = (va_list)((char *)(&fmt) + 4);
+  va_list arg ;
   va_start(arg, fmt);
   i = vsprintf(buf, fmt, arg);
   // write(i,buf,  BUF_LEN);
@@ -120,18 +120,6 @@ int printf(const char *fmt, ...)
   va_end(arg);
   return i;
 }
-// int printf(const char *fmt, ...)
-// {
-//     int i;
-//     char buf[256];
-
-//     va_list arg ;
-//     va_start (arg, fmt);
-//     i = vsprintf(buf, fmt, arg);
-//   putstr(buf);
-//    va_end(arg);
-//     return i;
-// }
 
 // vsprintf return 要打印出来的字符串的长度
 
