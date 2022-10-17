@@ -23,7 +23,7 @@
  * This is useful when you use the `si' command.
  * You can modify this value as you want.
  */
-#define MAX_INST_TO_PRINT 100
+#define MAX_INST_TO_PRINT 32
 bool wp_state;
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
