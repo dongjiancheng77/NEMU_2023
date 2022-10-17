@@ -29,20 +29,46 @@ CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
+void device_update();
+#ifdef CONFIG_ITRACE_COND
 #define RINGBUF_LINES 128
 #define RINGBUF_LENGTH 128
 char instr_ringbuf[RINGBUF_LINES][RINGBUF_LENGTH];
 long ringbuf_end = 0;
 #define RINGBUF_ELEMENT(index) (instr_ringbuf[index % RINGBUF_LINES])
+static char last_instr[RINGBUF_LENGTH];
 
-void device_update();
-
+static void ringbuf_display()
+{
+  strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], last_instr, RINGBUF_LENGTH);
+  for (int i = ringbuf_end >= RINGBUF_LINES ? ringbuf_end : 0;
+       i < ringbuf_end + (ringbuf_end >= RINGBUF_LINES ? RINGBUF_LINES : 0);
+       ++i)
+  {
+    printf("%s\n", RINGBUF_ELEMENT(i));
+  }
+}
+#endif
+#define ir_write(...) IFDEF(                                                    \
+    CONFIG_TARGET_NATIVE_ELF,                                                   \
+    do {                                                                        \
+      extern FILE *log_fp;                                                      \
+      extern bool log_enable();                                                 \
+      if (log_enable())                                                         \
+      {                                                                         \
+        strncpy(RINGBUF_ELEMENT(ringbuf_end++), _this->logbuf, RINGBUF_LENGTH); \
+        ;                                                                       \
+      }                                                                         \
+    } while (0))
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND)
   {
     log_write("%s\n", _this->logbuf);
+#ifdef CONFIG_ITRACE_COND
+    ir_write("%s\n", _this->logbuf);
+#endif
   }
 #endif
   if (g_print_step)
@@ -150,12 +176,16 @@ void cpu_exec(uint64_t n)
     break;
 
   case NEMU_END:
+#ifdef CONFIG_ITRACE_COND
+    ringbuf_display();
+#endif
   case NEMU_ABORT:
-  
+
     Log("nemu: %s at pc = " FMT_WORD,
         (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) : (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) : ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
         nemu_state.halt_pc);
     // fall through
+
   case NEMU_QUIT:
     statistic();
   }

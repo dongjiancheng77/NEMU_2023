@@ -23,7 +23,6 @@ typedef struct watchpoint {  int NO;
   word_t valve;
   /* TODO: Add more members if necessary */
 } WP;
-bool check_watchpoint(WP **point);
 
 WP* new_wp(char *expr, bool *success);
 void free_wp(WP *wp);
