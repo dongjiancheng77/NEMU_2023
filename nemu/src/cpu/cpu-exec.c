@@ -76,7 +76,10 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
   }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
-
+#ifdef CONFIG_ITRACE_COND
+if (nemu_state.state==NEMU_ABORT)
+    ringbuf_display();
+#endif
 #ifdef CONFIG_WATCHPOINT
   wp_state = hook();
   if (wp_state)
@@ -176,9 +179,7 @@ void cpu_exec(uint64_t n)
     break;
 
   case NEMU_END:
-#ifdef CONFIG_ITRACE_COND
-    ringbuf_display();
-#endif
+
   case NEMU_ABORT:
 
     Log("nemu: %s at pc = " FMT_WORD,
