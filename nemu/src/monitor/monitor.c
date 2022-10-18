@@ -128,7 +128,7 @@ static long load_elf()
   {
     int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
     Elf64_Phdr *elf_phdr = elf_buf + phdr_off;
-    Assert(phdr_off < size, "Program header out of file");
+    // Assert(phdr_off < size, "Program header out of file");
     Assert(elf_phdr->p_offset < size, "Segment out of file");
     if (elf_phdr->p_type != PT_LOAD)
       continue;
