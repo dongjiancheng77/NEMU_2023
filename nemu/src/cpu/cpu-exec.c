@@ -31,16 +31,16 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 void device_update();
 #ifdef CONFIG_ITRACE_COND
-#define RINGBUF_LINES 128
-#define RINGBUF_LENGTH 128
-char instr_ringbuf[RINGBUF_LINES][RINGBUF_LENGTH];
+#define RINGBUF_LINES 64
+#define DASM_PRINTBUF_SIZE 128
+char instr_ringbuf[RINGBUF_LINES][DASM_PRINTBUF_SIZE];
 long ringbuf_end = 0;
 #define RINGBUF_ELEMENT(index) (instr_ringbuf[index % RINGBUF_LINES])
-static char last_instr[RINGBUF_LENGTH];
+static char last_instr[DASM_PRINTBUF_SIZE];
 
 static void ringbuf_display()
 {
-  strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], last_instr, RINGBUF_LENGTH);
+  strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], last_instr, DASM_PRINTBUF_SIZE);
   for (int i = ringbuf_end >= RINGBUF_LINES ? ringbuf_end : 0;
        i < ringbuf_end + (ringbuf_end >= RINGBUF_LINES ? RINGBUF_LINES : 0);
        ++i)
@@ -48,18 +48,19 @@ static void ringbuf_display()
     printf("%s\n", RINGBUF_ELEMENT(i));
   }
 }
-#endif
-#define ir_write(...) IFDEF(                                                    \
-    CONFIG_TARGET_NATIVE_ELF,                                                   \
-    do {                                                                        \
-      extern FILE *log_fp;                                                      \
-      extern bool log_enable();                                                 \
-      if (log_enable())                                                         \
-      {                                                                         \
-        strncpy(RINGBUF_ELEMENT(ringbuf_end++), _this->logbuf, RINGBUF_LENGTH); \
-        ;                                                                       \
-      }                                                                         \
+
+#define ir_write(...) IFDEF(                                                        \
+    CONFIG_TARGET_NATIVE_ELF,                                                       \
+    do {                                                                            \
+      extern FILE *log_fp;                                                          \
+      extern bool log_enable();                                                     \
+      if (log_enable())                                                             \
+      {                                                                             \
+        strncpy(RINGBUF_ELEMENT(ringbuf_end++), _this->logbuf, DASM_PRINTBUF_SIZE); \
+        ;                                                                           \
+      }                                                                             \
     } while (0))
+#endif
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 {
 #ifdef CONFIG_ITRACE_COND
@@ -77,7 +78,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
   }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 #ifdef CONFIG_ITRACE_COND
-if (nemu_state.state==NEMU_ABORT)
+  if (nemu_state.state == NEMU_ABORT)
     ringbuf_display();
 #endif
 #ifdef CONFIG_WATCHPOINT
