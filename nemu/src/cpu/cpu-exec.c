@@ -13,11 +13,11 @@
  * See the Mulan PSL v2 for more details.
  ***************************************************************************************/
 
-#include <cpu/cpu.h>
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
 #include <../src/monitor/sdb/sdb.h>
+#include <../src/monitor/ftracer.h>
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -36,7 +36,21 @@ void device_update();
 char instr_ringbuf[RINGBUF_LINES][DASM_PRINTBUF_SIZE];
 long ringbuf_end = 0;
 static char last_instr[DASM_PRINTBUF_SIZE];
+// functab_node *functab_head;
 
+// static inline functab_node *functab_find(vaddr_t addr)
+// {
+//   functab_node *ptr = functab_head;
+//   while (ptr)
+//   {
+//     if (ptr->addr <= addr && addr < ptr->addr_end)
+//     {
+//       return ptr;
+//     }
+//     ptr = ptr->next;
+//   }
+//   return NULL;
+// }
 static void ringbuf_display()
 {
   strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], last_instr, DASM_PRINTBUF_SIZE);
@@ -47,23 +61,8 @@ static void ringbuf_display()
     printf("%s\n", instr_ringbuf[i % RINGBUF_LINES]);
   }
 }
-// #ifdef CONFIG_FTRACE
 
-functab_node *functab_head;
-static inline functab_node *functab_find(vaddr_t addr)
-{
-  functab_node *ptr = functab_head;
-  while (ptr)
-  {
-    if (ptr->addr <= addr && addr < ptr->addr_end)
-    {
-      return ptr;
-    }
-    ptr = ptr->next;
-  }
-  return NULL;
-}
-// #endif
+
 
 #define ir_write(...) IFDEF(                                                        \
     CONFIG_TARGET_NATIVE_ELF,                                                       \
@@ -77,6 +76,7 @@ static inline functab_node *functab_find(vaddr_t addr)
       }                                                                             \
     } while (0))
 #endif
+
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 {
 #ifdef CONFIG_ITRACE_COND
@@ -238,7 +238,7 @@ void cpu_exec(uint64_t n)
         nemu_state.halt_pc);
     // fall through
 #ifdef CONFIG_ITRACE
-    if (nemu_state.state == NEMU_ABORT && nemu_state.state != NEMU_STOP && nemu_state.state != NEMU_QUIT)
+    if (nemu_state.state == NEMU_ABORT && nemu_state.state != NEMU_STOP && nemu_state.halt_ret != 0 )
     {
       ringbuf_display();
     }
