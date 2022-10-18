@@ -1,10 +1,8 @@
 
 #include <isa.h>
-#include <memory/paddr.h>
 #include <elf.h>
 #include "ftracer.h"
 #include <common.h>
-// #include "monitor.h"
 functab_node *functab_head;
 /// @brief 
 /// @param addr 
