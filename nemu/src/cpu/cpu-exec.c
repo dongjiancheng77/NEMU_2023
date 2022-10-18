@@ -188,18 +188,18 @@ void cpu_exec(uint64_t n)
         nemu_state.halt_pc);
     // fall through
 #ifdef CONFIG_ITRACE
-    if (nemu_state.state == NEMU_ABORT &&nemu_state.state != NEMU_STOP && nemu_state.state != NEMU_QUIT)
+    if (nemu_state.state == NEMU_ABORT && nemu_state.state != NEMU_STOP && nemu_state.state != NEMU_QUIT)
     {
       ringbuf_display();
     }
 #endif
   case NEMU_QUIT:
-//   #ifdef CONFIG_ITRACE
-//     if (nemu_state.state != NEMU_STOP && nemu_state.state != NEMU_QUIT)
-//     {
-//       ringbuf_display();
-//     }
-// #endif
+    //   #ifdef CONFIG_ITRACE
+    //     if (nemu_state.state != NEMU_STOP && nemu_state.state != NEMU_QUIT)
+    //     {
+    //       ringbuf_display();
+    //     }
+    // #endif
     statistic();
   }
 }
