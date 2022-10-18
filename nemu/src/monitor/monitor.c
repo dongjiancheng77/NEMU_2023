@@ -70,29 +70,29 @@ static char *img_file = NULL;
 static char *elf_file = NULL;
 static int difftest_port = 1234;
 
-// static long load_img()
-// {
-//   if (img_file == NULL)
-//   {
-//     Log("No image is given. Use the default build-in image.");
-//     return 4096; // built-in image size
-//   }
+static long load_img()
+{
+  if (img_file == NULL)
+  {
+    Log("No image is given. Use the default build-in image.");
+    return 4096; // built-in image size
+  }
 
-//   FILE *fp = fopen(img_file, "rb");
-//   Assert(fp, "Can not open '%s'", img_file);
+  FILE *fp = fopen(img_file, "rb");
+  Assert(fp, "Can not open '%s'", img_file);
 
-//   fseek(fp, 0, SEEK_END);
-//   long size = ftell(fp);
+  fseek(fp, 0, SEEK_END);
+  long size = ftell(fp);
 
-//   Log("The image is %s, size = %ld", img_file, size);
+  Log("The image is %s, size = %ld", img_file, size);
 
-//   fseek(fp, 0, SEEK_SET);
-//   int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
-//   assert(ret == 1);
+  fseek(fp, 0, SEEK_SET);
+  int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+  assert(ret == 1);
 
-//   fclose(fp);
-//   return size;
-// }
+  fclose(fp);
+  return size;
+}
 
 static long load_elf()
 {  if (elf_file == NULL)
@@ -117,7 +117,7 @@ static long load_elf()
   Elf64_Ehdr *elf_ehdr = elf_buf;
   uint32_t *magic = elf_buf;
   Assert(*magic == elf_magic, "Not a elf file");
-  Assert(elf_ehdr->e_ident[EI_CLASS] == ELFCLASS64, "Not a 64bit elf, RV64 IS NOT compatible with RV32");
+  // Assert(elf_ehdr->e_ident[EI_CLASS] == ELFCLASS64, "Not a 64bit elf, RV64 IS NOT compatible with RV32");
   Assert(elf_ehdr->e_ident[EI_DATA] == ELFDATA2LSB, "Not little endian");
   Assert(elf_ehdr->e_machine == EM_RISCV, "Not RISCV target");
   Assert(elf_ehdr->e_entry == RESET_VECTOR, "No support for jump to non-RESET location");
@@ -258,12 +258,11 @@ void init_monitor(int argc, char *argv[])
   init_isa();
 
   /* Load the image to memory. This will overwrite the built-in image. */
-  // long img_size = load_img();
-      long img_size= load_elf();
+  long img_size = load_img();
   if (elf_file)
   {
     // long elf_size = load_elf();
-
+    img_size= load_elf();
     // elf_size++;
   }
   /* Initialize differential testing. */
