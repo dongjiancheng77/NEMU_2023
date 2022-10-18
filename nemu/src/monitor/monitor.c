@@ -71,6 +71,83 @@ static long load_img()
   return size;
 }
 
+static long load_elf() {
+  FILE *fp = fopen(elf_file, "rb");
+  Assert(fp, "Can not open '%s'", elf_file);
+  fseek(fp, 0, SEEK_END);
+  long size = ftell(fp);
+  Log("The elf is %s, size = %ld", elf_file, size);
+  fseek(fp, 0, SEEK_SET);
+  void* elf_buf = malloc(size);
+  int ret = fread(elf_buf, size, 1, fp);
+  Assert(ret == 1, "ELF executable '%s' read failed!", elf_file);
+  fclose(fp);
+
+// ELF Parse
+  const uint32_t elf_magic = 0x464c457f;
+  Elf64_Ehdr *elf_ehdr = elf_buf;
+  uint32_t *magic = elf_buf;
+  Assert(*magic == elf_magic, "Not a elf file");
+  Assert(elf_ehdr->e_ident[EI_CLASS] == ELFCLASS64, "Not a 64bit elf, RV64 IS NOT compatible with RV32");
+  Assert(elf_ehdr->e_ident[EI_DATA] == ELFDATA2LSB, "Not little endian");
+  Assert(elf_ehdr->e_machine == EM_RISCV, "Not RISCV target");
+  Assert(elf_ehdr->e_entry == RESET_VECTOR, "No support for jump to non-RESET location");
+// Program Load
+  int i;
+  size_t img_size = 0;
+  for (i = 0; i < elf_ehdr->e_phnum; ++ i) {
+    int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
+    Elf64_Phdr *elf_phdr = elf_buf + phdr_off;
+    Assert(phdr_off < size, "Program header out of file");
+    Assert(elf_phdr->p_offset < size, "Segment out of file");
+    if (elf_phdr->p_type != PT_LOAD) continue;
+    // At present we dont have memory map, so just copy?
+    void* segment_ptr = guest_to_host(elf_phdr->p_vaddr);
+    memcpy(segment_ptr, elf_buf + elf_phdr->p_offset, elf_phdr->p_filesz);
+    memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
+    img_size += elf_phdr->p_memsz;
+  }
+#ifdef CONFIG_FTRACE
+// Symbol table parse
+  Elf64_Shdr *symtab_shdr = NULL;
+  Elf64_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
+  Elf64_Shdr *strtab_shdr = NULL;
+  char* shstrtab_ptr = elf_buf + shstrtab_shdr->sh_offset;
+  for (i = 0; i < elf_ehdr->e_shnum; ++ i) {
+    int shdr_off = i * elf_ehdr->e_shentsize + elf_ehdr->e_shoff;
+    Elf64_Shdr *elf_shdr = elf_buf + shdr_off;
+    if (elf_shdr->sh_type == SHT_SYMTAB) {
+      symtab_shdr = elf_shdr;
+    }
+    else if (elf_shdr->sh_type == SHT_STRTAB) {
+      if (strcmp(shstrtab_ptr + elf_shdr->sh_name, ".strtab") == 0) {
+        strtab_shdr = elf_shdr;
+      }
+    }
+  }
+  if (symtab_shdr != NULL) {
+    Assert(strtab_shdr, "SYMTAB without name ??");
+    printf("Found SYMTAB section: %s\n", &shstrtab_ptr[symtab_shdr->sh_name]);
+    char* strtab_ptr = elf_buf + strtab_shdr->sh_offset;
+    for (i = 0; i < symtab_shdr->sh_size; i += symtab_shdr->sh_entsize) {
+      //* i work as offset here
+      Elf64_Sym* elf_sym = elf_buf + symtab_shdr->sh_offset + i;
+      // ! some symbol is SECTION type, so name not stored in .strtab
+      if (ELF64_ST_TYPE(elf_sym->st_info) == STT_FUNC) {
+        // printf("Found FUNC symbol: %s\n", strtab_ptr + elf_sym->st_name);
+        functab_push(strtab_ptr + elf_sym->st_name, elf_sym->st_value, elf_sym->st_size);
+      }
+    }
+    functab_print();
+  } else {
+    Log("No SYMTAB found");
+  }
+#endif
+  free(elf_buf);
+  Log("Equivalent img_size = %lu", img_size);
+  return img_size;
+}
+
 static int parse_args(int argc, char *argv[])
 {
   const struct option table[] = {
@@ -142,7 +219,8 @@ void init_monitor(int argc, char *argv[])
 
   /* Load the image to memory. This will overwrite the built-in image. */
   long img_size = load_img();
-
+long elf_size= load_elf();
+elf_size++;
   /* Initialize differential testing. */
   init_difftest(diff_so_file, img_size, difftest_port);
 
