@@ -134,7 +134,7 @@ static long load_elf()
   for (i = 0; i < elf_ehdr->e_phnum; ++i)
   {
     int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
-    Elf64_Phdr *elf_phdr = elf_buf + phdr_off;
+    Elf32_Phdr *elf_phdr = elf_buf + phdr_off;
     // Assert(phdr_off < size, "Program header out of file");
     Assert(elf_phdr->p_offset < size, "Segment out of file");
     if (elf_phdr->p_type != PT_LOAD)
@@ -147,14 +147,14 @@ static long load_elf()
   }
   // #ifdef CONFIG_FTRACE
   // Symbol table parse
-  Elf64_Shdr *symtab_shdr = NULL;
-  Elf64_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
-  Elf64_Shdr *strtab_shdr = NULL;
+  Elf32_Shdr *symtab_shdr = NULL;
+  Elf32_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
+  Elf32_Shdr *strtab_shdr = NULL;
   char *shstrtab_ptr = elf_buf + shstrtab_shdr->sh_offset;
   for (i = 0; i < elf_ehdr->e_shnum; ++i)
   {
     int shdr_off = i * elf_ehdr->e_shentsize + elf_ehdr->e_shoff;
-    Elf64_Shdr *elf_shdr = elf_buf + shdr_off;
+    Elf32_Shdr *elf_shdr = elf_buf + shdr_off;
     if (elf_shdr->sh_type == SHT_SYMTAB)
     {
       symtab_shdr = elf_shdr;
@@ -175,9 +175,9 @@ static long load_elf()
     for (i = 0; i < symtab_shdr->sh_size; i += symtab_shdr->sh_entsize)
     {
       //* i work as offset here
-      Elf64_Sym *elf_sym = elf_buf + symtab_shdr->sh_offset + i;
+      Elf32_Sym *elf_sym = elf_buf + symtab_shdr->sh_offset + i;
       // ! some symbol is SECTION type, so name not stored in .strtab
-      if (ELF64_ST_TYPE(elf_sym->st_info) == STT_FUNC)
+      if (ELF32_ST_TYPE(elf_sym->st_info) == STT_FUNC)
       {
         // printf("Found FUNC symbol: %s\n", strtab_ptr + elf_sym->st_name);
         functab_push(strtab_ptr + elf_sym->st_name, elf_sym->st_value, elf_sym->st_size);
