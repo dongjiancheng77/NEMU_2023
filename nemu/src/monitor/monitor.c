@@ -120,7 +120,7 @@ static long load_elf()
   // Assert(elf_ehdr->e_ident[EI_CLASS] == ELFCLASS64, "Not a 64bit elf, RV64 IS NOT compatible with RV32");
   Assert(elf_ehdr->e_ident[EI_DATA] == ELFDATA2LSB, "Not little endian");
   Assert(elf_ehdr->e_machine == EM_RISCV, "Not RISCV target");
-  Assert(elf_ehdr->e_entry == RESET_VECTOR, "No support for jump to non-RESET location");
+  // Assert(elf_ehdr->e_entry == RESET_VECTOR, "No support for jump to non-RESET location");
   // Program Load
   int i;
   size_t img_size = 0;
