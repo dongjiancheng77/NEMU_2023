@@ -35,7 +35,6 @@ void device_update();
 #define DASM_PRINTBUF_SIZE 128
 char instr_ringbuf[RINGBUF_LINES][DASM_PRINTBUF_SIZE];
 long ringbuf_end = 0;
-#define RINGBUF_ELEMENT(index) (instr_ringbuf[index % RINGBUF_LINES])
 static char last_instr[DASM_PRINTBUF_SIZE];
 
 static void ringbuf_display()
@@ -45,7 +44,7 @@ static void ringbuf_display()
        i < ringbuf_end + (ringbuf_end >= RINGBUF_LINES ? RINGBUF_LINES : 0);
        ++i)
   {
-    printf("%s\n", RINGBUF_ELEMENT(i));
+    printf("%s\n", instr_ringbuf[i % RINGBUF_LINES]);
   }
 }
 
@@ -56,7 +55,7 @@ static void ringbuf_display()
       extern bool log_enable();                                                     \
       if (log_enable())                                                             \
       {                                                                             \
-        strncpy(RINGBUF_ELEMENT(ringbuf_end++), _this->logbuf, DASM_PRINTBUF_SIZE); \
+        strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], _this->logbuf, DASM_PRINTBUF_SIZE); \
         ;                                                                           \
       }                                                                             \
     } while (0))
