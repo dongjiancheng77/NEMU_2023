@@ -117,7 +117,7 @@ static long load_elf()
   Elf64_Ehdr *elf_ehdr = elf_buf;
   uint32_t *magic = elf_buf;
   Assert(*magic == elf_magic, "Not a elf file");
-  Assert(elf_ehdr->e_ident[EI_CLASS] == ELFCLASS64, "Not a 64bit elf, RV64 IS NOT compatible with RV32");
+  // Assert(elf_ehdr->e_ident[EI_CLASS] == ELFCLASS64, "Not a 64bit elf, RV64 IS NOT compatible with RV32");
   Assert(elf_ehdr->e_ident[EI_DATA] == ELFDATA2LSB, "Not little endian");
   Assert(elf_ehdr->e_machine == EM_RISCV, "Not RISCV target");
   Assert(elf_ehdr->e_entry == RESET_VECTOR, "No support for jump to non-RESET location");
