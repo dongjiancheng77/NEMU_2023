@@ -47,6 +47,23 @@ static void ringbuf_display()
     printf("%s\n", instr_ringbuf[i % RINGBUF_LINES]);
   }
 }
+#ifdef CONFIG_FTRACE
+
+functab_node *functab_head;
+static inline functab_node *functab_find(vaddr_t addr)
+{
+  functab_node *ptr = functab_head;
+  while (ptr)
+  {
+    if (ptr->addr <= addr && addr < ptr->addr_end)
+    {
+      return ptr;
+    }
+    ptr = ptr->next;
+  }
+  return NULL;
+}
+#endif
 
 #define ir_write(...) IFDEF(                                                        \
     CONFIG_TARGET_NATIVE_ELF,                                                       \
