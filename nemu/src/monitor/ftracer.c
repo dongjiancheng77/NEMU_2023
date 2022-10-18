@@ -1,4 +1,3 @@
-
 #include <isa.h>
 #include <elf.h>
 #include "ftracer.h"
@@ -20,7 +19,6 @@ functab_node *functab_find(vaddr_t addr)
   }
   return NULL;
 }
-// #ifdef CONFIG_FTRACE
 void functab_push(const char *name, word_t addr, word_t size)
 {
   functab_node *newnode = (functab_node *)malloc(sizeof(functab_node));
@@ -45,4 +43,3 @@ void functab_print()
     ptr = ptr->next;
   }
 }
-// #endif

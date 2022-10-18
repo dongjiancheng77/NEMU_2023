@@ -1,4 +1,5 @@
-
+#ifndef _FTRACER_H_
+#define _FTRACER_H_
 #include <common.h>
 typedef struct functab_node
 {
@@ -10,3 +11,4 @@ typedef struct functab_node
 void functab_print();
 extern functab_node* functab_head;
 void functab_push(const char *name, word_t addr, word_t size);
+#endif
