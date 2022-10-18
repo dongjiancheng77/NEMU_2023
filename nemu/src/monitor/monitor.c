@@ -17,6 +17,7 @@
 #include <memory/paddr.h>
 #include <cpu/cpu.h>
 #include <elf.h>
+#include <common.h>
 // #include "ftracer.h"
 void init_rand();
 void init_log(const char *log_file);
@@ -39,7 +40,7 @@ static void welcome()
 
 #ifndef CONFIG_TARGET_AM
 #include <getopt.h>
-#ifdef CONFIG_FTRACE
+// #ifdef CONFIG_FTRACE
 // name str will be copied, so feel free to free it
 static void functab_push(const char* name, word_t addr, word_t size) {
   functab_node* newnode = (functab_node*) malloc(sizeof(functab_node));
@@ -61,7 +62,7 @@ static void functab_print() {
     ptr = ptr->next;
   }
 }
-#endif
+// #endif
 void sdb_set_batch_mode();
 
 static char *log_file = NULL;
@@ -116,6 +117,7 @@ static long load_elf()
   const uint32_t elf_magic = 0x464c457f;
   Elf64_Ehdr *elf_ehdr = elf_buf;
   uint32_t *magic = elf_buf;
+
   Assert(*magic == elf_magic, "Not a elf file");
   // Assert(elf_ehdr->e_ident[EI_CLASS] == ELFCLASS64, "Not a 64bit elf, RV64 IS NOT compatible with RV32");
   Assert(elf_ehdr->e_ident[EI_DATA] == ELFDATA2LSB, "Not little endian");
@@ -128,7 +130,7 @@ static long load_elf()
   {
     int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
     Elf64_Phdr *elf_phdr = elf_buf + phdr_off;
-    Assert(phdr_off < size, "Program header out of file");
+    // Assert(phdr_off < size, "Program header out of file");
     Assert(elf_phdr->p_offset < size, "Segment out of file");
     if (elf_phdr->p_type != PT_LOAD)
       continue;
@@ -138,7 +140,7 @@ static long load_elf()
     memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
     img_size += elf_phdr->p_memsz;
   }
-#ifdef CONFIG_FTRACE
+// #ifdef CONFIG_FTRACE
   // Symbol table parse
   Elf64_Shdr *symtab_shdr = NULL;
   Elf64_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
@@ -182,7 +184,7 @@ static long load_elf()
   {
     Log("No SYMTAB found");
   }
-#endif
+// #endif
   free(elf_buf);
   Log("Equivalent img_size = %lu", img_size);
   return img_size;

@@ -25,5 +25,13 @@ void invalid_inst(vaddr_t thispc);
 
 #define NEMUTRAP(thispc, code) set_nemu_state(NEMU_END, thispc, code)
 #define INV(thispc) invalid_inst(thispc)
+typedef struct functab_node
+{
+    struct functab_node * next;
+    char* name;
+    vaddr_t addr;
+    vaddr_t addr_end;
+} functab_node;
 
+extern functab_node* functab_head;
 #endif
