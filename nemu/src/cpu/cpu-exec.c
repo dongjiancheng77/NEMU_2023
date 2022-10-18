@@ -67,9 +67,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
   if (ITRACE_COND)
   {
     log_write("%s\n", _this->logbuf);
-#ifdef CONFIG_ITRACE_COND
     ir_write("%s\n", _this->logbuf);
-#endif
   }
 #endif
   if (g_print_step)
@@ -117,6 +115,7 @@ static void exec_once(Decode *s, vaddr_t pc)
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
               MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
+
 #endif
 }
 
@@ -126,6 +125,7 @@ static void execute(uint64_t n)
   for (; n > 0; n--)
   {
     exec_once(&s, cpu.pc);
+
     g_nr_guest_inst++;
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING)
