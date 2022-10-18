@@ -42,23 +42,27 @@ static void welcome()
 #include <getopt.h>
 // #ifdef CONFIG_FTRACE
 // name str will be copied, so feel free to free it
-static void functab_push(const char* name, word_t addr, word_t size) {
-  functab_node* newnode = (functab_node*) malloc(sizeof(functab_node));
+static void functab_push(const char *name, word_t addr, word_t size)
+{
+  functab_node *newnode = (functab_node *)malloc(sizeof(functab_node));
   newnode->addr = addr;
   newnode->addr_end = addr + size;
-  newnode->name = (char*)malloc(strlen(name) + 1);
+  newnode->name = (char *)malloc(strlen(name) + 1);
   strcpy(newnode->name, name);
   newnode->next = functab_head;
   functab_head = newnode;
 }
 
-static void functab_print() {
-  functab_node* ptr = functab_head;
-  if (functab_head == NULL) {
+static void functab_print()
+{
+  functab_node *ptr = functab_head;
+  if (functab_head == NULL)
+  {
     printf("No Function in symbol table\n");
   }
-  while(ptr) {
-    printf("Function %s @ "FMT_WORD" - "FMT_WORD"\n", ptr->name, ptr->addr, ptr->addr_end);
+  while (ptr)
+  {
+    printf("Function %s @ " FMT_WORD " - " FMT_WORD "\n", ptr->name, ptr->addr, ptr->addr_end);
     ptr = ptr->next;
   }
 }
@@ -96,7 +100,8 @@ static long load_img()
 }
 
 static long load_elf()
-{  if (elf_file == NULL)
+{
+  if (elf_file == NULL)
   {
     Log("No elf is given. Use the default build-in image.");
     return 4096; // built-in image size
@@ -115,7 +120,7 @@ static long load_elf()
 
   // ELF Parse
   const uint32_t elf_magic = 0x464c457f;
-  Elf64_Ehdr *elf_ehdr = elf_buf;
+  Elf32_Ehdr *elf_ehdr = elf_buf;
   uint32_t *magic = elf_buf;
 
   Assert(*magic == elf_magic, "Not a elf file");
@@ -140,7 +145,7 @@ static long load_elf()
     memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
     img_size += elf_phdr->p_memsz;
   }
-// #ifdef CONFIG_FTRACE
+  // #ifdef CONFIG_FTRACE
   // Symbol table parse
   Elf64_Shdr *symtab_shdr = NULL;
   Elf64_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
@@ -184,7 +189,7 @@ static long load_elf()
   {
     Log("No SYMTAB found");
   }
-// #endif
+  // #endif
   free(elf_buf);
   Log("Equivalent img_size = %lu", img_size);
   return img_size;
@@ -264,7 +269,7 @@ void init_monitor(int argc, char *argv[])
   if (elf_file)
   {
     // long elf_size = load_elf();
-    img_size= load_elf();
+    img_size = load_elf();
     // elf_size++;
   }
   /* Initialize differential testing. */
