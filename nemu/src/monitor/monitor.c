@@ -15,8 +15,9 @@
 
 #include <isa.h>
 #include <memory/paddr.h>
+#include <cpu/cpu.h>
 #include <elf.h>
-#include "ftracer.h"
+// #include "ftracer.h"
 void init_rand();
 void init_log(const char *log_file);
 void init_mem();
