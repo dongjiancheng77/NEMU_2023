@@ -96,10 +96,10 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
       // printf("%s\n", jalr1);
       functab_node *funcitem = functab_find(_this->pc);
       functab_node *funcitem2 = functab_find(dnpc);
-      log_write("0x%x:", _this->pc);
+      printf("0x%x:", _this->pc);
       for (int i = 0; i < call_level; ++i)
-        log_write(" ");
-      log_write("ret  [%s] <- [%s]\n", funcitem2 ? funcitem2->name : "???", funcitem ? funcitem->name : "???");
+        printf(" ");
+      printf("ret  [%s] <- [%s]\n", funcitem2 ? funcitem2->name : "???", funcitem ? funcitem->name : "???");
       call_level--;
     }
     // call - jal ra, imm or jalr ra, $x
@@ -107,11 +107,11 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     {
       functab_node *funcitem = functab_find(dnpc);
       functab_node *funcitem2 = functab_find(_this->pc);
-      log_write("0x%08X:", _this->pc);
+      printf("0x%08X:", _this->pc);
       call_level++;
       for (int i = 0; i < call_level; ++i)
-        log_write(" ");
-      log_write("call [%s] -> [%s]\n", funcitem2 ? funcitem2->name : "???", funcitem ? funcitem->name : "???");
+        printf(" ");
+      printf("call [%s] -> [%s]\n", funcitem2 ? funcitem2->name : "???", funcitem ? funcitem->name : "???");
     }
   }
 
