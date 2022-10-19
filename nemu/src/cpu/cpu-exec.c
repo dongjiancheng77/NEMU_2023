@@ -48,16 +48,16 @@ static void ringbuf_display()
   }
 }
 
-#define ir_write(...) IFDEF(                                                        \
-    CONFIG_TARGET_NATIVE_ELF,                                                       \
-    do {                                                                            \
-      extern FILE *log_fp;                                                          \
-      extern bool log_enable();                                                     \
-      if (log_enable())                                                             \
-      {                                                                             \
+#define ir_write(...) IFDEF(                                                                 \
+    CONFIG_TARGET_NATIVE_ELF,                                                                \
+    do {                                                                                     \
+      extern FILE *log_fp;                                                                   \
+      extern bool log_enable();                                                              \
+      if (log_enable())                                                                      \
+      {                                                                                      \
         strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], _this->logbuf, PRINTBUF_SIZE); \
-        ;                                                                           \
-      }                                                                             \
+        ;                                                                                    \
+      }                                                                                      \
     } while (0))
 #endif
 
@@ -222,18 +222,18 @@ void cpu_exec(uint64_t n)
         nemu_state.halt_pc);
     // fall through
 #ifdef CONFIG_ITRACE
-    if (nemu_state.state == NEMU_ABORT && nemu_state.state != NEMU_STOP && nemu_state.halt_ret != 0 )
+    if (nemu_state.state == NEMU_ABORT && nemu_state.state != NEMU_STOP && nemu_state.halt_ret != 0)
     {
       ringbuf_display();
     }
 #endif
   case NEMU_QUIT:
-      #ifdef CONFIG_ITRACE
-        if (nemu_state.state != NEMU_STOP && nemu_state.state != NEMU_QUIT)
-        {
-          ringbuf_display();
-        }
-    #endif
+// #ifdef CONFIG_ITRACE
+//     if (nemu_state.state != NEMU_STOP && nemu_state.state != NEMU_QUIT)
+//     {
+//       ringbuf_display();
+//     }
+// #endif
     statistic();
   }
 }
