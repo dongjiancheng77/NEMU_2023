@@ -88,6 +88,7 @@ static long load_elf()
   Log("The elf is %s, size = %ld", elf_file, size);
   fseek(fp, 0, SEEK_SET);
   void *elf_buf = malloc(size);
+
   fclose(fp);
 
   // ELF Parse
@@ -240,10 +241,10 @@ void init_monitor(int argc, char *argv[])
   long img_size = load_img();
   if (elf_file)
   {
-    long elf_size = load_elf();
+    // long elf_size = load_elf();
 
-    elf_size++;
-        // img_size = load_elf();
+    // elf_size++;
+        img_size = load_elf();
   }
   /* Initialize differential testing. */
   init_difftest(diff_so_file, img_size, difftest_port);
