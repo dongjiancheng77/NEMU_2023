@@ -15,7 +15,7 @@
 
 #include <isa.h>
 #include <memory/paddr.h>
-#include"ftracer.h"
+#include "ftracer.h"
 #include <elf.h>
 #include <common.h>
 // #include "ftracer.h"
@@ -88,36 +88,39 @@ static long load_elf()
   Log("The elf is %s, size = %ld", elf_file, size);
   fseek(fp, 0, SEEK_SET);
   void *elf_buf = malloc(size);
+  int succ = fread(elf_buf, size, 1, fp);
 
   fclose(fp);
+  if (succ)
+  {  panic("read elf failed!");}
+    // ELF Parse
+    const uint32_t elf_magic = 0x464c457f;
+    Elf32_Ehdr *elf_ehdr = elf_buf;
+    uint32_t *magic = elf_buf;
 
-  // ELF Parse
-  const uint32_t elf_magic = 0x464c457f;
-  Elf32_Ehdr *elf_ehdr = elf_buf;
-  uint32_t *magic = elf_buf;
+    Assert(*magic == elf_magic, "Not a elf file");
+    // Assert(elf_ehdr->e_ident[EI_CLASS] == ELFCLASS64, "Not a 64bit elf, RV64 IS NOT compatible with RV32");
+    Assert(elf_ehdr->e_ident[EI_DATA] == ELFDATA2LSB, "Not little endian");
+    Assert(elf_ehdr->e_machine == EM_RISCV, "Not RISCV target");
+    // Assert(elf_ehdr->e_entry == RESET_VECTOR, "No support for jump to non-RESET location");
+    // Program Load
+    int i;
+    size_t img_size = 0;
+    for (i = 0; i < elf_ehdr->e_phnum; ++i)
+    {
+      int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
+      Elf32_Phdr *elf_phdr = elf_buf + phdr_off;
+      // Assert(phdr_off < size, "Program header out of file");
+      Assert(elf_phdr->p_offset < size, "Segment out of file");
+      if (elf_phdr->p_type != PT_LOAD)
+        continue;
+      // At present we dont have memory map, so just copy?
+      void *segment_ptr = guest_to_host(elf_phdr->p_vaddr);
+      memcpy(segment_ptr, elf_buf + elf_phdr->p_offset, elf_phdr->p_filesz);
+      memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
+      img_size += elf_phdr->p_memsz;
+    }
 
-  Assert(*magic == elf_magic, "Not a elf file");
-  // Assert(elf_ehdr->e_ident[EI_CLASS] == ELFCLASS64, "Not a 64bit elf, RV64 IS NOT compatible with RV32");
-  Assert(elf_ehdr->e_ident[EI_DATA] == ELFDATA2LSB, "Not little endian");
-  Assert(elf_ehdr->e_machine == EM_RISCV, "Not RISCV target");
-  // Assert(elf_ehdr->e_entry == RESET_VECTOR, "No support for jump to non-RESET location");
-  // Program Load
-  int i;
-  size_t img_size = 0;
-  for (i = 0; i < elf_ehdr->e_phnum; ++i)
-  {
-    int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
-    Elf32_Phdr *elf_phdr = elf_buf + phdr_off;
-    // Assert(phdr_off < size, "Program header out of file");
-    Assert(elf_phdr->p_offset < size, "Segment out of file");
-    if (elf_phdr->p_type != PT_LOAD)
-      continue;
-    // At present we dont have memory map, so just copy?
-    void *segment_ptr = guest_to_host(elf_phdr->p_vaddr);
-    memcpy(segment_ptr, elf_buf + elf_phdr->p_offset, elf_phdr->p_filesz);
-    memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
-    img_size += elf_phdr->p_memsz;
-  }
   // #ifdef CONFIG_FTRACE
   // Symbol table parse
   Elf32_Shdr *symtab_shdr = NULL;
@@ -164,6 +167,7 @@ static long load_elf()
   }
   // #endif
   free(elf_buf);
+  // one malloc one free
   Log("Equivalent img_size = %lu", img_size);
   return img_size;
 }
@@ -244,7 +248,7 @@ void init_monitor(int argc, char *argv[])
     // long elf_size = load_elf();
 
     // elf_size++;
-        img_size = load_elf();
+    img_size = load_elf();
   }
   /* Initialize differential testing. */
   init_difftest(diff_so_file, img_size, difftest_port);
