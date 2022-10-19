@@ -88,8 +88,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     // ret pseudo, jalr x0, 0(x1)
     const char needle[10] ="jalr";
     char *jalr1 = strstr(_this->logbuf, needle);
-    char *jal = strstr(_this->logbuf, "jal");
+
     printf("%s\n",jalr1);
+        char *jal = strstr(_this->logbuf, "jal");
     if (jalr1)
     {
       functab_node *funcitem = functab_find(_this->pc);
