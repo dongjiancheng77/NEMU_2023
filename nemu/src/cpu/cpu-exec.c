@@ -83,14 +83,10 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 #ifdef CONFIG_FTRACE
   static int call_level = 0;
   if (functab_head)
-  {
-    printf("%s\n", _this->logbuf);
+  {printf("%s\n",_this->logbuf);
     // ret pseudo, jalr x0, 0(x1)
-    const char needle[10] ="jalr";
-    char *jalr1 = strstr(_this->logbuf, needle);
-
-    printf("%s\n",jalr1);
-        char *jal = strstr(_this->logbuf, "jal");
+    char *jalr1 = strstr(_this->logbuf, "jalr");
+    char *jal = strstr(_this->logbuf, "jal");
     if (jalr1)
     {
       functab_node *funcitem = functab_find(_this->pc);
