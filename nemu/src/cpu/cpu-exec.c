@@ -86,7 +86,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
   {
     printf("%s\n", _this->logbuf);
     // ret pseudo, jalr x0, 0(x1)
-    char *jalr1 = strstr(_this->logbuf, "jalr");
+    const char needle[10] ="jalr";
+    char *jalr1 = strstr(_this->logbuf, needle);
     char *jal = strstr(_this->logbuf, "jal");
     printf("%s\n",jalr1);
     if (jalr1)
