@@ -34,10 +34,6 @@ void functab_push(char *name, word_t addr, word_t size)
 void functab_print()
 {
   functab_node *ptr = functab_head;
-  if (functab_head == NULL)
-  {
-    printf("No Function in symbol table\n");
-  }
   while (ptr)
   {
     printf("Function %s @ " FMT_WORD  " - " FMT_WORD "\n", ptr->name, ptr->addr, ptr->addr_end);
@@ -119,7 +115,6 @@ void load_elf(char* elf_file )
   {
     Log("No SYMTAB found");
   }
-  // #endif
   free(elf_buf);
   // one malloc one free
   return;
