@@ -46,7 +46,7 @@ void sdb_set_batch_mode();
 static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
-static char *elf_file = NULL;
+char *elf_file = NULL;
 static int difftest_port = 1234;
 
 static long load_img()
@@ -73,85 +73,6 @@ static long load_img()
   return size;
 }
 
-static void load_elf()
-{
-  if (elf_file == NULL)
-  {
-    Log("No elf is given. Use the default build-in image.");
-    // return 4096; // built-in image size
-    return;
-  }
-
-  FILE *fp = fopen(elf_file, "rb");
-  Assert(fp, "Can not open '%s'", elf_file);
-  fseek(fp, 0, SEEK_END);
-  long size = ftell(fp);
-  void *elf_buf = malloc(size);
-  Log("The elf is %s, size = %ld", elf_file, size);
-  fseek(fp, 0, SEEK_SET);
-  int succ = fread(elf_buf, size, 1, fp);
-  if (succ != 1)
-  {
-    panic("read elf failed!");
-  }
-  fclose(fp);
-
-  Elf32_Ehdr *elf_ehdr = elf_buf;
-
-  for (int i = 0; i < elf_ehdr->e_phnum; ++i)
-  {
-    int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
-    Elf32_Phdr *elf_phdr = elf_buf + phdr_off;
-    if (elf_phdr->p_type != PT_LOAD)
-      continue;
-    void *segment_ptr = guest_to_host(elf_phdr->p_vaddr);
-    memcpy(segment_ptr, elf_buf + elf_phdr->p_offset, elf_phdr->p_filesz);
-    memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
-  }
-
-  Elf32_Shdr *symtab_shdr = NULL;
-  Elf32_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
-  Elf32_Shdr *strtab_shdr = NULL;
-  char *shstrtab_ptr = elf_buf + shstrtab_shdr->sh_offset;
-  for (int i = 0; i < elf_ehdr->e_shnum; ++i)
-  {
-    int shdr_off = i * elf_ehdr->e_shentsize + elf_ehdr->e_shoff;
-    Elf32_Shdr *elf_shdr = elf_buf + shdr_off;
-    if (elf_shdr->sh_type == SHT_SYMTAB)
-      symtab_shdr = elf_shdr;
-    else if (elf_shdr->sh_type == SHT_STRTAB)
-    {
-      if (strcmp(shstrtab_ptr + elf_shdr->sh_name, ".strtab") == 0)
-      {
-        strtab_shdr = elf_shdr;
-      }
-    }
-  }
-  if (symtab_shdr != NULL)
-  {
-    char *strtab_ptr = elf_buf + strtab_shdr->sh_offset;
-    for (int i = 0; i < symtab_shdr->sh_size; i += symtab_shdr->sh_entsize)
-    {
-      //* i work as offset here
-      Elf32_Sym *elf_sym = elf_buf + symtab_shdr->sh_offset + i;
-      // ! some symbol is SECTION type, so name not stored in .strtab
-      if (ELF32_ST_TYPE(elf_sym->st_info) == STT_FUNC)
-      {
-        printf("func-symbol: %s \t size:%d \n ", strtab_ptr + elf_sym->st_name,elf_sym->st_size);
-        functab_push(strtab_ptr + elf_sym->st_name, elf_sym->st_value, elf_sym->st_size);
-      }
-    }
-    functab_print();
-  }
-  else
-  {
-    Log("No SYMTAB found");
-  }
-  // #endif
-  free(elf_buf);
-  // one malloc one free
-  return;
-}
 
 static int parse_args(int argc, char *argv[])
 {
@@ -226,7 +147,7 @@ void init_monitor(int argc, char *argv[])
   long img_size = load_img();
   if (elf_file)
   {
-    load_elf();
+    load_elf(elf_file);
     // img_size = load_elf();
   }
   /* Initialize differential testing. */

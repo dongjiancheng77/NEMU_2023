@@ -11,5 +11,5 @@ typedef struct functab_node
 void functab_print();
 extern functab_node* functab_head;
 void functab_push(char *name, word_t addr, word_t size);
-
+void load_elf(char* elf_file);
 #endif
