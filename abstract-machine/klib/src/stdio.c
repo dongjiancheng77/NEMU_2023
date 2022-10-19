@@ -173,8 +173,8 @@ int printf(const char *fmt, ...)
 
   int i = vsprintf(buffer, fmt, arg);
 
-  putstr(buffer);
-
+  for (int x=0; x < i; x++)
+    putch(buffer[x]);
   va_end(arg);
   return i;
 }
