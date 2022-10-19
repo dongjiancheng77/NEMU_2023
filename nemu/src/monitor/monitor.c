@@ -96,15 +96,8 @@ static void load_elf()
   }
   fclose(fp);
 
-  // ELF Parse
-  const uint32_t elf_magic = 0x464c457f;
   Elf32_Ehdr *elf_ehdr = elf_buf;
-  uint32_t *magic = elf_buf;
 
-  Assert(*magic == elf_magic, "Not a elf file");
-  Assert(elf_ehdr->e_ident[EI_DATA] == ELFDATA2LSB, "Not little endian");
-  Assert(elf_ehdr->e_machine == EM_RISCV, "Not RISCV target");
-  // Assert(elf_ehdr->e_entry == RESET_VECTOR, "No support for jump to non-RESET location");
   // Program Load
   for (int i = 0; i < elf_ehdr->e_phnum; ++i)
   {
