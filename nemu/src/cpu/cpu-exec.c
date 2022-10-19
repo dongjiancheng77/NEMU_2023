@@ -81,37 +81,37 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     ringbuf_display();
 #endif
 #ifdef CONFIG_FTRACE
-  static int call_level = 0;
-  int i;
-  if (functab_head)
-  {
-    // ret pseudo, jalr x0, 0(x1)
-    if (_this->EHelper == g_exec_table[EXEC_ID_jalr] &&
-        _this->dest.preg == &zero_null &&
-        _this->src1.preg == &gpr(1))
-    {
-      functab_node *funcitem = functab_find(_this->pc);
-      functab_node *funcitem2 = functab_find(dnpc);
-      log_write("0x%08lX:", _this->pc);
-      for (i = 0; i < call_level; ++i)
-        log_write(" ");
-      log_write("ret  [%s] <- [%s]\n", funcitem2 ? funcitem2->name : "???", funcitem ? funcitem->name : "???");
-      call_level--;
-    }
-    // call - jal ra, imm or jalr ra, $x
-    if (
-        (_this->EHelper == g_exec_table[EXEC_ID_jalr] || _this->EHelper == g_exec_table[EXEC_ID_jal]) &&
-        _this->dest.preg == &gpr(1))
-    {
-      functab_node *funcitem = functab_find(dnpc);
-      functab_node *funcitem2 = functab_find(_this->pc);
-      log_write("0x%08lX:", _this->pc);
-      call_level++;
-      for (i = 0; i < call_level; ++i)
-        log_write(" ");
-      log_write("call [%s] -> [%s]\n", funcitem2 ? funcitem2->name : "???", funcitem ? funcitem->name : "???");
-    }
-  }
+  // static int call_level = 0;
+  // int i;
+  // if (functab_head)
+  // {
+  //   // ret pseudo, jalr x0, 0(x1)
+  //   if (_this->EHelper == g_exec_table[EXEC_ID_jalr] &&
+  //       _this->dest.preg == &zero_null &&
+  //       _this->src1.preg == &gpr(1))
+  //   {
+  //     functab_node *funcitem = functab_find(_this->pc);
+  //     functab_node *funcitem2 = functab_find(dnpc);
+  //     log_write("0x%08lX:", _this->pc);
+  //     for (i = 0; i < call_level; ++i)
+  //       log_write(" ");
+  //     log_write("ret  [%s] <- [%s]\n", funcitem2 ? funcitem2->name : "???", funcitem ? funcitem->name : "???");
+  //     call_level--;
+  //   }
+  //   // call - jal ra, imm or jalr ra, $x
+  //   if (
+  //       (_this->EHelper == g_exec_table[EXEC_ID_jalr] || _this->EHelper == g_exec_table[EXEC_ID_jal]) &&
+  //       _this->dest.preg == &gpr(1))
+  //   {
+  //     functab_node *funcitem = functab_find(dnpc);
+  //     functab_node *funcitem2 = functab_find(_this->pc);
+  //     log_write("0x%08lX:", _this->pc);
+  //     call_level++;
+  //     for (i = 0; i < call_level; ++i)
+  //       log_write(" ");
+  //     log_write("call [%s] -> [%s]\n", funcitem2 ? funcitem2->name : "???", funcitem ? funcitem->name : "???");
+  //   }
+  // }
 
 #endif
 #ifdef CONFIG_WATCHPOINT
