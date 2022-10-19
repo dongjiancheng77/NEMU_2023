@@ -99,10 +99,7 @@ void load_elf(char *elf_file)
       }
     }
   }
-  else
-  {
-    Log("No SYMTAB found");
-  }
+
   free(elf_buf);
   // one malloc one free
   return;
