@@ -88,9 +88,8 @@ static long load_elf()
   Log("The elf is %s, size = %ld", elf_file, size);
   fseek(fp, 0, SEEK_SET);
   void *elf_buf = malloc(size);
-  int succ = fread(elf_buf, size, 1, fp);
-  if (succ)
-  {  panic("read elf failed!");}
+  int ret = fread(elf_buf, size, 1, fp);
+  Assert(ret == 1, "ELF executable '%s' read failed!", elf_file);
   fclose(fp);
 
     // ELF Parse
