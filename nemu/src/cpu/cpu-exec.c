@@ -84,7 +84,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
   static int call_level = 0;
   if (functab_head)
   {
-    printf("%s\n", _this->logbuf);
+    // printf("%s\n", _this->logbuf);
     // ret pseudo, jalr x0, 0(x1)
     char *jalr1 ;
     jalr1= strstr(_this->logbuf, "jalr");
@@ -95,7 +95,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     {printf("%s\n", jalr1);
       functab_node *funcitem = functab_find(_this->pc);
       functab_node *funcitem2 = functab_find(dnpc);
-      log_write("0x%08X:", _this->pc);
+      log_write("0x%x:", _this->pc);
       for (int i = 0; i < call_level; ++i)
         log_write(" ");
       log_write("ret  [%s] <- [%s]\n", funcitem2 ? funcitem2->name : "???", funcitem ? funcitem->name : "???");
