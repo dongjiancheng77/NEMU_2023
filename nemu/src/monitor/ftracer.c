@@ -55,7 +55,6 @@ void load_elf(char *elf_file)
   fclose(fp);
 
   Elf32_Ehdr *elf_ehdr = elf_buf;
-
   for (int i = 0; i < elf_ehdr->e_phnum; ++i)
   {
     int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
