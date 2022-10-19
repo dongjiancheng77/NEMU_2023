@@ -39,7 +39,7 @@ void functab_print()
   }
   while (ptr)
   {
-    printf("Function %s @ " FMT_WORD " - " FMT_WORD "\n", ptr->name, ptr->addr, ptr->addr_end);
+    printf("Function %s @ " FMT_WORD  " - " FMT_WORD "\n", ptr->name, ptr->addr, ptr->addr_end);
     ptr = ptr->next;
   }
 }

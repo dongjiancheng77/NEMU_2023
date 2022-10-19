@@ -37,20 +37,6 @@ char instr_ringbuf[RINGBUF_LINES][DASM_PRINTBUF_SIZE];
 long ringbuf_end = 0;
 static char last_instr[DASM_PRINTBUF_SIZE];
 // functab_node *functab_head;
-
-// static inline functab_node *functab_find(vaddr_t addr)
-// {
-//   functab_node *ptr = functab_head;
-//   while (ptr)
-//   {
-//     if (ptr->addr <= addr && addr < ptr->addr_end)
-//     {
-//       return ptr;
-//     }
-//     ptr = ptr->next;
-//   }
-//   return NULL;
-// }
 static void ringbuf_display()
 {
   strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], last_instr, DASM_PRINTBUF_SIZE);
