@@ -4,9 +4,9 @@
 #include <common.h>
 #include <memory/paddr.h>
 functab_node *functab_head;
-/// @brief 
-/// @param addr 
-/// @return 
+/// @brief
+/// @param addr
+/// @return
 functab_node *functab_find(vaddr_t addr)
 {
   functab_node *ptr = functab_head;
@@ -36,12 +36,12 @@ void functab_print()
   functab_node *ptr = functab_head;
   while (ptr)
   {
-    printf("Function %s @ " FMT_WORD  " - " FMT_WORD "\n", ptr->name, ptr->addr, ptr->addr_end);
+    printf("Function %s @ " FMT_WORD " - " FMT_WORD "\n", ptr->name, ptr->addr, ptr->addr_end);
     ptr = ptr->next;
   }
 }
 
-void load_elf(char* elf_file )
+void load_elf(char *elf_file)
 {
   if (elf_file == NULL)
   {
@@ -105,7 +105,7 @@ void load_elf(char* elf_file )
       // ! some symbol is SECTION type, so name not stored in .strtab
       if (ELF32_ST_TYPE(elf_sym->st_info) == STT_FUNC)
       {
-        printf("func-symbol: %s \t size:%d "FMT_WORD  " - " FMT_WORD "\n ", strtab_ptr + elf_sym->st_name,elf_sym->st_size, elf_sym->st_value, elf_sym->st_value+elf_sym->st_size);
+        printf("func-symbol: %s \t size:%d " FMT_WORD " - " FMT_WORD "\n ", strtab_ptr + elf_sym->st_name, elf_sym->st_size, elf_sym->st_value, elf_sym->st_value + elf_sym->st_size);
         functab_push(strtab_ptr + elf_sym->st_name, elf_sym->st_value, elf_sym->st_size);
       }
     }
