@@ -89,6 +89,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     char *jalr1 ;
     jalr1= strstr(_this->logbuf, "jalr");
     char *jal = strstr(_this->logbuf, "jal");
+        if (jalr1)
     printf("%s\n", jalr1);
     if (jalr1)
     {
