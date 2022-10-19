@@ -86,13 +86,14 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
   {
     // printf("%s\n", _this->logbuf);
     // ret pseudo, jalr x0, 0(x1)
-    char *jalr1 ;
-    jalr1= strstr(_this->logbuf, "jalr");
+    char *jalr1;
+    jalr1 = strstr(_this->logbuf, "jalr");
     char *jal = strstr(_this->logbuf, "jal");
     //     if (jalr1)
     // printf("%s\n", jalr1);
     if (jalr1)
-    {printf("%s\n", jalr1);
+    {
+      // printf("%s\n", jalr1);
       functab_node *funcitem = functab_find(_this->pc);
       functab_node *funcitem2 = functab_find(dnpc);
       log_write("0x%x:", _this->pc);
