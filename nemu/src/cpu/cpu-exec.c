@@ -100,7 +100,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
       printf("0x%x:", _this->pc);
       for (int i = 0; i < call_level; ++i)
         printf(" ");
-      printf("ret  [%s]\n", funcitem ? funcitem->name : "???");
+      printf("ret  [%s%x]\n", funcitem ? funcitem->name : "???",dnpc);
       call_level--;
     }
     // call - jal ra, imm or jalr ra, $x
