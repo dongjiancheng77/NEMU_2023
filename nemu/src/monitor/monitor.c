@@ -73,12 +73,13 @@ static long load_img()
   return size;
 }
 
-static long load_elf()
+static void load_elf()
 {
   if (elf_file == NULL)
   {
     Log("No elf is given. Use the default build-in image.");
-    return 4096; // built-in image size
+    // return 4096; // built-in image size
+    return;
   }
 
   FILE *fp = fopen(elf_file, "rb");
@@ -171,7 +172,7 @@ static long load_elf()
   free(elf_buf);
   // one malloc one free
   Log("Equivalent img_size = %lu", img_size);
-  return img_size;
+  return;
 }
 
 static int parse_args(int argc, char *argv[])
@@ -247,9 +248,7 @@ void init_monitor(int argc, char *argv[])
   long img_size = load_img();
   if (elf_file)
   {
-    long elf_size = load_elf();
-
-    elf_size++;
+load_elf();
     // img_size = load_elf();
   }
   /* Initialize differential testing. */
