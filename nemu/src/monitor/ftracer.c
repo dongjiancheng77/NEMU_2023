@@ -31,16 +31,6 @@ void functab_push(char *name, word_t addr, word_t size)
   functab_head = newnode;
 }
 
-void functab_print()
-{
-  functab_node *ptr = functab_head;
-  while (ptr)
-  {
-    printf("Function %s @ " FMT_WORD " - " FMT_WORD "\n", ptr->name, ptr->addr, ptr->addr_end);
-    ptr = ptr->next;
-  }
-}
-
 void load_elf(char *elf_file)
 {
   if (elf_file == NULL)
@@ -109,7 +99,6 @@ void load_elf(char *elf_file)
         functab_push(strtab_ptr + elf_sym->st_name, elf_sym->st_value, elf_sym->st_size);
       }
     }
-    functab_print();
   }
   else
   {
