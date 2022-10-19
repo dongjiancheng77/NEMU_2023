@@ -89,10 +89,10 @@ static long load_elf()
   fseek(fp, 0, SEEK_SET);
   void *elf_buf = malloc(size);
   int succ = fread(elf_buf, size, 1, fp);
-
-  fclose(fp);
   if (succ)
   {  panic("read elf failed!");}
+  fclose(fp);
+
     // ELF Parse
     const uint32_t elf_magic = 0x464c457f;
     Elf32_Ehdr *elf_ehdr = elf_buf;
