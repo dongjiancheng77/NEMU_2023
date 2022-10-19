@@ -89,7 +89,7 @@ void paddr_write(paddr_t addr, int len, word_t data)
 #ifdef CONFIG_MTRACE
   if (addr == 0x806BDFF8)
   {
-    Log("Write %x to memory at %#.8x for %d bytes.", data, addr, len);
+    Log("MTRACE: write %xat %#.8x for %d bytes.", data, addr, len);
     error_finfo();
   }
 #endif

@@ -48,8 +48,6 @@ static void ringbuf_display()
   }
 }
 
-
-
 #define ir_write(...) IFDEF(                                                        \
     CONFIG_TARGET_NATIVE_ELF,                                                       \
     do {                                                                            \
