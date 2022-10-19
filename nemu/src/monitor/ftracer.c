@@ -105,7 +105,7 @@ void load_elf(char* elf_file )
       // ! some symbol is SECTION type, so name not stored in .strtab
       if (ELF32_ST_TYPE(elf_sym->st_info) == STT_FUNC)
       {
-        printf("func-symbol: %s \t size:%d \n ", strtab_ptr + elf_sym->st_name,elf_sym->st_size);
+        printf("func-symbol: %s \t size:%d "FMT_WORD  " - " FMT_WORD "\n ", strtab_ptr + elf_sym->st_name,elf_sym->st_size, elf_sym->st_value, elf_sym->st_value+elf_sym->st_size);
         functab_push(strtab_ptr + elf_sym->st_name, elf_sym->st_value, elf_sym->st_size);
       }
     }
