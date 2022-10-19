@@ -92,7 +92,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     //     if (jalr1)
     // printf("%s\n", jalr1);
     if (jalr1)
-    {
+    {printf("%s\n", jalr1);
       functab_node *funcitem = functab_find(_this->pc);
       functab_node *funcitem2 = functab_find(dnpc);
       log_write("0x%08X:", _this->pc);
