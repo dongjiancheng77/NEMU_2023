@@ -32,14 +32,14 @@ static bool g_print_step = false;
 void device_update();
 #ifdef CONFIG_ITRACE_COND
 #define RINGBUF_LINES 64
-#define DASM_PRINTBUF_SIZE 128
-char instr_ringbuf[RINGBUF_LINES][DASM_PRINTBUF_SIZE];
+#define PRINTBUF_SIZE 128
+char instr_ringbuf[RINGBUF_LINES][PRINTBUF_SIZE];
 long ringbuf_end = 0;
-static char last_instr[DASM_PRINTBUF_SIZE];
+static char last_instr[PRINTBUF_SIZE];
 // functab_node *functab_head;
 static void ringbuf_display()
 {
-  strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], last_instr, DASM_PRINTBUF_SIZE);
+  strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], last_instr, PRINTBUF_SIZE);
   for (int i = ringbuf_end >= RINGBUF_LINES ? ringbuf_end : 0;
        i < ringbuf_end + (ringbuf_end >= RINGBUF_LINES ? RINGBUF_LINES : 0);
        ++i)
@@ -55,7 +55,7 @@ static void ringbuf_display()
       extern bool log_enable();                                                     \
       if (log_enable())                                                             \
       {                                                                             \
-        strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], _this->logbuf, DASM_PRINTBUF_SIZE); \
+        strncpy(instr_ringbuf[ringbuf_end++ % RINGBUF_LINES], _this->logbuf, PRINTBUF_SIZE); \
         ;                                                                           \
       }                                                                             \
     } while (0))

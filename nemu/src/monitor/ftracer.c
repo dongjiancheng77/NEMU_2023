@@ -19,7 +19,7 @@ functab_node *functab_find(vaddr_t addr)
   }
   return NULL;
 }
-void functab_push(const char *name, word_t addr, word_t size)
+void functab_push(char *name, word_t addr, word_t size)
 {
   functab_node *newnode = (functab_node *)malloc(sizeof(functab_node));
   newnode->addr = addr;

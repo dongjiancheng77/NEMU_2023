@@ -10,5 +10,6 @@ typedef struct functab_node
 } functab_node;
 void functab_print();
 extern functab_node* functab_head;
-void functab_push(const char *name, word_t addr, word_t size);
+void functab_push(char *name, word_t addr, word_t size);
+
 #endif
