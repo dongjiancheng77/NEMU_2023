@@ -81,7 +81,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     ringbuf_display();
 #endif
 #ifdef CONFIG_FTRACE
-  static int call_level = 0;
+  static int tab = 0;
   if (functab_head)
   {
     // printf("%s\n", _this->logbuf);
@@ -92,27 +92,27 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     // char *jr = strstr(_this->logbuf, "jr");
 
     char *ret = strstr(_this->logbuf, "ret");
-    //     if (jalr1)
+    //if (jalr1)
     // printf("%s\n", jalr1);
     if (ret)
     {
       // printf("%s\n", jalr1);
-      functab_node *funcitem = functab_find(_this->pc);
+      functab_node *func = functab_find(_this->pc);
       printf("0x%x:", _this->pc);
-      for (int i = 0; i < call_level; ++i)
+      for (int i = 0; i < tab; ++i)
         printf(" ");
-      printf("ret  [%s]\n", funcitem ? funcitem->name : "???");
-      call_level--;
+      printf("ret  [%s]\n", func ? func->name : "???");
+      tab--;
     }
     // call - jal ra, imm or jalr ra, $x
-    if (jalr1 || jal)
+    else if (jalr1 || jal)
     {
-      functab_node *funcitem = functab_find(dnpc);
+      functab_node *func = functab_find(dnpc);
       printf("0x%08X:", _this->pc);
-      call_level++;
-      for (int i = 0; i < call_level; ++i)
+      tab++;
+      for (int i = 0; i < tab; ++i)
         printf(" ");
-      printf("call [%s@0x%x]\n",funcitem ? funcitem->name : "???",dnpc);
+      printf("call [%s@0x%x]\n",func ? func->name : "???",dnpc);
     }
   }
 
