@@ -63,42 +63,30 @@ void init_mem()
 #endif
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
 }
-void error_finfo()
-{
-// #ifdef CONFIG_MTRACE
-//   vaddr_t pc = cpu.pc;
-//   printf(ASNI_FMT("Some error happended at %s(%#x).\n", ASNI_FG_RED), info->func_name, pc);
-// #endif
-}
+
 word_t paddr_read(paddr_t addr, int len)
 {
   if (likely(in_pmem(addr)))
     return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
-// #ifdef CONFIG_MTRACE
-//   if (likely(in_pmem(addr)))
-//   {
-//     word_t w = pmem_read(addr, len);
-//     if (addr == 0x806BDFF8)
-//     {
-//       Log(" Read  from memory at %#.8x for %d bytes for %x.", addr, len, w);
-//       error_finfo();
-//     }
-//   }
-// #endif
+#ifdef CONFIG_MTRACE
+  MUXDEF(
+    CONFIG_DEVICE, 
+    return mmio_read(addr, len),
+    panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD,
+      addr, 
+      CONFIG_MBASE, 
+      CONFIG_MBASE + CONFIG_MSIZE,
+      cpu.pc
+    )
+  );
+#endif
   return 0;
 }
 
 void paddr_write(paddr_t addr, int len, word_t data)
 {
-// #ifdef CONFIG_MTRACE
-//   if (addr == 0x806BDFF8)
-//   {
-//     Log("MTRACE: write %xat %#.8x for %d bytes.", data, addr, len);
-//     error_finfo();
-//   }
-// #endif
   if (likely(in_pmem(addr)))
   {
     pmem_write(addr, len, data);
