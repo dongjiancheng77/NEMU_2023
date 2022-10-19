@@ -71,17 +71,22 @@ word_t paddr_read(paddr_t addr, int len)
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
 #ifdef CONFIG_MTRACE
-  MUXDEF(
-    CONFIG_DEVICE, 
-    return mmio_read(addr, len),
-    panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD,
-      addr, 
-      CONFIG_MBASE, 
-      CONFIG_MBASE + CONFIG_MSIZE,
-      cpu.pc
-    )
-  );
+  word_t read_data = likely(in_pmem(addr)) ? pmem_read(addr, len) : mmio_read(addr, len);
+  log_write("mem read %d bytes @" FMT_PADDR "-->" FMT_WORD "\n", len, addr, read_data);
 #endif
+
+  // #ifdef CONFIG_MTRACE
+  //   MUXDEF(
+  //     CONFIG_DEVICE,
+  //     return mmio_read(addr, len),
+  //     panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR ") at pc = " FMT_WORD,
+  //       addr,
+  //       CONFIG_MBASE,
+  //       CONFIG_MBASE + CONFIG_MSIZE,
+  //       cpu.pc
+  //     )
+  //   );
+  // #endif
   return 0;
 }
 
@@ -92,6 +97,9 @@ void paddr_write(paddr_t addr, int len, word_t data)
     pmem_write(addr, len, data);
     return;
   }
+#ifdef CONFIG_MTRACE
+  log_write("mem write %d bytes @" FMT_PADDR "<--" FMT_WORD "\n", len, addr, data);
+#endif
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return );
   out_of_bound(addr);
 }
