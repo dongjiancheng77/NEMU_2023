@@ -98,21 +98,17 @@ static void load_elf()
 
   Elf32_Ehdr *elf_ehdr = elf_buf;
 
-  // Program Load
   for (int i = 0; i < elf_ehdr->e_phnum; ++i)
   {
     int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
     Elf32_Phdr *elf_phdr = elf_buf + phdr_off;
     if (elf_phdr->p_type != PT_LOAD)
       continue;
-    // At present we dont have memory map, so just copy?
     void *segment_ptr = guest_to_host(elf_phdr->p_vaddr);
     memcpy(segment_ptr, elf_buf + elf_phdr->p_offset, elf_phdr->p_filesz);
     memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
   }
 
-  // #ifdef CONFIG_FTRACE
-  // Symbol table parse
   Elf32_Shdr *symtab_shdr = NULL;
   Elf32_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
   Elf32_Shdr *strtab_shdr = NULL;
@@ -133,8 +129,6 @@ static void load_elf()
   }
   if (symtab_shdr != NULL)
   {
-    Assert(strtab_shdr, "SYMTAB without name ??");
-    printf("Found SYMTAB section: %s\n", &shstrtab_ptr[symtab_shdr->sh_name]);
     char *strtab_ptr = elf_buf + strtab_shdr->sh_offset;
     for (int i = 0; i < symtab_shdr->sh_size; i += symtab_shdr->sh_entsize)
     {
@@ -143,7 +137,7 @@ static void load_elf()
       // ! some symbol is SECTION type, so name not stored in .strtab
       if (ELF32_ST_TYPE(elf_sym->st_info) == STT_FUNC)
       {
-        // printf("Found FUNC symbol: %s\n", strtab_ptr + elf_sym->st_name);
+        printf("Found FUNC symbol: %s\n", strtab_ptr + elf_sym->st_name);
         functab_push(strtab_ptr + elf_sym->st_name, elf_sym->st_value, elf_sym->st_size);
       }
     }
