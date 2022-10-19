@@ -89,7 +89,7 @@ static long load_elf()
   fseek(fp, 0, SEEK_SET);
   void *elf_buf = malloc(size);
   int succ = fread(elf_buf, size, 1, fp);
-  if (succ==1)
+  if (succ!=1)
   {  panic("read elf failed!");}
   fclose(fp);
 
