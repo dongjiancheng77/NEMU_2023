@@ -12,7 +12,7 @@
  *
  * See the Mulan PSL v2 for more details.
  ***************************************************************************************/
-
+#ifdef CONFIG_WATCHPOINT
 #include "sdb.h"
 #include "watchpoint.h"
 #define NR_WP 64
@@ -145,3 +145,4 @@ bool hook()
   }
   return state;
 }
+#endif
