@@ -175,6 +175,7 @@ int printf(const char *fmt, ...)
 
   for (int x = 0; x < i; x++)
     putch(buffer[x]);
+  // putstr(buffer);
   va_end(arg);
   return i;
 }
