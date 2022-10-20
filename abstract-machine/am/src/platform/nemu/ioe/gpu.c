@@ -27,21 +27,18 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg)
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
 {
-  int win_weight = io_read(AM_GPU_CONFIG).width;
+const uint32_t* pixel = (uint32_t*)ctl->pixels;
+	uint32_t* base = (uint32_t*)(uintptr_t)FB_ADDR;
 
-  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  uint32_t *pi = (uint32_t *)(uintptr_t)ctl->pixels;
-  for (int i = 0; i < ctl->h; ++i)
-  {
-    for (int j = 0; j < ctl->w; ++j)
-    {
-      fb[(ctl->y) * win_weight + i * win_weight + ctl->x + j] = pi[i * (ctl->w) + j];
-    }
-  }
-  if (ctl->sync)
-  {
-    outl(SYNC_ADDR, 1);
-  }
+	for (int i = 0; i < ctl->h; ++i)
+	{
+		for (int j = 0; j < ctl->w; ++j)
+		{
+			const uint32_t pOffset = i * ctl->w + j;
+			const uint32_t baseOffset = ((ctl->y + i) * W + (ctl->x + j));
+			base[baseOffset] = pixel[pOffset];
+		}
+	}
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status)
