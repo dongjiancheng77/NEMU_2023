@@ -15,13 +15,26 @@ void __am_gpu_init()
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg)
-{
+{	static int W;
+static int H;
+
+  const uint32_t vgainfo = inl(VGACTL_ADDR);
+	W = vgainfo >> 16;
+	H = (vgainfo << 16) >> 16;
   *cfg = (AM_GPU_CONFIG_T){
-      .present = true, .has_accel = false, .width = 0, .height = 0, .vmemsz = 0};
+      .present = true, .has_accel = false, .width = W, .height = H, .vmemsz = H*W};
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
-{
+{  int win_weight = io_read(AM_GPU_CONFIG).width;  
+
+  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+  uint32_t *pi = (uint32_t *)(uintptr_t)ctl->pixels;
+  for (int i = 0; i < ctl->h; ++i){
+    for (int j = 0; j < ctl->w; ++j){
+      fb[(ctl->y) * win_weight + i * win_weight + ctl->x + j] = pi[i * (ctl->w) + j];
+   }
+  }
   if (ctl->sync)
   {
     outl(SYNC_ADDR, 1);
