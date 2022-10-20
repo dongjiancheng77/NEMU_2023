@@ -139,7 +139,7 @@ config TRACE_END
 config ITRACE
   depends on TRACE && TARGET_NATIVE_ELF && ENGINE_INTERPRETER
   bool "Enable instruction tracer"
-  default y
+  default n
 
 config ITRACE_COND
   depends on ITRACE
@@ -148,17 +148,17 @@ config ITRACE_COND
 
 config WATCHPOINT
   bool "Enable watchpoint"
-  default y
+  default n
 
 config MTRACE
   depends on TRACE
   bool "Enable memory tracer"
-  default y
+  default n
 
 config FTRACE
   depends on TRACE
   bool "Enable function tracer"
-  default y
+  default n
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
