@@ -6,13 +6,13 @@ static int W;
 static int H;
 void __am_gpu_init()
 {
-  // int i;
-  // int w = 0; // TODO: get the correct width
-  // int h = 0; // TODO: get the correct height
-  // uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  // for (i = 0; i < w * h; i++)
-  //   fb[i] = i;
-  // outl(SYNC_ADDR, 1);
+  int i;
+  int w = 0; // TODO: get the correct width
+  int h = 0; // TODO: get the correct height
+  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+  for (i = 0; i < w * h; i++)
+    fb[i] = i;
+  outl(SYNC_ADDR, 1);
   const uint32_t vgainfo = inl(VGACTL_ADDR);
   W = vgainfo >> 16;
   H = (vgainfo << 16) >> 16;
