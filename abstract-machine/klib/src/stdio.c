@@ -148,8 +148,8 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
           out[j++] = buffer[k];
         break;
 
-      default:
-        assert(0);
+      // default:
+      //   assert(0);
       }
       state = true;
     }
@@ -173,9 +173,9 @@ int printf(const char *fmt, ...)
 
   int i = vsprintf(buffer, fmt, arg);
 
-  // for (int x = 0; x < i; x++)
-  //   putch(buffer[x]);
-  putstr(buffer);
+  for (int x = 0; x < i; x++)
+    putch(buffer[x]);
+  // putstr(buffer);
   va_end(arg);
   return i;
 }
