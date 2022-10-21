@@ -11,6 +11,28 @@
 
 // itoa()函数把整数转换成字符串，并返回指向转换后的字符串的指针。
 
+char *uitoa(uint32_t value, char *str, int radix)
+{
+  char reverse[36];
+  char *p = reverse;
+
+  *p++ = '\0';
+  while (value != 0)
+  {
+    *p++ = "0123456789abcdef"[value % radix];
+    value /= radix;
+    if (value == 0)
+      break;
+  }
+  p--;
+
+  while (p >= reverse)
+  {
+    *str++ = *p--;
+  }
+
+  return str;
+}
 char *itoa(int value, char *str, int radix)
 {
   char reverse[36];
@@ -35,28 +57,6 @@ char *itoa(int value, char *str, int radix)
   {
     p--;
   }
-
-  while (p >= reverse)
-  {
-    *str++ = *p--;
-  }
-
-  return str;
-}
-char *uitoa(uint32_t value, char *str, int radix)
-{
-  char reverse[36];
-  char *p = reverse;
-
-  *p++ = '\0';
-  while (value != 0)
-  {
-    *p++ = "0123456789abcdef"[value % radix];
-    value /= radix;
-    if (value == 0)
-      break;
-  }
-  p--;
 
   while (p >= reverse)
   {
@@ -148,8 +148,8 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
           out[j++] = buffer[k];
         break;
 
-        // default:
-        //   assert(0);
+      default:
+        assert(0);
       }
       state = true;
     }
