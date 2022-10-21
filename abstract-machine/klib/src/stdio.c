@@ -173,9 +173,9 @@ int printf(const char *fmt, ...)
 
   int i = vsprintf(buffer, fmt, arg);
 
-  for (int x = 0; x < i; x++)
-    putch(buffer[x]);
-  // putstr(buffer);
+  // for (int x = 0; x < i; x++)
+  //   putch(buffer[x]);
+  putstr(buffer);
   va_end(arg);
   return i;
 }
