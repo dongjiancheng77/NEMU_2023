@@ -28,12 +28,12 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg)
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
 {
-  int i, j, pi=0, pj=0;
+  int i, j, pi, pj;
   uint32_t* pixels = ctl->pixels;
   uint32_t wh_data = inl(VGACTL_ADDR);
   uint32_t width = (wh_data >> 16) & 0xffff;
-  for (i = ctl->y; pi < ctl->h; ++ i, ++pi) {
-    for (j = ctl->x; pj < ctl->w; ++ j, ++pj) {
+  for (i = ctl->y, pi = 0; pi < ctl->h; ++ i, ++pi) {
+    for (j = ctl->x, pj = 0; pj < ctl->w; ++ j, ++pj) {
       int fb_offset = (i * width + j) * 4;
       int pixel_offset = pi* ctl->w + pj;
       outl(FB_ADDR + fb_offset, *(pixels + pixel_offset));
