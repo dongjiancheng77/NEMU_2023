@@ -42,11 +42,10 @@ void load_elf(char *elf_file)
   }
   printf("====== Reading ELF File ======\n");
   FILE *fp = fopen(elf_file, "rb");
-  Assert(fp, "Can not open '%s'", elf_file);
+    assert(elf != NULL);
   fseek(fp, 0, SEEK_END);
   long size = ftell(fp);
   void *elf_buf = malloc(size);
-  Log("The elf is %s, size = %ld", elf_file, size);
   fseek(fp, 0, SEEK_SET);
   int succ = fread(elf_buf, size, 1, fp);
   if (succ != 1)
@@ -95,7 +94,13 @@ void load_elf(char *elf_file)
       if (ELF32_ST_TYPE(elf_sym->st_info) == STT_FUNC)
       {
         printf("func-symbol: %s \t size:%d \t" FMT_WORD " - " FMT_WORD "\n", strtab_ptr + elf_sym->st_name, elf_sym->st_size, elf_sym->st_value, elf_sym->st_value + elf_sym->st_size);
-        functab_push(strtab_ptr + elf_sym->st_name, elf_sym->st_value, elf_sym->st_size);
+          functab_node *newnode = (functab_node *)malloc(sizeof(functab_node));
+  newnode->addr = elf_sym->st_value;
+  newnode->addr_end = elf_sym->st_value + elf_sym->st_size;
+  newnode->name = (char *)malloc(strlen(strtab_ptr + elf_sym->st_name) + 1);
+  strcpy(newnode->name, strtab_ptr + elf_sym->st_name);
+  newnode->next = functab_head;
+  functab_head = newnode;
       }
     }
   }
