@@ -104,18 +104,11 @@ void *memcpy(void *out, const void *in, size_t n)
 // 如果目标区域与源区域没有重叠，则和 memcpy() 函数功能相同。
 void *memmove(void *dst, const void *src, size_t n)
 {
-  char *char_dst = (char *)dst;
-  char *char_src = (char *)src;
-  if (dst < src)
-  {
-    for (int i = 0; i < n; ++i)
-      char_dst[i] = char_src[i];
-  }
-  else if (dst > src)
-  {
-    for (int i = n - 1; i >= 0; --i)
-      char_dst[i] = char_src[i];
-  }
+  char tmp[n];
+  for (size_t i = 0; i < n; ++i)
+    tmp[i] = *((char *)src + i);
+  for (size_t i = 0; i < n; ++i)
+    *((char *)dst + i) = tmp[i];
   return dst;
   panic("memmove!!Not implemented");
 }
@@ -123,11 +116,11 @@ void *memmove(void *dst, const void *src, size_t n)
 int memcmp(const void *s1, const void *s2, size_t n)
 {
   size_t i = 0;
-  while(((char*)s1)[i] == ((char *)s2)[i] && i < n)
+  while (((char *)s1)[i] == ((char *)s2)[i] && i < n)
   {
     i++;
   }
-  return i == n? 0:((char*)s1)[i] - ((char *)s2)[i];
+  return i == n ? 0 : ((char *)s1)[i] - ((char *)s2)[i];
 }
 
 #endif

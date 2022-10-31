@@ -24,28 +24,19 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg)
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
 {
+  if (ctl->w != 0 && ctl->h != 0)
+  {
     int win_weight = io_read(AM_GPU_CONFIG).width;
-  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  uint32_t *pi = (uint32_t *)(uintptr_t)ctl->pixels;
-  // printf("(x:%d, y:%d) w=%d, h=%d", ctl->x, ctl->y, ctl->w, ctl->h);
-  for (int i = 0; i < ctl->h; ++i){
-    for (int j = 0; j < ctl->w; ++j){
-      fb[(ctl->y) * win_weight + i * win_weight + ctl->x + j] = pi[i * (ctl->w) + j];
+    uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+    uint32_t *p = (uint32_t *)(uintptr_t)ctl->pixels;
+    for (int i = 0; i < ctl->h; ++i)
+    {
+      for (int j = 0; j < ctl->w; ++j)
+      {
+        fb[(ctl->y) * win_weight + i * win_weight + ctl->x + j] = p[i * (ctl->w) + j];
+      }
     }
   }
-  // int i, j, pi = 0, pj = 0;
-  // uint32_t *pixels = ctl->pixels;
-  // uint32_t wh_data = inl(VGACTL_ADDR);
-  // uint32_t width = (wh_data >> 16) & 0xffff;
-  // for (i = ctl->y; pi < ctl->h; ++i, ++pi)
-  // {
-  //   for (j = ctl->x, pj = 0; pj < ctl->w; ++j, ++pj)
-  //   {
-  //     int fb_offset = (i * width + j) * 4;
-  //     int pixel_offset = pi * ctl->w + pj;
-  //     outl(FB_ADDR + fb_offset, *(pixels + pixel_offset));
-  //   }
-  // }
   if (ctl->sync)
   {
     outl(SYNC_ADDR, 1);
