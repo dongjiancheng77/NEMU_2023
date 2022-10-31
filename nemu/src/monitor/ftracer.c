@@ -52,17 +52,7 @@ void load_elf(char *elf_file)
   }
   Elf32_Ehdr *elf_ehdr = elf_buf;
   Elf32_Shdr *symtab_shdr = NULL;
-  for (int i = 0; i < elf_ehdr->e_phnum; ++i)
-  {
-    int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
-    Elf32_Phdr *elf_phdr = elf_buf + phdr_off;
-    if (elf_phdr->p_type == PT_LOAD)
-    {
-      void *seg_ptr = guest_to_host(elf_phdr->p_vaddr);
-      memcpy(seg_ptr, elf_buf + elf_phdr->p_offset, elf_phdr->p_filesz);
-      memset(seg_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
-    }
-  }
+
   Elf32_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
   char *shstrtab_ptr = elf_buf + shstrtab_shdr->sh_offset;
   for (int i = 0; i < elf_ehdr->e_shnum; ++i)
@@ -78,7 +68,6 @@ void load_elf(char *elf_file)
       symtab_shdr = elf_shdr;
     }
   }
-
   char *strtab_ptr = elf_buf + strtab_shdr->sh_offset;
   for (int i = 0; i < symtab_shdr->sh_size; i += symtab_shdr->sh_entsize)
   {
@@ -89,7 +78,6 @@ void load_elf(char *elf_file)
       node_init(strtab_ptr + elf_sym->st_name, elf_sym->st_value, elf_sym->st_size);
     }
   }
-
   // one malloc one free
   return;
 }
