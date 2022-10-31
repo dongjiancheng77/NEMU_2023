@@ -30,7 +30,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl)
   uint32_t width = (wh_data >> 16) & 0xffff;
   for (i = ctl->y; pi < ctl->h; ++i, ++pi)
   {
-    for (j = ctl->x, pj = 0; pj < ctl->w; ++j, ++pj)
+    for (j = ctl->x; pj < ctl->w; ++j, ++pj)
     {
       int fb_offset = (i * width + j) * 4;
       int pixel_offset = pi * ctl->w + pj;
