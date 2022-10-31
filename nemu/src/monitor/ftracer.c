@@ -21,7 +21,6 @@ void node_init(char *name, word_t addr, word_t size)
 }
 functab_node *functab_find(vaddr_t addr)
 {
-
   for (functab_node *ptr = functab_head; ptr; ptr = ptr->next)
   {
     if (ptr->addr <= addr && addr < ptr->addr_end)
@@ -51,7 +50,6 @@ void load_elf(char *elf_file)
   {
     panic("read elf failed!");
   }
-  fclose(elf);
   Elf32_Ehdr *elf_ehdr = elf_buf;
   Elf32_Shdr *symtab_shdr = NULL;
   for (int i = 0; i < elf_ehdr->e_phnum; ++i)
