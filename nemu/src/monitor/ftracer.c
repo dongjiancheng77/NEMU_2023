@@ -1,4 +1,4 @@
-
+// #ifdef CONFIG_FTRACE
 #include <isa.h>
 #include <elf.h>
 #include "ftracer.h"
@@ -40,13 +40,12 @@ void load_elf(char *elf_file)
     // return 4096; // built-in image size
     return;
   }
-
+  printf("====== Reading ELF File ======\n");
   FILE *fp = fopen(elf_file, "rb");
-  Assert(fp, "Can not open '%s'", elf_file);
+
   fseek(fp, 0, SEEK_END);
   long size = ftell(fp);
   void *elf_buf = malloc(size);
-  Log("The elf is %s, size = %ld", elf_file, size);
   fseek(fp, 0, SEEK_SET);
   int succ = fread(elf_buf, size, 1, fp);
   if (succ != 1)
@@ -56,18 +55,18 @@ void load_elf(char *elf_file)
   fclose(fp);
 
   Elf32_Ehdr *elf_ehdr = elf_buf;
-    Elf32_Shdr *symtab_shdr = NULL;
+  Elf32_Shdr *symtab_shdr = NULL;
   for (int i = 0; i < elf_ehdr->e_phnum; ++i)
   {
     int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
     Elf32_Phdr *elf_phdr = elf_buf + phdr_off;
-    if (elf_phdr->p_type != PT_LOAD)
-      continue;
-    void *segment_ptr = guest_to_host(elf_phdr->p_vaddr);
-    memcpy(segment_ptr, elf_buf + elf_phdr->p_offset, elf_phdr->p_filesz);
-    memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
+    if (elf_phdr->p_type == PT_LOAD)
+    {
+      void *segment_ptr = guest_to_host(elf_phdr->p_vaddr);
+      memcpy(segment_ptr, elf_buf + elf_phdr->p_offset, elf_phdr->p_filesz);
+      memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
+    }
   }
-
 
   Elf32_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
   Elf32_Shdr *strtab_shdr = NULL;
@@ -76,15 +75,16 @@ void load_elf(char *elf_file)
   {
     int shdr_off = i * elf_ehdr->e_shentsize + elf_ehdr->e_shoff;
     Elf32_Shdr *elf_shdr = elf_buf + shdr_off;
-    if (elf_shdr->sh_type == SHT_SYMTAB)
-      symtab_shdr = elf_shdr;
-    else if (elf_shdr->sh_type == SHT_STRTAB)
+    switch (elf_shdr->sh_type)
     {
+    case SHT_STRTAB:
       if (strcmp(shstrtab_ptr + elf_shdr->sh_name, ".strtab") == 0)
-      {
         strtab_shdr = elf_shdr;
-      }
+      break;
+    case SHT_SYMTAB:
+      symtab_shdr = elf_shdr;
     }
+
   }
   if (symtab_shdr != NULL)
   {
@@ -104,3 +104,4 @@ void load_elf(char *elf_file)
   // one malloc one free
   return;
 }
+// #endif
