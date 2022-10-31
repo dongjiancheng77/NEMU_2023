@@ -80,7 +80,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
   if (nemu_state.state == NEMU_ABORT)
     ringbuf_display();
 #endif
-#ifdef CONFIG_FTRACE
+// #ifdef CONFIG_FTRACE
   static int tab = 0;
   if (functab_head)
   {
@@ -116,7 +116,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     }
   }
 
-#endif
+// #endif
 #ifdef CONFIG_WATCHPOINT
   wp_state = hook();
   if (wp_state)
