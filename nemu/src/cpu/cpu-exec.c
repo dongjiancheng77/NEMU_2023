@@ -93,7 +93,42 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 
     char *ret = strstr(_this->logbuf, "ret");
     // if (jalr1)
+    //  printf("%s\n", jalr1);
+    if (ret)
+    {
+      // printf("%s\n", jalr1);
+      functab_node *func = functab_find(_this->pc);
+      printf("0x%x:", _this->pc);
+      for (int i = 0; i < tab; ++i)
+        printf(" ");
+      printf("ret  [%s]\n", func ? func->name : "???");
+      tab--;
+    }
+    // call - jal ra, imm or jalr ra, $x
+    else if (jalr1 || jal)
+    {
+      functab_node *func = functab_find(dnpc);
+      printf("0x%08X:", _this->pc);
+      tab++;
+      for (int i = 0; i < tab; ++i)
+        printf(" ");
+      printf("call [%s@0x%x]\n", func ? func->name : "???", dnpc);
+    }
+  }
+#endif
 
+#ifdef CONFIG_WATCHPOINT
+  wp_state = hook();
+  if (wp_state)
+  {
+    nemu_state.state = NEMU_STOP;
+  }
+#endif
+}
+
+static void exec_once(Decode *s, vaddr_t pc)
+{
+  s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
   cpu.pc = s->dnpc;
