@@ -90,7 +90,6 @@ void load_elf(char *elf_file)
     }
   }
 
-  free(elf_buf);
   // one malloc one free
   return;
 }
