@@ -43,6 +43,7 @@ void load_elf(char *elf_file)
   fseek(elf, 0, SEEK_END);
   long size = ftell(elf);
   Elf32_Shdr *strtab_shdr = NULL;
+  Elf32_Shdr *symtab_shdr = NULL;
   void *elf_buf = malloc(size);
   fseek(elf, 0, SEEK_SET);
   int succ = fread(elf_buf, size, 1, elf);
@@ -51,8 +52,6 @@ void load_elf(char *elf_file)
     panic("read elf failed!");
   }
   Elf32_Ehdr *elf_ehdr = elf_buf;
-  Elf32_Shdr *symtab_shdr = NULL;
-
   Elf32_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
   char *shstrtab_ptr = elf_buf + shstrtab_shdr->sh_offset;
   for (int i = 0; i < elf_ehdr->e_shnum; ++i)
