@@ -1,4 +1,4 @@
-#ifdef CONFIG_FTRACE
+
 #include <isa.h>
 #include <elf.h>
 #include "ftracer.h"
@@ -104,4 +104,3 @@ void load_elf(char *elf_file)
   // one malloc one free
   return;
 }
-#endif
