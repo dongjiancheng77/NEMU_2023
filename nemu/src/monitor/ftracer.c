@@ -42,7 +42,7 @@ void load_elf(char *elf_file)
   }
   printf("====== Reading ELF File ======\n");
   FILE *fp = fopen(elf_file, "rb");
-    assert(elf != NULL);
+  assert(elf != NULL);
   fseek(fp, 0, SEEK_END);
   long size = ftell(fp);
   void *elf_buf = malloc(size);
@@ -60,11 +60,12 @@ void load_elf(char *elf_file)
   {
     int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
     Elf32_Phdr *elf_phdr = elf_buf + phdr_off;
-    if (elf_phdr->p_type != PT_LOAD)
-      continue;
-    void *segment_ptr = guest_to_host(elf_phdr->p_vaddr);
-    memcpy(segment_ptr, elf_buf + elf_phdr->p_offset, elf_phdr->p_filesz);
-    memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
+    if (elf_phdr->p_type == PT_LOAD)
+    {
+      void *segment_ptr = guest_to_host(elf_phdr->p_vaddr);
+      memcpy(segment_ptr, elf_buf + elf_phdr->p_offset, elf_phdr->p_filesz);
+      memset(segment_ptr + elf_phdr->p_filesz, 0, elf_phdr->p_memsz - elf_phdr->p_filesz);
+    }
   }
 
   Elf32_Shdr *shstrtab_shdr = (elf_ehdr->e_shstrndx * elf_ehdr->e_shentsize + elf_ehdr->e_shoff) + elf_buf;
@@ -94,13 +95,7 @@ void load_elf(char *elf_file)
       if (ELF32_ST_TYPE(elf_sym->st_info) == STT_FUNC)
       {
         printf("func-symbol: %s \t size:%d \t" FMT_WORD " - " FMT_WORD "\n", strtab_ptr + elf_sym->st_name, elf_sym->st_size, elf_sym->st_value, elf_sym->st_value + elf_sym->st_size);
-          functab_node *newnode = (functab_node *)malloc(sizeof(functab_node));
-  newnode->addr = elf_sym->st_value;
-  newnode->addr_end = elf_sym->st_value + elf_sym->st_size;
-  newnode->name = (char *)malloc(strlen(strtab_ptr + elf_sym->st_name) + 1);
-  strcpy(newnode->name, strtab_ptr + elf_sym->st_name);
-  newnode->next = functab_head;
-  functab_head = newnode;
+        functab_push(strtab_ptr + elf_sym->st_name, elf_sym->st_value, elf_sym->st_size);
       }
     }
   }

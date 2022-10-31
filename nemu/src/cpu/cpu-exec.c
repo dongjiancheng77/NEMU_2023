@@ -92,8 +92,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
     // char *jr = strstr(_this->logbuf, "jr");
 
     char *ret = strstr(_this->logbuf, "ret");
-    //if (jalr1)
-    // printf("%s\n", jalr1);
+    // if (jalr1)
+    //  printf("%s\n", jalr1);
     if (ret)
     {
       // printf("%s\n", jalr1);
@@ -112,7 +112,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
       tab++;
       for (int i = 0; i < tab; ++i)
         printf(" ");
-      printf("call [%s@0x%x]\n",func ? func->name : "???",dnpc);
+      printf("call [%s@0x%x]\n", func ? func->name : "???", dnpc);
     }
   }
 
@@ -232,12 +232,12 @@ void cpu_exec(uint64_t n)
     }
 #endif
   case NEMU_QUIT:
-    #ifdef CONFIG_ITRACE
-        if (nemu_state.state != NEMU_STOP && nemu_state.state != NEMU_QUIT)
-        {
-          ringbuf_display();
-        }
-    #endif
+#ifdef CONFIG_ITRACE
+    if (nemu_state.state != NEMU_STOP && nemu_state.state != NEMU_QUIT)
+    {
+      ringbuf_display();
+    }
+#endif
     statistic();
   }
 }

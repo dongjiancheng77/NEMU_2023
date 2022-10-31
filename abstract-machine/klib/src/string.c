@@ -22,7 +22,6 @@ char *strcpy(char *dst, const char *src)
     dst[i] = src[i];
   }
   dst[i] = '\0';
-
   return dst;
 }
 
@@ -94,7 +93,6 @@ void *memcpy(void *out, const void *in, size_t n)
 {
   const uint8_t *sp = (const uint8_t *)in;
   uint8_t *dp = (uint8_t *)out;
-
   for (; n != 0; n--)
     *dp++ = *sp++;
   return out;
@@ -108,7 +106,6 @@ void *memmove(void *dst, const void *src, size_t n)
 {
   char *char_dst = (char *)dst;
   char *char_src = (char *)src;
-
   if (dst < src)
   {
     for (int i = 0; i < n; ++i)
@@ -119,7 +116,6 @@ void *memmove(void *dst, const void *src, size_t n)
     for (int i = n - 1; i >= 0; --i)
       char_dst[i] = char_src[i];
   }
-
   return dst;
   panic("memmove!!Not implemented");
 }
@@ -132,7 +128,6 @@ int memcmp(const void *s1, const void *s2, size_t n)
     i++;
   }
   return i == n? 0:((char*)s1)[i] - ((char *)s2)[i];
-  
 }
 
 #endif
