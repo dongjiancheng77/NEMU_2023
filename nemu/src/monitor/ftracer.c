@@ -1,4 +1,4 @@
-#ifdef CONFIG_FTRACE
+// #ifdef CONFIG_FTRACE
 #include <isa.h>
 #include <elf.h>
 #include "ftracer.h"
@@ -42,7 +42,7 @@ void load_elf(char *elf_file)
   }
   printf("====== Reading ELF File ======\n");
   FILE *fp = fopen(elf_file, "rb");
-  assert(elf != NULL);
+
   fseek(fp, 0, SEEK_END);
   long size = ftell(fp);
   void *elf_buf = malloc(size);
@@ -104,4 +104,4 @@ void load_elf(char *elf_file)
   // one malloc one free
   return;
 }
-#endif
+// #endif
