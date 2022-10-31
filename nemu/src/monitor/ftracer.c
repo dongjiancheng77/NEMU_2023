@@ -79,7 +79,6 @@ void load_elf(char *elf_file)
     case SHT_SYMTAB:
       symtab_shdr = elf_shdr;
     }
-    break;
   }
 
   char *strtab_ptr = elf_buf + strtab_shdr->sh_offset;
