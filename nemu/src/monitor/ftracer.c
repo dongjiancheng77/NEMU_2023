@@ -40,7 +40,7 @@ void load_elf(char *elf_file)
     // return 4096; // built-in image size
     return;
   }
-  printf("====== Reading ELF File ======\n");
+  // printf("====== Reading ELF File ======\n");
   FILE *fp = fopen(elf_file, "rb");
 
   fseek(fp, 0, SEEK_END);
