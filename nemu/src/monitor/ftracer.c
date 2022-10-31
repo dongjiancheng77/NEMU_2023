@@ -20,14 +20,13 @@ void node_init(char *name, word_t addr, word_t size)
 }
 functab_node *functab_find(vaddr_t addr)
 {
-  functab_node *ptr = functab_head;
-  while (ptr)
+
+  for (functab_node *ptr = functab_head; ptr; ptr = ptr->next)
   {
     if (ptr->addr <= addr && addr < ptr->addr_end)
     {
       return ptr;
     }
-    ptr = ptr->next;
   }
   return NULL;
 }
@@ -43,7 +42,7 @@ void load_elf(char *elf_file)
   FILE *elf = fopen(elf_file, "rb");
   fseek(elf, 0, SEEK_END);
   long size = ftell(elf);
-    Elf32_Shdr *strtab_shdr = NULL;
+  Elf32_Shdr *strtab_shdr = NULL;
   void *elf_buf = malloc(size);
   fseek(elf, 0, SEEK_SET);
   int succ = fread(elf_buf, size, 1, elf);
