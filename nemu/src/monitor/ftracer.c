@@ -43,8 +43,7 @@ void load_elf(char *elf_file)
   FILE *elf = fopen(elf_file, "rb");
   fseek(elf, 0, SEEK_END);
   long size = ftell(elf);
-  Elf32_Shdr *strtab_shdr = NULL;
-  Elf32_Shdr *symtab_shdr = NULL;
+    Elf32_Shdr *strtab_shdr = NULL;
   void *elf_buf = malloc(size);
   fseek(elf, 0, SEEK_SET);
   int succ = fread(elf_buf, size, 1, elf);
@@ -54,6 +53,7 @@ void load_elf(char *elf_file)
   }
   fclose(elf);
   Elf32_Ehdr *elf_ehdr = elf_buf;
+  Elf32_Shdr *symtab_shdr = NULL;
   for (int i = 0; i < elf_ehdr->e_phnum; ++i)
   {
     int phdr_off = i * elf_ehdr->e_phentsize + elf_ehdr->e_phoff;
