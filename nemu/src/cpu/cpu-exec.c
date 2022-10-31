@@ -115,8 +115,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
       printf("call [%s@0x%x]\n", func ? func->name : "???", dnpc);
     }
   }
-
 #endif
+
 #ifdef CONFIG_WATCHPOINT
   wp_state = hook();
   if (wp_state)

@@ -1,9 +1,10 @@
-// #ifdef CONFIG_FTRACE
+
 #include <isa.h>
 #include <elf.h>
 #include "ftracer.h"
 #include <common.h>
 #include <memory/paddr.h>
+#ifdef CONFIG_FTRACE
 functab_node *functab_head;
 /// @brief
 /// @param addr
@@ -95,4 +96,4 @@ void load_elf(char *elf_file)
   // one malloc one free
   return;
 }
-// #endif
+#endif
