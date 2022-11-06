@@ -73,7 +73,6 @@ static long load_img()
   return size;
 }
 
-
 static int parse_args(int argc, char *argv[])
 {
   const struct option table[] = {
@@ -145,13 +144,13 @@ void init_monitor(int argc, char *argv[])
 
   /* Load the image to memory. This will overwrite the built-in image. */
   long img_size = load_img();
-  #ifdef CONFIG_FTRACE
+#ifdef CONFIG_FTRACE
   if (elf_file)
   {
     load_elf(elf_file);
     // img_size = load_elf();
   }
-  #endif
+#endif
   /* Initialize differential testing. */
   init_difftest(diff_so_file, img_size, difftest_port);
 

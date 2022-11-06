@@ -11,10 +11,10 @@ functab_node *functab_head;
 /// @return
 void node_init(char *name, word_t addr, word_t size)
 {
+  newnode->name = (char *)malloc(strlen(name) + 1);
   functab_node *newnode = (functab_node *)malloc(sizeof(functab_node));
   newnode->addr = addr;
   newnode->addr_end = addr + size;
-  newnode->name = (char *)malloc(strlen(name) + 1);
   strcpy(newnode->name, name);
   newnode->next = functab_head;
   functab_head = newnode;
