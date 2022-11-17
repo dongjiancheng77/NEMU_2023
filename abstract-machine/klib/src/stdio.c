@@ -66,7 +66,7 @@ char *itoa(int value, char *str, int radix)
 }
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
 {
-  char buffer[512];
+  char buffer[2048];
   char *str;
   int val, len;
   unsigned int unum;
