@@ -7,7 +7,6 @@
 // #include <string.h>
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
-#define BUF_LEN 256
 
 // itoa()函数把整数转换成字符串，并返回指向转换后的字符串的指针。
 
@@ -67,7 +66,7 @@ char *itoa(int value, char *str, int radix)
 }
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
 {
-  char buffer[256];
+  char buffer[512];
   char *str;
   int val, len;
   unsigned int unum;
