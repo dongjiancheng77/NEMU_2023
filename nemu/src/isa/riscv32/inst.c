@@ -35,7 +35,7 @@ enum
 
 extern CSR_state csr;
 
-word_t *csr_read(int csr_no)
+word_t *csr_read(word_t csr_no)
 {
   switch (csr_no)
   {
@@ -54,8 +54,8 @@ word_t *csr_read(int csr_no)
   case 0x342:
     return &(csr.mcause);
 
-  // case 0x180:
-  //   return &(csr.satp);
+  case 0x180:
+    return &(csr.satp);
 
   default:
     assert(0);
