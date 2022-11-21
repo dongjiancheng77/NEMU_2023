@@ -30,6 +30,9 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 void device_update();
+
+CSR_state csr = {.mstatus.value = 0x1800};
+
 #ifdef CONFIG_ITRACE_COND
 #define RINGBUF_LINES 64
 #define PRINTBUF_SIZE 128

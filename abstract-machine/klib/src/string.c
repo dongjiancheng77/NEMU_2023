@@ -83,10 +83,10 @@ int strncmp(const char *s1, const char *s2, size_t n)
 }
 void *memset(void *s, int c, size_t n)
 {
-  uint8_t *temp = (uint8_t *)s;
+  uint8_t *dp = (uint8_t *)s;
 
   for (; n != 0; n--)
-    *temp++ = c;
+    *dp++ = c;
   return s;
 }
 void *memcpy(void *out, const void *in, size_t n)
@@ -104,11 +104,11 @@ void *memcpy(void *out, const void *in, size_t n)
 // 如果目标区域与源区域没有重叠，则和 memcpy() 函数功能相同。
 void *memmove(void *dst, const void *src, size_t n)
 {
-  char tmp[n];
+  char temp[n];
   for (size_t i = 0; i < n; ++i)
-    tmp[i] = *((char *)src + i);
+    temp[i] = *((char *)src + i);
   for (size_t i = 0; i < n; ++i)
-    *((char *)dst + i) = tmp[i];
+    *((char *)dst + i) = temp[i];
   return dst;
   panic("memmove!!Not implemented");
 }

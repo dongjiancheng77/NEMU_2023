@@ -33,6 +33,35 @@ enum
   TYPE_R1,
 };
 
+extern CSR_state csr;
+
+word_t *csr_read(int csr_no)
+{
+  switch (csr_no)
+  {
+  case 0x300:
+    return &(csr.mstatus.value);
+
+  case 0x305:
+    return &(csr.mtvec);
+
+  case 0x340:
+    return &(csr.mscratch);
+
+  case 0x341:
+    return &(csr.mepc);
+
+  case 0x342:
+    return &(csr.mcause);
+
+  case 0x180:
+    return &(csr.satp);
+
+  default:
+    assert(0);
+  }
+}
+
 #define src1R()     \
   do                \
   {                 \
@@ -172,7 +201,15 @@ static int decode_exec(Decode *s)
   INSTPAT("0000001 ????? ????? 101 ????? 01100 11", divu, R1, R(dest) = ((uint32_t)src1) / ((uint32_t)src2));
   INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem, R1, R(dest) = ((int32_t)src1) % ((int32_t)src2));
   INSTPAT("0000001 ????? ????? 111 ????? 01100 11", remu, R1, R(dest) = ((uint32_t)src1) % ((uint32_t)src2));
+
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak, N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall, I, R(dest) = ((uint32_t)src1 >> (uint32_t)(imm & 0x0000001F)));
+
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret, R1, s->dnpc = *csr_read(0x341));
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrs, I, word_t t = *csr_read(imm); *csr_read(imm) = src1 | t; R(dest) = t;);
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw, I, *csr_read(imm) = src1; word_t t = *csr_read(imm); R(dest) = t;);
+
+  INSTPAT("0000000 ????? ????? 101 ????? 00100 11", srli, I, R(dest) = ((uint32_t)src1 >> (uint32_t)(imm & 0x0000001F)));
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv, N, INV(s->pc));
 
   INSTPAT_END();
