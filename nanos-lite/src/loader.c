@@ -30,13 +30,6 @@ static uintptr_t loader(PCB *pcb, const char *filename)
     uintptr_t vpage_end = (phdr.p_vaddr + phdr.p_memsz - 1) & (~0xfff);
     int page_num = ((vpage_end - vpage_start) >> 12) + 1;
     uintptr_t page_ptr = (uintptr_t)new_page(page_num);
-    for (int j = 0; j < page_num; ++j)
-    {
-      map(&pcb->as,
-          (void *)(vpage_start + (j << 12)),
-          (void *)(page_ptr + (j << 12)),
-          MMAP_READ | MMAP_WRITE);
-    }
     void *page_off = (void *)(phdr.p_vaddr & 0xfff);
     fs_lseek(fd, phdr.p_offset, SEEK_SET);
     fs_read(fd, page_ptr + page_off, phdr.p_filesz);
