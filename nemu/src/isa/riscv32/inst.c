@@ -33,36 +33,36 @@ enum
   TYPE_R1,
 };
 
-extern CSR_state csr;
+// extern CSR_state csr;
 
-word_t csr_read(word_t csr_no, word_t src1)
+word_t csr_read(word_t cpu_no, word_t src1)
 {
   word_t t = 0;
-  switch (csr_no)
+  switch (cpu_no)
   {
   case 0x300:
-    t = csr.mstatus.value;
-    csr.mstatus.value = src1;
+    t = cpu.mstatus.value;
+    cpu.mstatus.value = src1;
     return t;
 
   case 0x305:
-    t = csr.mtvec;
-    csr.mtvec = src1;
+    t = cpu.mtvec;
+    cpu.mtvec = src1;
     return t;
 
   case 0x340:
-    t = csr.mscratch;
-    csr.mscratch = src1;
+    t = cpu.mscratch;
+    cpu.mscratch = src1;
     return t;
 
   case 0x341:
-    t = csr.mepc;
-    csr.mepc = t;
+    t = cpu.mepc;
+    cpu.mepc = t;
     return t;
 
   case 0x342:
-    t = csr.mcause;
-    csr.mcause = t | src1;
+    t = cpu.mcause;
+    cpu.mcause = t | src1;
     return t;
   }
   return t;
@@ -74,28 +74,28 @@ word_t csr_read1(word_t csr_no, word_t src1)
   switch (csr_no)
   {
   case 0x300:
-    t = csr.mstatus.value;
-    csr.mstatus.value = t | src1;
+    t = cpu.mstatus.value;
+    cpu.mstatus.value = t | src1;
     return t;
 
   case 0x305:
-    t = csr.mtvec;
-    csr.mtvec = t | src1;
+    t = cpu.mtvec;
+    cpu.mtvec = t | src1;
     return t;
 
   case 0x340:
-    t = csr.mscratch;
-    csr.mscratch = t | src1;
+    t = cpu.mscratch;
+    cpu.mscratch = t | src1;
     return t;
 
   case 0x341:
-    t = csr.mepc;
-    csr.mepc = t | src1;
+    t = cpu.mepc;
+    cpu.mepc = t | src1;
     return t;
 
   case 0x342:
-    t = csr.mcause;
-    csr.mcause = t | src1;
+    t = cpu.mcause;
+    cpu.mcause = t | src1;
     return t;
 
     // case 0x180:
