@@ -7,8 +7,7 @@ static Context *(*user_handler)(Event, Context *) = NULL;
 Context *__am_irq_handle(Context *c)
 {
   // TODO:
-  printf("__am_irq_handle 1 c->pdir内容地址修改前 页表项:%p\t上下文地址%p\t所在栈帧:%p\n", c->pdir, c, &c);
-  printf("设置c->np为%d\n", c->np);
+  printf("1 页表项:%p\t上下文地址%p\t栈帧:%p\n", c->pdir, c, &c);
   if (user_handler)
   {
     Event ev = {0};
@@ -31,7 +30,6 @@ Context *__am_irq_handle(Context *c)
       c->mepc += 4;
       break;
 
-      break;
     default:
       ev.event = EVENT_ERROR;
       break;
@@ -40,9 +38,6 @@ Context *__am_irq_handle(Context *c)
     c = user_handler(ev, c);
     assert(c != NULL);
   }
-  printf("__am_irq_handle 2 c->pdir内容地址修改后 页表项:%p\t上下文地址%p\t所在栈帧:%p\n", c->pdir, c, &c);
-
-  printf("c->np为%d\n", c->np);
   return c;
 }
 

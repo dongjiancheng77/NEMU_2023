@@ -6,7 +6,6 @@ struct Context {
   uintptr_t gpr[32];
   uintptr_t mcause, mstatus, mepc;
   void *pdir;
-  uintptr_t np;
 };
 
 #define GPR1 gpr[17] // a7
