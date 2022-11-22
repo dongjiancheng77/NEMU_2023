@@ -23,7 +23,7 @@ typedef struct {
   vaddr_t pc;
 } riscv32_CPU_state;
 
-typedef struct { // 自行添加，但并不知道是否会引起问题
+typedef struct {
   word_t mepc;
   word_t mtvec;
   union {
