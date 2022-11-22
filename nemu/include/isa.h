@@ -24,8 +24,6 @@
 typedef concat(__GUEST_ISA__, _CPU_state) CPU_state;
 typedef concat(__GUEST_ISA__, _ISADecodeInfo) ISADecodeInfo;
 
-typedef concat(__GUEST_ISA__, _CSR_state) CSR_state;
-
 // monitor
 extern char isa_logo[];
 void init_isa();

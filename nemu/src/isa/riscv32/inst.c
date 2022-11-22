@@ -33,29 +33,27 @@ enum
   TYPE_R1,
 };
 
-extern CSR_state csr;
-
 word_t *csr_read(word_t csr_no)
 {
   switch (csr_no)
   {
   case 0x300:
-    return &(csr.mstatus.value);
+    return &(cpu.mstatus.value);
 
   case 0x305:
-    return &(csr.mtvec);
+    return &(cpu.mtvec);
 
   case 0x340:
-    return &(csr.mscratch);
+    return &(cpu.mscratch);
 
   case 0x341:
-    return &(csr.mepc);
+    return &(cpu.mepc);
 
   case 0x342:
-    return &(csr.mcause);
+    return &(cpu.mcause);
 
   case 0x180:
-    return &(csr.satp);
+    return &(cpu.satp);
 
   default:
     assert(0);

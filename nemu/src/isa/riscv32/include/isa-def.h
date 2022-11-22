@@ -21,10 +21,7 @@
 typedef struct {
   word_t gpr[32];
   vaddr_t pc;
-} riscv32_CPU_state;
-
-typedef struct { // 自行添加，但并不知道是否会引起问题
-  word_t mepc;
+    word_t mepc;
   word_t mtvec;
   union {
     struct{
@@ -55,9 +52,8 @@ typedef struct { // 自行添加，但并不知道是否会引起问题
   word_t mcause; 
   word_t satp;
   word_t mscratch;
-} riscv32_CSR_state;
+} riscv32_CPU_state;
 
-extern riscv32_CSR_state csr;
 
 // decode
 typedef struct {
