@@ -13,10 +13,11 @@ size_t ramdisk_read(void *buf, size_t offset, size_t len);
 size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 static uintptr_t loader(PCB *pcb, const char *filename)
 {
-  TODO();
+  // TODO();
   Elf_Ehdr ehdr;
-  Elf_Phdr phdr[ehdr.e_phnum];
+
   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
+  Elf_Phdr phdr[ehdr.e_phnum];
   ramdisk_read(phdr, ehdr.e_ehsize, sizeof(Elf_Ehdr));
   for (int i = 0; i < ehdr.e_phnum; ++i)
   {
@@ -24,7 +25,7 @@ static uintptr_t loader(PCB *pcb, const char *filename)
     {
       ramdisk_read((void *)phdr[i].p_vaddr, phdr[i].p_offset, phdr[i].p_memsz);
       memset((void *)phdr[i].p_vaddr + phdr[i].p_filesz, 0,
-             phdr[i].p_memsz-phdr[i].p_filesz);
+             phdr[i].p_memsz - phdr[i].p_filesz);
     }
   }
   return ehdr.e_entry;
