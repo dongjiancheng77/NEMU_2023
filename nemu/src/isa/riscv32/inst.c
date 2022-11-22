@@ -41,8 +41,8 @@ word_t csr_read(word_t cpu_no, word_t src1)
   switch (cpu_no)
   {
   case 0x300:
-    t = cpu.mstatus.value;
-    cpu.mstatus.value = src1;
+    t = cpu.mstatus;
+    cpu.mstatus = src1;
     return t;
 
   case 0x305:
@@ -74,8 +74,8 @@ word_t csr_read1(word_t csr_no, word_t src1)
   switch (csr_no)
   {
   case 0x300:
-    t = cpu.mstatus.value;
-    cpu.mstatus.value = t | src1;
+    t = cpu.mstatus;
+    cpu.mstatus = t | src1;
     return t;
 
   case 0x305:
