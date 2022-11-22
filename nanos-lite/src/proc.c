@@ -33,22 +33,6 @@ void init_proc()
 
 Context *schedule(Context *prev)
 {
-  // static int prio_count = 0;
-  // current->cp = prev;
-  // assert(1 <= fg_pcb);
-  // assert(fg_pcb <= 3);
-  // if (prio_count < 100)
-  // {
-  //   prio_count++;
-  //   current = &pcb[fg_pcb];
-  // }
-  // else
-  // {
-  //   prio_count = 0;
-  //   current = &pcb[0];
-  // }
-  // // Log("schedule %p(updir %p) -> %p(updir %p)", prev, prev->pdir, current->cp, current->cp->pdir);
-  // return current->cp;
 
   return NULL;
 }
