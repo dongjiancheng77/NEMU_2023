@@ -7,7 +7,7 @@ static Context *(*user_handler)(Event, Context *) = NULL;
 Context *__am_irq_handle(Context *c)
 {
   // TODO:
-  // printf("1 页表项:%p\t上下文地址%p\t栈帧:%p\n", c->pdir, c, &c);
+  // printf("页表项:%p\t上下文地址%p\t栈帧:%p\n", c->pdir, c, &c);
   if (user_handler)
   {
     Event ev = {0};

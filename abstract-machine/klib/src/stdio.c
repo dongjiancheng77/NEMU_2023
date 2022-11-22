@@ -142,7 +142,6 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
           buffer[len] = "0123456789ABCDEF"[pointer % 16];
         for (int k = 0; k < 8 - len; ++k)
           out[j++] = '0';
-
         for (int k = len - 1; k >= 0; --k)
           out[j++] = buffer[k];
         break;
