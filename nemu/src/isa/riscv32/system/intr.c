@@ -25,14 +25,6 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc)
   cpu.mstatus.m.MPIE = cpu.mstatus.m.MIE;
   cpu.mstatus.m.MIE = 0;
   return cpu.mtvec;
-  // cpu.mepc = epc;
-  // cpu.mcause = NO;
-  // GET_MSTATUS(mstatus);
-  // mstatus.mpie = mstatus.mie;
-  // mstatus.mie = 0;
-  // SET_MSTATUS(mstatus);
-  // return cpu.mtvec;
-  // return 0;
 }
 
 word_t isa_query_intr()
