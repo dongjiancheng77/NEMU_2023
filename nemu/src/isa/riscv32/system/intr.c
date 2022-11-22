@@ -23,7 +23,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc)
   cpu.mepc = epc;
   cpu.mcause = NO;
 #ifdef CONFIG_ETRACE
-  Log("etrace: MIE = 0 %d",NO);
+  Log("etrace: MIE = 0 ,NO=%d,epc=%d",NO,epc);
 #endif
       return cpu.mtvec;
 }
