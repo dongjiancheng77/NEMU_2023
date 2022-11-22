@@ -6,7 +6,7 @@ static Context *(*user_handler)(Event, Context *) = NULL;
 
 Context *__am_irq_handle(Context *c)
 {
-  printf("__am_irq_handle c->pdir内容地址修改前 页表项:%p\t上下文地址%p\t所在栈帧:%p\n", c->pdir, c, &c);
+  printf("__am_irq_handle 1 c->pdir内容地址修改前 页表项:%p\t上下文地址%p\t所在栈帧:%p\n", c->pdir, c, &c);
   printf("设置c->np为%d\n", c->np);
   if (user_handler)
   {
@@ -21,7 +21,7 @@ Context *__am_irq_handle(Context *c)
     c = user_handler(ev, c);
     assert(c != NULL);
   }
-  printf("__am_irq_handle c->pdir内容地址修改后 页表项:%p\t上下文地址%p\t所在栈帧:%p\n", c->pdir, c, &c);
+  printf("__am_irq_handle 2 c->pdir内容地址修改后 页表项:%p\t上下文地址%p\t所在栈帧:%p\n", c->pdir, c, &c);
 
   printf("c->np为%d\n", c->np);
   return c;
