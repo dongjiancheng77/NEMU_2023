@@ -16,7 +16,7 @@ Context *__am_irq_handle(Context *c)
     {
     case (11):
     case (8):
-    // case -1:
+    case -1:
     // TODO:
       printf("c->GPR1 = %d \n", c->GPR1);
 
