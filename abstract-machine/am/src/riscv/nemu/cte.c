@@ -15,6 +15,7 @@ Context *__am_irq_handle(Context *c)
     {
     case (11):
     case (8):
+    case -1:
       printf("c->GPR1 = %d \n", c->GPR1);
 
       ev.event = EVENT_YIELD;
