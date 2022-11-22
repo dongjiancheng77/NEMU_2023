@@ -57,12 +57,12 @@ word_t csr_read(word_t cpu_no, word_t src1)
 
   case 0x341:
     t = cpu.mepc;
-    cpu.mepc = t;
+    cpu.mepc = src1;
     return t;
 
   case 0x342:
     t = cpu.mcause;
-    cpu.mcause = t | src1;
+    cpu.mcause = src1;
     return t;
   }
   return t;
