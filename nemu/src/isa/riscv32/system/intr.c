@@ -23,9 +23,9 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc)
   cpu.mepc = epc;
   cpu.mcause = NO;
 #ifdef CONFIG_ETRACE
-  Log("ETrace: @0x%08lX STATUS:" FMT_WORD "->" FMT_WORD ", CAUSE:" FMT_WORD, epc, cpu.mstatus, mstatus.val, NO);
+  Log("etrace: MIE = 0 %d",NO);
 #endif
-  return cpu.mtvec;
+      return cpu.mtvec;
 }
 
 word_t isa_query_intr()
