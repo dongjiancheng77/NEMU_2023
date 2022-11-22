@@ -5,7 +5,7 @@ static Context *do_event(Event e, Context *c)
   switch (e.event)
   {
   case EVENT_YIELD:
-    printf("EVENT_YIELD\n");
+    // printf("EVENT_YIELD\n");
     // return schedule(c);
     break;
   default:
