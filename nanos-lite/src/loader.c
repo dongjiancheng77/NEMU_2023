@@ -12,7 +12,7 @@
 
 static uintptr_t loader(PCB *pcb, const char *filename)
 {
-  TODO();
+  // TODO();
   Elf_Ehdr ehdr, *ptr_ehdr = &ehdr;
   Elf_Phdr phdr, *ptr_phdr = &phdr;
   uint32_t i, phoff;
