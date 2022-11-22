@@ -17,10 +17,19 @@ Context *__am_irq_handle(Context *c)
     case (11):
     case (8):
     case -1:
-    // TODO:
+      // TODO:
       printf("c->GPR1 = %d \n", c->GPR1);
 
-      ev.event = EVENT_YIELD;
+      if (c->GPR1 == -1)
+      { // 特指-1
+        ev.event = EVENT_YIELD;
+      }
+      else
+      {
+        ev.event = EVENT_SYSCALL;
+      }
+      c->mepc += 4;
+      break;
 
       break;
     default:
