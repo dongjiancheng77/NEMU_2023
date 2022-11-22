@@ -35,76 +35,76 @@ enum
 
 // extern CSR_state csr;
 
-word_t csr_read(word_t cpu_no, word_t src1)
-{
-  word_t t = 0;
-  switch (cpu_no)
-  {
-  case 0x300:
-    t = cpu.mstatus;
-    cpu.mstatus = src1;
-    return t;
+// word_t csr_read(word_t cpu_no, word_t src1)
+// {
+//   word_t t = 0;
+//   switch (cpu_no)
+//   {
+//   case 0x300:
+//     t = cpu.mstatus;
+//     cpu.mstatus = src1;
+//     return t;
 
-  case 0x305:
-    t = cpu.mtvec;
-    cpu.mtvec = src1;
-    return t;
+//   case 0x305:
+//     t = cpu.mtvec;
+//     cpu.mtvec = src1;
+//     return t;
 
-  case 0x340:
-    t = cpu.mscratch;
-    cpu.mscratch = src1;
-    return t;
+//   case 0x340:
+//     t = cpu.mscratch;
+//     cpu.mscratch = src1;
+//     return t;
 
-  case 0x341:
-    t = cpu.mepc;
-    cpu.mepc = src1;
-    return t;
+//   case 0x341:
+//     t = cpu.mepc;
+//     cpu.mepc = src1;
+//     return t;
 
-  case 0x342:
-    t = cpu.mcause;
-    cpu.mcause = src1;
-    return t;
-  }
-  return t;
-}
+//   case 0x342:
+//     t = cpu.mcause;
+//     cpu.mcause = src1;
+//     return t;
+//   }
+//   return t;
+// }
 
-word_t csr_read1(word_t csr_no, word_t src1)
-{
-  word_t t = 0;
-  switch (csr_no)
-  {
-  case 0x300:
-    t = cpu.mstatus;
-    cpu.mstatus = t | src1;
-    return t;
+// word_t csr_read1(word_t csr_no, word_t src1)
+// {
+//   word_t t = 0;
+//   switch (csr_no)
+//   {
+//   case 0x300:
+//     t = cpu.mstatus;
+//     cpu.mstatus = t | src1;
+//     return t;
 
-  case 0x305:
-    t = cpu.mtvec;
-    cpu.mtvec = t | src1;
-    return t;
+//   case 0x305:
+//     t = cpu.mtvec;
+//     cpu.mtvec = t | src1;
+//     return t;
 
-  case 0x340:
-    t = cpu.mscratch;
-    cpu.mscratch = t | src1;
-    return t;
+//   case 0x340:
+//     t = cpu.mscratch;
+//     cpu.mscratch = t | src1;
+//     return t;
 
-  case 0x341:
-    t = cpu.mepc;
-    cpu.mepc = t | src1;
-    return t;
+//   case 0x341:
+//     t = cpu.mepc;
+//     cpu.mepc = t | src1;
+//     return t;
 
-  case 0x342:
-    t = cpu.mcause;
-    cpu.mcause = t | src1;
-    return t;
+//   case 0x342:
+//     t = cpu.mcause;
+//     cpu.mcause = t | src1;
+//     return t;
 
-    // case 0x180:
-    //   return &(csr.satp);
+//     // case 0x180:
+//     //   return &(csr.satp);
 
-  default:
-    assert(0);
-  }
-}
+//   default:
+//     assert(0);
+//   }
+// }
 
 #define src1R()     \
   do                \
