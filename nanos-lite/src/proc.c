@@ -37,3 +37,13 @@ Context *schedule(Context *prev)
 
   return NULL;
 }
+
+void exit(int status)
+{
+  // if (status == 0)
+  // {
+  //   execve("/bin/nterm", NULL, NULL);
+  // }
+  // else
+  //   halt(status);
+}
