@@ -37,13 +37,48 @@ Context *schedule(Context *prev)
 
   return NULL;
 }
-
-void exit(int status)
+int execve(const char *pathname, char *const argv[], char *const envp[])
 {
-  // if (status == 0)
+  // // char *envp1[] = {NULL};
+  // // printf("execve pathname is %s\n", pathname);
+  // int fd = fs_open(pathname, 0, 0);
+  // if (fd == -1)
   // {
-  //   execve("/bin/nterm", NULL, NULL);
+  //   return -1;
   // }
   // else
-  //   halt(status);
+  //   fs_close(fd);
+
+  // // char* pathname2 = "/bin/pal";
+  // // printf("brk is %p\n",heap_brk);
+  // // naive_uload(NULL, pathname);
+  // // if (argv != NULL)
+  // //   for (int i = 0; argv[i] != NULL; ++i)
+  // //     printf("argv%d is %s\n", i, argv[i]);
+  // // if (envp != NULL)
+  // //   for (int i = 0; envp[i] != NULL; ++i)
+  // //     printf("envp%d is %s\n", i, envp[i]);
+
+  // // printf("envp %s\n", envp[0]);
+  // current->cp = context_uload(current, (char *)pathname, argv, envp);
+  // NR_PROC--;
+  // assert(NR_PROC >= 0 && NR_PROC <= MAX_NR_PROC);
+  // switch_boot_pcb();
+  // // printf("yield for execve\n");
+  // // printf("return ctx address is %p\n", pcb[1].cp);
+  // // pre_process();
+  // yield();
+  // // printf("return address is %p\n", pcb[1].cp);
+  // // schedule(NULL);
+
+  return 0;
+}
+void exit(int status)
+{
+  if (status == 0)
+  {
+    execve("/bin/nterm", NULL, NULL);
+  }
+  else
+    halt(status);
 }
