@@ -75,10 +75,10 @@ int execve(const char *pathname, char *const argv[], char *const envp[])
 }
 void exit(int status)
 {
-  if (status == 0)
-  {
-    execve("/bin/nterm", NULL, NULL);
-  }
-  else
+  // if (status == 0)
+  // {
+  //   execve("/bin/nterm", NULL, NULL);
+  // }
+  // else
     halt(status);
 }
