@@ -16,9 +16,9 @@ void sys_execve(Context *c)
 
 void sys_brk(Context *c)
 {
-  uintptr_t addr = (uintptr_t)(c->GPR2);
-  c->GPRx = mm_brk(addr);
-  // c->GPRx = 0;
+  // uintptr_t addr = (uintptr_t)(c->GPR2);
+  // c->GPRx = mm_brk(addr);
+  c->GPRx = 0;
 }
 
 void do_syscall(Context *c)
