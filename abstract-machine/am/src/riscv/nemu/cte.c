@@ -18,13 +18,14 @@ Context *__am_irq_handle(Context *c)
     case 0 ... 19:
     case -1:
       if (c->GPR1 == -1)
+      { // 特指-1
         ev.event = EVENT_YIELD;
+      }
       else
       {
         ev.event = EVENT_SYSCALL;
-        // printf("sys");
       }
-
+      c->mepc += 4;
       break;
 
     default:
