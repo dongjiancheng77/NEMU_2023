@@ -93,13 +93,23 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
 
       case 'x':
         unum = va_arg(ap, unsigned int);
-        uitoa(unum, str, 10);
-        k = 0;
-        while (str[k] != '\0')
+        // uitoa(unum, str, 10);
+        // k = 0;
+        // while (str[k] != '\0')
+        // {
+        //   out[j++] = str[k++];
+        // }
+        if (unum == 0)
         {
-          out[j++] = str[k++];
+          out[j++] = '0';
+          break;
         }
+        for (len = 0; unum;unum /= 10, ++len)
+          buffer[len] = unum % 10 + '0';
+        for (int k = len - 1; k >= 0; --k)
+          out[j++] = buffer[k];
         break;
+
       case 'c':
         out[j++] = va_arg(ap, int);
         break;
@@ -146,8 +156,8 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap)
           out[j++] = buffer[k];
         break;
 
-      // default:
-      //   assert(0);
+        // default:
+        //   assert(0);
       }
       state = true;
     }
