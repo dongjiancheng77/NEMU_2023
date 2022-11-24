@@ -39,7 +39,7 @@ void do_syscall(Context *c)
     break;
   case SYS_exit:
       printf("dd1");
-    exit(a[1]);
+    exit(a[0]);
         printf("dd");
     // c->GPRx = 0;
     // naive_uload(NULL, "/bin/nterm");
