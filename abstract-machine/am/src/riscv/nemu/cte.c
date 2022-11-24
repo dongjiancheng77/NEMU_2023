@@ -16,6 +16,7 @@ Context *__am_irq_handle(Context *c)
     {
 
     case 11:
+    case -1:
       if (c->GPR1 == -1)
         ev.event = EVENT_YIELD;
       else
