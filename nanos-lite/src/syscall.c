@@ -38,9 +38,9 @@ void do_syscall(Context *c)
     c->GPRx = 0;
     break;
   case SYS_exit:
-      printf("dd1");
-    exit(a[0]);
-        printf("dd");
+      // printf("dd1");
+    exit(0);
+        // printf("dd");
     // c->GPRx = 0;
     // naive_uload(NULL, "/bin/nterm");
     // c->GPRx = 0;
