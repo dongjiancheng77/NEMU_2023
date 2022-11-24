@@ -15,7 +15,7 @@ Context *__am_irq_handle(Context *c)
     switch (c->mcause)
     {
 
-    // case 0 ... 19:
+    case 0 ... 19:
     case -1:
       if (c->GPR1 == -1)
       { // 特指-1
