@@ -38,12 +38,12 @@ void do_syscall(Context *c)
   case SYS_exit:
     exit(a[1]);      c->GPRx = a[1];
     break;
-  case SYS_brk:
-    sys_brk(c);
-    break;
-  case SYS_execve:
-    sys_execve(c);
-    break;
+  // case SYS_brk:
+  //   sys_brk(c);
+  //   break;
+  // case SYS_execve:
+  //   sys_execve(c);
+  //   break;
   case SYS_write:
     c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
     // char *x = (char *)c->GPR3;
