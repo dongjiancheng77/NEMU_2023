@@ -33,7 +33,7 @@ void do_syscall(Context *c)
   switch (a[0])
   {
   case SYS_yield:
-    // printf("dd");
+    printf("dd");
     yield();
     c->GPRx = 0;
     break;

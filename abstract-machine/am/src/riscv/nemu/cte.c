@@ -19,9 +19,13 @@ Context *__am_irq_handle(Context *c)
     case -1:
       if (c->GPR1 == -1)
         ev.event = EVENT_YIELD;
-      else{ev.event = EVENT_SYSCALL;printf("sys");}
-        
-      break; 
+      else
+      {
+        ev.event = EVENT_SYSCALL;
+        // printf("sys");
+      }
+
+      break;
 
     default:
       ev.event = EVENT_ERROR;
