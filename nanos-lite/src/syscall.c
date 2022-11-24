@@ -40,6 +40,8 @@ void do_syscall(Context *c)
   case SYS_exit:
     exit(a[1]);
     // c->GPRx = 0;
+    // naive_uload(NULL, "/bin/nterm");
+    // c->GPRx = 0;
     break;
   // case SYS_brk:
   //   sys_brk(c);
