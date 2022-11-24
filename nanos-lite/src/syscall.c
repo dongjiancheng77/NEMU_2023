@@ -36,7 +36,7 @@ void do_syscall(Context *c)
     c->GPRx = 0;
     break;
   case SYS_exit:
-    exit(a[1]);
+    exit(a[1]);      c->GPRx = a[1];
     break;
   case SYS_brk:
     sys_brk(c);
