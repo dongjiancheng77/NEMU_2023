@@ -23,7 +23,7 @@ void sys_brk(Context *c)
 
 void do_syscall(Context *c)
 {
-  printf("dd");
+  // printf("dd");
   uintptr_t a[4];
   a[0] = c->GPR1;
   a[1] = c->GPR2;
@@ -33,6 +33,7 @@ void do_syscall(Context *c)
   switch (a[0])
   {
   case SYS_yield:
+  printf("dd");
     yield();
     c->GPRx = 0;
     break;
