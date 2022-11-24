@@ -29,7 +29,7 @@ void do_syscall(Context *c)
   a[1] = c->GPR2;
   a[2] = c->GPR3;
   a[3] = c->GPR4;
-  // printf("STRACE: [#%d]( %d, %d, %d )\n", a[0], a[1], a[2], a[3]);
+  printf("STRACE: [#%d]( %d, %d, %d )\n", a[0], a[1], a[2], a[3]);
   switch (a[0])
   {
   case SYS_yield:
@@ -39,7 +39,7 @@ void do_syscall(Context *c)
     break;
   case SYS_exit:
     exit(a[1]);
-    c->GPRx = 0;
+    // c->GPRx = 0;
     break;
   // case SYS_brk:
   //   sys_brk(c);
