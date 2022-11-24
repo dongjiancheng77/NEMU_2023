@@ -29,7 +29,7 @@ void do_syscall(Context *c)
   a[1] = c->GPR2;
   a[2] = c->GPR3;
   a[3] = c->GPR4;
-  Log("System call trace\nmcause\t\tGPR1\t\tGPR2\t\tGPR3\t\tGPR4 \n0x%x\t\t%d\t\t0x%x\t\t0x%x\t\t0x%x",
+  Log("System call trace\nmcause\t\tGPR1\t\tGPR2\t\tGPR3\t\tGPR4 \n%d\t\t%d\t\t%d\t\t%x\t\t%d",
       c->mcause, c->GPR1, c->GPR2, c->GPR3, c->GPR4);
   switch (a[0])
   {
