@@ -16,9 +16,9 @@ void sys_execve(Context *c)
 
 void sys_brk(Context *c)
 {
-  // uintptr_t addr = (uintptr_t)(c->GPR2);
-  // c->GPRx = mm_brk(addr);
-  c->GPRx = 0;
+  uintptr_t addr = (uintptr_t)(c->GPR2);
+  c->GPRx = mm_brk(addr);
+  // c->GPRx = 0;
 }
 
 void do_syscall(Context *c)
@@ -45,10 +45,10 @@ void do_syscall(Context *c)
     sys_execve(c);
     break;
   case SYS_write:
-    // c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
-    char *x = (char *)c->GPR3;
-    for (int i = 0; i < c->GPR4; i++)
-      putch(*x++);
+    c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
+    // char *x = (char *)c->GPR3;
+    // for (int i = 0; i < c->GPR4; i++)
+    //   putch(*x++);
     break;
   default:
     panic("Unhandled syscall ID = %d", a[0]);
