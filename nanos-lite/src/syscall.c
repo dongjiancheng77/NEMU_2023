@@ -52,8 +52,8 @@ void do_syscall(Context *c)
   //   sys_execve(c);
   //   break;
   case SYS_write:
-    TODO();
-    // printf("11");
+    // TODO();
+    printf("11");
     // c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
     char *x = (char *)a[2];
     for (int i = 0; i < a[3]; i++)
