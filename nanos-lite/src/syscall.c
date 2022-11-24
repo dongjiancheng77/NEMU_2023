@@ -23,6 +23,7 @@ void sys_brk(Context *c)
 
 void do_syscall(Context *c)
 {
+  printf("dd");
   uintptr_t a[4];
   a[0] = c->GPR1;
   a[1] = c->GPR2;
