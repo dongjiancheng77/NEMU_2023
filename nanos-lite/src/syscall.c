@@ -29,7 +29,8 @@ void do_syscall(Context *c)
   a[1] = c->GPR2;
   a[2] = c->GPR3;
   a[3] = c->GPR4;
-  printf("STRACE: [#%d]( %d, %d, %d )\n", a[0], a[1], a[2], a[3]);
+  Log("System call trace\nmcause\t\tGPR1\t\tGPR2\t\tGPR3\t\tGPR4 \n0x%x\t%d\t\t0x%x\t\t0x%x\t\t0x%x",
+      c->mcause, c->GPR1, c->GPR2, c->GPR3, c->GPR4);
   switch (a[0])
   {
   case SYS_yield:
@@ -38,9 +39,9 @@ void do_syscall(Context *c)
     c->GPRx = 0;
     break;
   case SYS_exit:
-      printf("dd1");
+    printf("dd1");
     exit(0);
-        // printf("dd");
+    // printf("dd");
     // c->GPRx = 0;
     // naive_uload(NULL, "/bin/nterm");
     // c->GPRx = 0;
