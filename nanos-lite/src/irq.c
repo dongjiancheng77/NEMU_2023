@@ -10,7 +10,7 @@ static Context *do_event(Event e, Context *c)
     // return schedule(c);
     break;
   case EVENT_SYSCALL:
-  // printf("EVENT_SYSCALL\n");
+    // printf("EVENT_SYSCALL\n");
     do_syscall(c);
     // printf("EVENT_SYSCALL\n");
     break;
