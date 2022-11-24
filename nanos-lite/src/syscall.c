@@ -38,7 +38,7 @@ void do_syscall(Context *c)
     c->GPRx = 0;
     break;
   case SYS_exit:
-      // printf("dd1");
+      printf("dd1");
     exit(0);
         // printf("dd");
     // c->GPRx = 0;
