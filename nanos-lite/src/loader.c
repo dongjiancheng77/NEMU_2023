@@ -61,7 +61,7 @@ static uintptr_t loader(PCB *pcb, const char *filename)
             MMAP_READ | MMAP_WRITE);
         // Log("map 0x%8lx -> 0x%8lx", vpage_start + (j << 12), page_ptr    + (j << 12));
       }
-      printf("%d", vpage_end);
+      // printf("%d", vpage_end);
       // TODO();
       void *page_off = (void *)(phdr.p_vaddr & 0xfff); // we need the low 12 bit
       // printf("1%d", vpage_end);
