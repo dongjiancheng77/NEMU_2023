@@ -16,8 +16,9 @@ void sys_execve(Context *c)
 
 void sys_brk(Context *c)
 {
-  uintptr_t addr = (uintptr_t)(c->GPR2);
-  c->GPRx = mm_brk(addr);
+  // uintptr_t addr = (uintptr_t)(c->GPR2);
+  // c->GPRx = mm_brk(addr);
+    c->GPRx = 0;
 }
 
 void do_syscall(Context *c)
@@ -64,21 +65,15 @@ void do_syscall(Context *c)
     c->GPRx = fs_lseek(a[1], a[2], a[3]);
     break;
   case SYS_write:
-    int fd = c->GPR2;
-    char *buf = (char *)c->GPR3;
-    int count = c->GPR4;
-    if (fd == 1 || fd == 2)
-    {
-      for (int i = 0; i < count; i++)
-      {
-        putch(*buf++);
-      }
-    }
-    else
-    {
-      count = fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
-    }
-    c->GPRx = count;
+    // TODO();
+    // printf("11");
+    // if (c->GPR2 == 1 || c->GPR2 == 2){
+    //   for (int i = 0; i < c->GPR4; ++i){
+    //     putch(*(((char *)c->GPR3) + i));
+    //   }
+    //   c->GPRx = c->GPR4;
+    // }
+    c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
     // char *x = (char *)a[2];
     // for (int i = 0; i < a[3]; i++)
     //   putch(*x++);
