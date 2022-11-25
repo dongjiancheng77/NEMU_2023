@@ -40,7 +40,6 @@ static uintptr_t loader(PCB *pcb, const char *filename)
   assert(fd != -1);
   fs_read(fd, ptr_ehdr, sizeof(Elf_Ehdr));
   assert(*((uint32_t *)ptr_ehdr) == 0x464c457f);
-  assert(ehdr.e_ident[EI_CLASS] == ELFCLASS64);
   assert(ehdr.e_ident[EI_DATA] == ELFDATA2LSB);
   assert(ehdr.e_machine == EM_RISCV);
   for (i = 0; i < ehdr.e_phnum; ++i)
