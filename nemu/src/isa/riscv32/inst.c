@@ -33,31 +33,53 @@ enum
   TYPE_R1,
 };
 
-word_t *csr_read(word_t csr_no)
-{
-  switch (csr_no)
-  {
-  case 0x300:
-    return &(cpu.mstatus.value);
 
-  case 0x305:
-    return &(cpu.mtvec);
+word_t isa_map_csrrs (word_t imm, word_t src1) {
+	word_t t = 0;
+	switch (imm)
+	{
+	case 0x305:
+		t = cpu.mtvec;
+		cpu.mtvec = t|src1;
+		break;
+	case 0x300:
+		t = cpu.mstatus;
+		cpu.mstatus = t|src1;
+		break;
+	case 0x341:
+		t = cpu.mepc;
+		cpu.mepc = t|src1;
+		break;
+	case 0x342:
+		t = cpu.mcause;
+		cpu.mcause = t|src1;
+		break;
+	}
+	return t;
+}
 
-  case 0x340:
-    return &(cpu.mscratch);
-
-  case 0x341:
-    return &(cpu.mepc);
-
-  case 0x342:
-    return &(cpu.mcause);
-
-  case 0x180:
-    return &(cpu.satp);
-
-  default:
-    assert(0);
-  }
+word_t isa_map_csrrw (word_t imm, word_t src1) {
+	word_t t = 0;
+	switch (imm)
+	{
+	case 0x305:
+		t = cpu.mtvec;
+		cpu.mtvec = src1;
+		break;
+	case 0x300:
+		t = cpu.mstatus;
+		cpu.mstatus = src1;
+		break;
+	case 0x341:
+		t = cpu.mepc;
+		cpu.mepc = src1;
+		break;
+	case 0x342:
+		t = cpu.mcause;
+		cpu.mcause = src1;
+		break;
+	}
+	return t;
 }
 
 #define src1R()     \
@@ -201,11 +223,10 @@ static int decode_exec(Decode *s)
   INSTPAT("0000001 ????? ????? 111 ????? 01100 11", remu, R1, R(dest) = ((uint32_t)src1) % ((uint32_t)src2));
 
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak, N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall, I, s->dnpc = isa_raise_intr(R(17), s->pc));
-
-  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret, R1, s->dnpc = *csr_read(0x341));
-  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs, I, word_t t = *csr_read(imm); *csr_read(imm) = t | src1; R(dest) = t;);
-  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw, I, word_t t = *csr_read(imm); *csr_read(imm) = src1; R(dest) = t;);
+	INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  	 , I, word_t t = isa_map_csrrs(imm, src1); R(dest) = t;);
+	INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  	 , I, word_t t = isa_map_csrrw(imm, src1); R(dest) = t;);
+	INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall      , I, s->dnpc = isa_raise_intr(R(17), s->pc);); 
+	INSTPAT("0011000 00010 00000 000 00000 11100 11", mret  	 , N, s->dnpc = cpu.mepc);
 
   // INSTPAT("0000000 ????? ????? 101 ????? 00100 11", srli, I, R(dest) = ((uint32_t)src1 >> (uint32_t)(imm & 0x0000001F)));
   // INSTPAT("0000000 ????? ????? 101 ????? 00100 11", srli, I, R(dest) = ((uint32_t)src1 >> (uint32_t)(imm & 0x0000001F)));
