@@ -67,7 +67,7 @@ static uintptr_t loader(PCB *pcb, const char *filename)
       fs_read(fd, page_ptr + page_off, phdr.p_filesz);
       // at present, we are still at kernel mem map, so use page allocated instead of user virtual address
       // new_page already zeroed the mem
-      TODO();
+      // TODO();
       pcb->max_brk = vpage_end + PGSIZE;
       // update max_brk, here it is the end of the last page
       // this is related to heap, so ustack is not in consideration here
@@ -80,6 +80,7 @@ static uintptr_t loader(PCB *pcb, const char *filename)
 void naive_uload(PCB *pcb, const char *filename)
 {
   uintptr_t entry = loader(pcb, filename);
+  TODO();
   Log("Jump to entry = %p", entry);
   ((void (*)())entry)();
 }
