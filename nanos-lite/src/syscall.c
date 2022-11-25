@@ -16,9 +16,9 @@ void sys_execve(Context *c)
 
 void sys_brk(Context *c)
 {
-  uintptr_t addr = (uintptr_t)(c->GPR2);
-  c->GPRx = mm_brk(addr);
-  // c->GPRx = 0;
+  // uintptr_t addr = (uintptr_t)(c->GPR2);
+  // c->GPRx = mm_brk(addr);
+  c->GPRx = 0;
 }
 
 void do_syscall(Context *c)
@@ -46,9 +46,9 @@ void do_syscall(Context *c)
     // naive_uload(NULL, "/bin/nterm");
     // c->GPRx = 0;
     break;
-  // case SYS_brk:
-  //   sys_brk(c);
-  //   break;
+  case SYS_brk:
+    sys_brk(c);
+    break;
   // case SYS_execve:
   //   sys_execve(c);
   //   break;
