@@ -66,7 +66,13 @@ void do_syscall(Context *c)
   case SYS_write:
     // TODO();
     // printf("11");
-    c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
+    if (c->GPR2 == 1 || c->GPR2 == 2){
+      for (int i = 0; i < c->GPR4; ++i){
+        putch(*(((char *)c->GPR3) + i));
+      }
+      c->GPRx = c->GPR4;
+    }
+    // c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
     // char *x = (char *)a[2];
     // for (int i = 0; i < a[3]; i++)
     //   putch(*x++);

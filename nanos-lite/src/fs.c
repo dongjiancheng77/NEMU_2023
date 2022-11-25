@@ -99,10 +99,10 @@ size_t fs_write(int fd, void *buf, size_t len)
   //   file_table[fd].fs_offset += len;
   //   return len;
   // }
-  if (file_table[fd].fs_offset - file_table[fd].disk_offset + len > file_table[fd].size)
-  {
-    len = file_table[fd].size + file_table[fd].disk_offset - file_table[fd].fs_offset;
-  }
+  // if (file_table[fd].fs_offset - file_table[fd].disk_offset + len > file_table[fd].size)
+  // {
+  //   len = file_table[fd].size + file_table[fd].disk_offset - file_table[fd].fs_offset;
+  // }
   ramdisk_write(buf, file_table[fd].fs_offset, len);
   file_table[fd].fs_offset += len;
   return len;
