@@ -11,8 +11,8 @@ Context *__am_irq_handle(Context *c)
   if (user_handler)
   {
     Event ev = {0};
-    printf("c->GPR1 = %d \n", c->GPR1);
-    printf("c->mcause = %d \n", c->mcause);
+    // printf("c->GPR1 = %d \n", c->GPR1);
+    // printf("c->mcause = %d \n", c->mcause);
     switch (c->mcause)
     {
 
