@@ -34,7 +34,7 @@ static uintptr_t loader(PCB *pcb, const char *filename)
   Elf32_Ehdr elf;
   // ramdisk_read(&elf, 0, sizeof(Elf32_Ehdr));
   int fd = fs_open(filename, 0, 0);
-  printf("load file: %s, fd: %d\n", filename, fd);
+  Log("load file: %s, fd: %d\n", filename, fd);
   fs_read(fd, &elf, sizeof(Elf32_Ehdr));
 
   /*elf magic number*/
@@ -56,7 +56,7 @@ static uintptr_t loader(PCB *pcb, const char *filename)
       memset((void *)phdr[i].p_vaddr + phdr[i].p_filesz, 0, phdr[i].p_memsz - phdr[i].p_filesz);
     }
   }
-  printf("entry: %x\n", elf.e_entry);
+  // printf("entry: %x\n", elf.e_entry);
   return elf.e_entry;
 }
 
