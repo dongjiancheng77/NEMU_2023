@@ -11,7 +11,7 @@ void *new_page(size_t nr_page)
   memset(pf, 0, nr_page * PGSIZE);
   pf += nr_page * PGSIZE;
   assert(pf < (void *)heap.end);
-  // Log("new page allocated in %p", old);
+  Log("new page allocated in %p", old_pf);
   return old_pf;
 }
 
