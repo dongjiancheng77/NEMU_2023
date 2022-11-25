@@ -41,9 +41,9 @@ static Finfo file_table[] __attribute__((used)) = {
     [FD_STDIN] = {"stdin", 0, 0, invalid_read, invalid_write},
     [FD_STDOUT] = {"stdout", 0, 0, invalid_read, invalid_write},
     [FD_STDERR] = {"stderr", 0, 0, invalid_read, invalid_write},
-    // [FD_FB] = {"/dev/fb", 0, 0, invalid_read, fb_write},
-    // [FD_EVENTS] = {"/dev/events", 0, 0, events_read, invalid_write},
-    // [FD_DISPINFO] = {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
+// [FD_FB] = {"/dev/fb", 0, 0, invalid_read, fb_write},
+// [FD_EVENTS] = {"/dev/events", 0, 0, events_read, invalid_write},
+// [FD_DISPINFO] = {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
 #include "files.h"
 };
 
@@ -73,19 +73,22 @@ int fs_open(const char *pathname, int flags, int mode)
 }
 
 size_t fs_read(int fd, void *buf, size_t len)
-{  Finfo *info = &file_table[fd];
+{
+  Finfo *info = &file_table[fd];
   size_t real_len;
-  
-  //assert(info->open_offset + len <= info->size);
-  if (info->read){
-    real_len = info->read(buf, info->fs_offset, len);
-    info->fs_offset += real_len;
-  }else {
-    real_len = info->fs_offset + len <= info->size ?
-    len : info->size - info->fs_offset;
+
+  // assert(info->open_offset + len <= info->size);
+  // if (info->read)
+  // {
+  //   real_len = info->read(buf, info->fs_offset, len);
+  //   info->fs_offset += real_len;
+  // }
+  // else
+  // {
+    real_len = info->fs_offset + len <= info->size ? len : info->size - info->fs_offset;
     ramdisk_read(buf, info->disk_offset + info->fs_offset, real_len);
     info->fs_offset += real_len;
-  }
+  // }
 
   return real_len;
   // if (file_table[fd].read)
