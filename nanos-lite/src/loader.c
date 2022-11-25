@@ -69,6 +69,7 @@ static uintptr_t loader(PCB *pcb, const char *filename)
       // new_page already zeroed the mem
       // TODO();
       pcb->max_brk = vpage_end + PGSIZE;
+      printf("%d",pcb->max_brk);
       // update max_brk, here it is the end of the last page
       // this is related to heap, so ustack is not in consideration here
     }
