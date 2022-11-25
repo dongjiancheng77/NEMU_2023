@@ -19,8 +19,10 @@ void *new_page(size_t nr_page)
 static void *pg_alloc(int n)
 {
   // return NULL;
-  assert(n % PGSIZE == 0); // PA assert this n
-  return new_page(n / PGSIZE); // set zero: done in new_page
+    assert(n % (4096) == 0);
+  void *ret = new_page(n / (4096));
+  memset(ret, 0, n);
+  return ret;
 }
 #endif
 
@@ -32,21 +34,25 @@ extern PCB *current;
 /* The brk() system call handler. */
 int mm_brk(uintptr_t brk)
 {
-  current->max_brk = ROUNDUP(current->max_brk, PGSIZE); // max_brk and brk are open -- [,brk)
-  if (brk > current->max_brk) {
-    int page_count = ROUNDUP(brk - current->max_brk, PGSIZE) >> 12;
-    uintptr_t pages_start = (uintptr_t)new_page(page_count);
-    for (int i = 0; i < page_count; ++ i) {
-      map(&current->as, 
-          (void*)(current->max_brk + i * PGSIZE), 
-          (void*)(pages_start + i * PGSIZE),
-          MMAP_READ|MMAP_WRITE
-          );
+  uintptr_t max_page_end = current->max_brk;
+  uintptr_t max_page_pn = (max_page_end >> 12) - 1;
+  uintptr_t brk_pn = brk >> 12; // 12
+
+  //[page_start, page_end) 所以，应该是大于等于就重新分配
+  // printf("申请内存 max_page_end: %p\t to brk: %p\n", max_page_end, brk);//分配从[max_page_pn, brk_pn]的所有页
+  if (brk >= max_page_end)
+  {
+    void *allocted_page = new_page(brk_pn - max_page_pn + 1); //需要申请的新的页数
+    for (int i = 0; i < brk_pn - max_page_pn + 1; ++i)
+    {
+      // TODO: prot 有问题
+      map(&current->as, (void *)(max_page_end + i * 0xfff),
+          (void *)(allocted_page + i * 0xfff), 1);
     }
-    current->max_brk += page_count * PGSIZE;
-    // printf("--brked-- ");
+
+    current->max_brk = (brk_pn + 1) << 12;
+    assert(current->max_brk > brk);
   }
-  // printf("max_brk 0x%08lx\n", current->max_brk);
   return 0;
 }
 
