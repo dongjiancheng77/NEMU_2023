@@ -19,10 +19,8 @@ void *new_page(size_t nr_page)
 static void *pg_alloc(int n)
 {
   // return NULL;
-    assert(n % (4096) == 0);
-  void *ret = new_page(n / (4096));
-  memset(ret, 0, n);
-  return ret;
+  assert(n % PGSIZE == 0); // PA assert this n
+  return new_page(n / PGSIZE); // set zero: done in new_page
 }
 #endif
 
