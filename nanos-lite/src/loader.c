@@ -31,54 +31,33 @@ static uintptr_t loader(PCB *pcb, const char *filename)
   // return ehdr.e_entry;
 
   // return 0;
+  Elf32_Ehdr elf;
+  // ramdisk_read(&elf, 0, sizeof(Elf32_Ehdr));
+  int fd = fs_open(filename, 0, 0);
+  printf("load file: %s, fd: %d\n", filename, fd);
+  fs_read(fd, &elf, sizeof(Elf32_Ehdr));
 
-  Elf_Ehdr ehdr, *ptr_ehdr = &ehdr;
-  Elf_Phdr phdr, *ptr_phdr = &phdr;
-  uint32_t i, phoff;
-  int fd;
-  fd = fs_open(filename, 0, 0);
-  assert(fd != -1);
-  fs_read(fd, ptr_ehdr, sizeof(Elf_Ehdr));
-  assert(*((uint32_t *)ptr_ehdr) == 0x464c457f);
-  assert(ehdr.e_ident[EI_DATA] == ELFDATA2LSB);
-  assert(ehdr.e_machine == EM_RISCV);
-  for (i = 0; i < ehdr.e_phnum; ++i)
-  {
-    phoff = i * ehdr.e_phentsize + ehdr.e_phoff;
-    fs_lseek(fd, phoff, SEEK_SET);
-    fs_read(fd, ptr_phdr, sizeof(Elf_Phdr));
-    if (phdr.p_type == PT_LOAD)
-    {
-      uintptr_t vpage_start = phdr.p_vaddr & (~0xfff);                    // clear low 12 bit, first page
-      uintptr_t vpage_end = (phdr.p_vaddr + phdr.p_memsz - 1) & (~0xfff); // last page start
-      int page_num = ((vpage_end - vpage_start) >> 12) + 1;
-      uintptr_t page_ptr = (uintptr_t)new_page(page_num);
-      // for (int j = 0; j < page_num; ++j)
-      // {
-      //   map(&pcb->as,
-      //       (void *)(vpage_start + (j << 12)),
-      //       (void *)(page_ptr + (j << 12)),
-      //       MMAP_READ | MMAP_WRITE);
-      //   // Log("map 0x%8lx -> 0x%8lx", vpage_start + (j << 12), page_ptr    + (j << 12));
-      // }
-      // printf("%d", vpage_end);
-      // TODO();
-      void *page_off = (void *)(phdr.p_vaddr & 0xfff); // we need the low 12 bit
-      // printf("1%d", vpage_end);
-      fs_lseek(fd, phdr.p_offset, SEEK_SET);
-      // printf("2%d", vpage_end);
-      fs_read(fd, page_ptr + page_off, phdr.p_filesz);
-      // printf("3%d", vpage_end);
-      // at present, we are still at kernel mem map, so use page allocated instead of user virtual address
-      // new_page already zeroed the mem
-      // TODO();
-      // pcb->max_brk = vpage_end + PGSIZE;
-      // printf("%d", pcb->max_brk);
-      // update max_brk, here it is the end of the last page
-      // this is related to heap, so ustack is not in consideration here
+  /*elf magic number*/
+  assert(*(uint32_t *)elf.e_ident == 0x464c457f);
+
+  /*获取程序头表,程序头表在elf头的后面*/
+  Elf_Phdr phdr[elf.e_phnum];
+  // ramdisk_read(phdr, elf.e_ehsize, sizeof(Elf_Phdr) * elf.e_phnum);
+  fs_lseek(fd, elf.e_ehsize, SEEK_SET);
+  fs_read(fd, phdr, sizeof(Elf_Phdr) * elf.e_phnum);
+
+  /*开始加载*/
+  for (size_t i = 0; i < elf.e_phnum; i++) {
+    if (phdr[i].p_type == PT_LOAD) {
+      // ramdisk_read((void *)phdr[i].p_vaddr, phdr[i].p_offset, phdr[i].p_memsz);
+      fs_lseek(fd, phdr[i].p_offset, SEEK_SET);
+      fs_read(fd, (void *)phdr[i].p_vaddr, phdr[i].p_memsz);
+      /*多与部分清零*/
+      memset((void *)phdr[i].p_vaddr + phdr[i].p_filesz, 0, phdr[i].p_memsz - phdr[i].p_filesz);
     }
   }
-  return ehdr.e_entry;
+  printf("entry: %x\n", elf.e_entry);
+  return elf.e_entry;
 }
 
 void naive_uload(PCB *pcb, const char *filename)
