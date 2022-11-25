@@ -46,7 +46,7 @@ void do_syscall(Context *c)
     // naive_uload(NULL, "/bin/nterm");
     // c->GPRx = 0;
     break;
-  // case SYS_brk
+  // case SYS_brk:
   //   sys_brk(c);
   //   break;
   // case SYS_execve:

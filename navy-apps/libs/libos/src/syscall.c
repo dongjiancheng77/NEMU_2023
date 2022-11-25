@@ -70,21 +70,27 @@ int _write(int fd, void *buf, size_t count)
 {
   return _syscall_((intptr_t)SYS_write, (intptr_t)fd, (intptr_t)buf, count);
 }
-
+extern char end;
+void *program_break = NULL;
 void *_sbrk(intptr_t increment)
 {
-  // extern char _end;
-  // static intptr_t program_break = (intptr_t)(&_end);
-  // intptr_t old_break = program_break;
-  // intptr_t new_break = program_break + increment;
-  // intptr_t ret = _syscall_(SYS_brk, new_break, 0, 0);
-  // if (ret == 0)
-  // {
-  //   program_break = new_break;
-  //   return (void *)old_break;
-  // }
-  // else
-    return (void *)-1;
+  if (program_break == NULL)
+  { // 初始化
+    program_break = &end;
+  }
+  void *old_program_break = program_break;
+
+  int ret = _syscall_(SYS_brk, (intptr_t)(program_break + increment), 0, 0);
+  if (ret == 0)
+  {
+    program_break = program_break + increment;
+  }
+  else
+  {
+    assert(0);
+  }
+
+  return old_program_break;
 }
 
 int _read(int fd, void *buf, size_t count)
