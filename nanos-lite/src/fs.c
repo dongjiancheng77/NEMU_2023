@@ -65,7 +65,7 @@ int fs_open(const char *pathname, int flags, int mode)
   {
     if (file_table[i].name && strcmp(pathname, file_table[i].name) == 0)
     {
-      file_table[i].fs_offset = file_table[i].disk_offset;
+      file_table[i].fs_offset = 0;
       return i; // simply assign file_table index to fd
     }
   }
@@ -85,9 +85,9 @@ size_t fs_read(int fd, void *buf, size_t len)
   // }
   // else
   // {
-    real_len = info->fs_offset + len <= info->size ? len : info->size - info->fs_offset;
-    ramdisk_read(buf, info->disk_offset + info->fs_offset, real_len);
-    info->fs_offset += real_len;
+  real_len = info->fs_offset + len <= info->size ? len : info->size - info->fs_offset;
+  ramdisk_read(buf, info->disk_offset + info->fs_offset, real_len);
+  info->fs_offset += real_len;
   // }
 
   return real_len;
@@ -155,5 +155,6 @@ size_t fs_lseek(int fd, size_t offset, int whence)
 
 int fs_close(int fd)
 {
+  file_table[fd].fs_offset = 0;
   return 0;
 }
