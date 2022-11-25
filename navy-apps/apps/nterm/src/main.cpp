@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
   if (argc < 2) { builtin_sh_run(); }
   else { extern_app_run(argv[1]); }
 
-  should not reach here
+  // should not reach here
   assert(0);
 }
 
