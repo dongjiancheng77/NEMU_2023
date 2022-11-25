@@ -29,7 +29,7 @@ static uintptr_t loader(PCB *pcb, const char *filename)
   //   }
   // }
   // return ehdr.e_entry;
-  
+
   // return 0;
 
   Elf_Ehdr ehdr, *ptr_ehdr = &ehdr;
@@ -61,23 +61,25 @@ static uintptr_t loader(PCB *pcb, const char *filename)
             MMAP_READ | MMAP_WRITE);
         // Log("map 0x%8lx -> 0x%8lx", vpage_start + (j << 12), page_ptr    + (j << 12));
       }
-            printf("%d",vpage_end);
+      printf("%d", vpage_end);
       // TODO();
       void *page_off = (void *)(phdr.p_vaddr & 0xfff); // we need the low 12 bit
+            printf("1%d", vpage_end);
       fs_lseek(fd, phdr.p_offset, SEEK_SET);
+            printf("2%d", vpage_end);
       fs_read(fd, page_ptr + page_off, phdr.p_filesz);
+            printf("3%d", vpage_end);
       // at present, we are still at kernel mem map, so use page allocated instead of user virtual address
       // new_page already zeroed the mem
       // TODO();
       pcb->max_brk = vpage_end + PGSIZE;
-      printf("%d",pcb->max_brk);
+      printf("%d", pcb->max_brk);
       // update max_brk, here it is the end of the last page
       // this is related to heap, so ustack is not in consideration here
     }
   }
   return ehdr.e_entry;
 }
-
 
 void naive_uload(PCB *pcb, const char *filename)
 {
