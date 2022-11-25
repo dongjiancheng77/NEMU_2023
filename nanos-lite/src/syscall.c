@@ -73,7 +73,17 @@ void do_syscall(Context *c)
     //   }
     //   c->GPRx = c->GPR4;
     // }
-    c->GPRx = fs_write(a[1], (void *)a[2], a[3]);
+  int fd = c->GPR2;
+  char *buf = (char *)c->GPR3;
+  int count = c->GPR4;
+  if (fd == 1 || fd == 2) {
+    for (int i = 0; i < count; i++) {
+      putch(*buf++);
+    }
+  }else {
+    count = fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
+  }
+  c->GPRx = count;
     // char *x = (char *)a[2];
     // for (int i = 0; i < a[3]; i++)
     //   putch(*x++);
