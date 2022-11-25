@@ -30,7 +30,8 @@ static uintptr_t loader(PCB *pcb, const char *filename)
     }
   }
   return ehdr.e_entry;
-  return 0;
+  
+  // return 0;
   // Elf_Ehdr ehdr, *ptr_ehdr = &ehdr;
   // Elf_Phdr phdr, *ptr_phdr = &phdr;
   // uint32_t i, phoff;
