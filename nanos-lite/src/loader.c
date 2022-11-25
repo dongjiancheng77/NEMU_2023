@@ -61,12 +61,13 @@ static uintptr_t loader(PCB *pcb, const char *filename)
             MMAP_READ | MMAP_WRITE);
         // Log("map 0x%8lx -> 0x%8lx", vpage_start + (j << 12), page_ptr    + (j << 12));
       }
-      TODO();
+      // TODO();
       void *page_off = (void *)(phdr.p_vaddr & 0xfff); // we need the low 12 bit
       fs_lseek(fd, phdr.p_offset, SEEK_SET);
       fs_read(fd, page_ptr + page_off, phdr.p_filesz);
       // at present, we are still at kernel mem map, so use page allocated instead of user virtual address
       // new_page already zeroed the mem
+      TODO();
       pcb->max_brk = vpage_end + PGSIZE;
       // update max_brk, here it is the end of the last page
       // this is related to heap, so ustack is not in consideration here
