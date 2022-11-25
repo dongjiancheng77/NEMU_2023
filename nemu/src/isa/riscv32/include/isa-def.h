@@ -18,14 +18,21 @@
 
 #include <common.h>
 
-typedef struct {
+typedef struct
+{
   word_t gpr[32];
   vaddr_t pc;
-  vaddr_t mepc;        //存放触发异常的PC
-  word_t mstatus;     //存放处理器的状态
-  word_t mcause;      //存放触发异常的原因 
-  vaddr_t mtvec;      //异常入口地址	
+  word_t mepc;
+  word_t mtvec;
+  union
+  {
+    word_t value;
+  } mstatus;
+  word_t mcause;
+  word_t satp;
+  word_t mscratch;
 } riscv32_CPU_state;
+
 
 
 // decode
