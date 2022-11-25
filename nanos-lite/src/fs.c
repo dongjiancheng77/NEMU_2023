@@ -73,8 +73,8 @@ int fs_open(const char *pathname, int flags, int mode)
 
 size_t fs_read(int fd, void *buf, size_t len)
 {
-  Finfo *info = &file_table[fd];
-  size_t real_len;
+  // Finfo *info = &file_table[fd];
+  // size_t real_len;
 
   // assert(info->open_offset + len <= info->size);
   // if (info->read)
@@ -84,12 +84,18 @@ size_t fs_read(int fd, void *buf, size_t len)
   // }
   // else
   // {
-  real_len = info->open_offset + len <= info->size ? len : info->size - info->open_offset;
-  ramdisk_read(buf, info->disk_offset + info->open_offset, real_len);
-  info->open_offset += real_len;
-  // }
-
-  return real_len;
+  Finfo *temp = &file_table[fd];
+  size_t offset; 
+  assert(temp->open_offset <= temp->size);
+  if (temp->open_offset + len <= temp->size) {
+    offset = len;
+  }
+  else {
+    offset =temp->size - temp->open_offset;
+  }
+  size_t ret = ramdisk_read(buf, temp->disk_offset + temp->open_offset, offset);
+  temp->open_offset += offset;
+  return ret;
   // if (file_table[fd].read)
   // {
   //   len = file_table[fd].read(buf, file_table[fd].open_offset, len);
