@@ -17,6 +17,7 @@ int main()
       old_usec = cur_usec;
       printf("tick %d\n", count);
       count++;
+            printf("tick1 %d\n", count);
     }
   }
   return 0;
