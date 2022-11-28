@@ -13,7 +13,7 @@ int main()
     printf("tick0 %d\n", count);
     gettimeofday(&cur_tv, &tz);
     unsigned long cur_usec = cur_tv.tv_sec * 1000000 + cur_tv.tv_usec;
-    if (cur_usec - old_usec > 5000)
+    if (cur_usec - old_usec > 5)
     {
       old_usec = cur_usec;
       printf("tick %d\n", count);
