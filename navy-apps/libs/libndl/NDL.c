@@ -6,6 +6,7 @@
 #include <sys/time.h>
 #include <assert.h>
 #include <fcntl.h>
+#define IS_NUM(ch) (ch >= '0' && ch <= '9')
 
 static int evtdev = -1;
 static int fbdev = -1;
