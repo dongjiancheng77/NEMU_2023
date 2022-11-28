@@ -1,6 +1,7 @@
 #include <common.h>
 #include "syscall.h"
 #include <fs.h>
+#include <sys/time.h>
 void exit(int status);
 int mm_brk(uintptr_t brk);
 int execve(const char *pathname, char *const argv[], char *const envp[]);
@@ -20,16 +21,7 @@ void sys_brk(Context *c)
   c->GPRx = mm_brk(addr);
   // c->GPRx = 0;
 }
-typedef struct timeval
-{
-  int32_t tv_sec;  /* seconds */
-  int32_t tv_usec; /* microseconds */
-} Timeval;
-typedef struct timezone
-{
-  int tz_minuteswest; /* minutes west of Greenwich */
-  int tz_dsttime;     /* type of DST correction */
-} Timezone;
+
 static inline intptr_t sys_gettimeofday(struct timeval * tv, struct timezone * tz) {
   uint64_t uptime = io_read(AM_TIMER_UPTIME).us;
 
@@ -113,7 +105,7 @@ void do_syscall(Context *c)
     //   putch(*x++);
     break;
   case SYS_gettimeofday:
-    c->GPRx = (int)sys_gettimeofday((Timeval *)c->GPR2, (Timezone *)c->GPR3);
+      c->GPRx = sys_gettimeofday((struct timeval*)a[1], (struct timezone*)a[2]);
     break;
   default:
     panic("Unhandled syscall ID = %d", a[0]);
