@@ -9,6 +9,7 @@
 
 static int evtdev = -1;
 static int fbdev = -1;
+static int dispinfo_dev = -1;
 static int screen_w = 0, screen_h = 0, canvas_w = 0, canvas_h = 0;
 typedef struct size
 {
@@ -75,7 +76,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
     w = disp_size.w;
     h = disp_size.h;
   }
-  printf("%d",w);
+  printf("%d", w);
   // assert(w > 0 && w <= disp_size.w);
   assert(h > 0 && h <= disp_size.h);
 
@@ -117,9 +118,20 @@ int NDL_Init(uint32_t flags)
     evtdev = 3;
   }
   evtdev = open("/dev/events", O_RDONLY);
+  fbdev = open("/dev/fb", 0, 0);
+  dispinfo_dev = open("/proc/dispinfo", 0, 0);
+
+  // get_disp_size();
+  FILE *fp = fopen("/proc/dispinfo", "r");
+  fscanf(fp, "WIDTH:%d\nHEIGHT:%d\n", &disp_size.w, &disp_size.h);
+  // printf("disp size is %d,%d\n", disp_size.w, disp_size.h);
+  assert(disp_size.w >= 400 && disp_size.w <= 800);
+  assert(disp_size.h >= 300 && disp_size.h <= 640);
+  fclose(fp);
   return 0;
 }
 
 void NDL_Quit()
 {
+  close(dispinfo_dev);
 }
