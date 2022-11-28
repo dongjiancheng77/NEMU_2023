@@ -40,11 +40,9 @@ size_t events_read(void *buf, size_t offset, size_t len)
   case AM_KEY_F1:
     switch_program_index(1);
     return 0;
-
   case AM_KEY_F2:
     switch_program_index(2);
     return 0;
-
   case AM_KEY_F3:
     switch_program_index(3);
     return 0;
@@ -55,7 +53,9 @@ size_t events_read(void *buf, size_t offset, size_t len)
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len)
 {
-  return 0;
+  // return 0;
+  AM_GPU_CONFIG_T fbctl = io_read(AM_GPU_CONFIG);
+  return snprintf(buf, len, "WIDTH : %d\n HEIGHT : %d\n", fbctl.width, fbctl.height);
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len)
