@@ -78,7 +78,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
   }
   printf("%d", w);
   // assert(w > 0 && w <= disp_size.w);
-  assert(h > 0 && h <= disp_size.h);
+  // assert(h > 0 && h <= disp_size.h);
 
   // write(1, "here\n", 10);
   // printf("draw [%d, %d] to [%d, %d]\n", w, h, x, y);
