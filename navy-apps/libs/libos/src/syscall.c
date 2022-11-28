@@ -76,8 +76,7 @@ void *pbrk = &end;
 void *_sbrk(intptr_t increment)
 {
   void *last = pbrk;
-  int flag = _syscall_(SYS_brk, (intptr_t)(pbrk + increment), 0, 0);
-  if (flag == 0)
+  if (_syscall_(SYS_brk, (intptr_t)(pbrk + increment), 0, 0))
   {
     pbrk += increment;
     return last;
