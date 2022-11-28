@@ -77,7 +77,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
     w = canvas_w;
     h = canvas_h;
   }
-  // printf("%d", w);
+  printf("%d", w);
   assert(w > 0 && w <= canvas_w);
   assert(h > 0 && h <= canvas_h);
 
