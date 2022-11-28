@@ -24,50 +24,29 @@ size_t serial_write(const void *buf, size_t offset, size_t len)
   return len;
 }
 
-void switch_program_index(int new_index);
 size_t events_read(void *buf, size_t offset, size_t len)
 {
-  AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
-  if (ev.keycode == AM_KEY_NONE) return 0;
-  
-  switch (ev.keycode){
+  MULTIPROGRAM_YIELD();
+  AM_INPUT_KEYBRD_T kbd_in = io_read(AM_INPUT_KEYBRD);
+  if (kbd_in.keycode == AM_KEY_NONE)
+    return 0;
+  switch (kbd_in.keycode)
+  {
   case AM_KEY_F1:
-    switch_program_index(1);
-    return 0;
-
+    fg_pcb = 1;
+    break;
   case AM_KEY_F2:
-    switch_program_index(2);
-    return 0;
-
+    fg_pcb = 2;
+    break;
   case AM_KEY_F3:
-    switch_program_index(3);
-    return 0;
-  
+    fg_pcb = 3;
+    break;
   default:
     break;
   }
-
-  //int real_length = 4;
-  char *tag = ev.keydown ? "kd " : "ku ";
-  //if (real_length <= len){
-  strcpy(buf, tag);
-  // }else {
-  //   assert(0);
-  //   return 0;
-  // }
-  
-  //real_length += strlen(keyname[ev.keycode]);
-  
-  //if (real_length<= len){
-  strcat(buf, keyname[ev.keycode]);
-  // }else {
-  //   Log("Need %d for %s%s but got %d", strlen(keyname[ev.keycode]), (char *)buf, keyname[ev.keycode], len);
-  //   assert(0);
-  //   return 0;
-  // }
-  Log("Got  (kbd): %s (%d) %s\n", keyname[ev.keycode], ev.keycode, ev.keydown ? "DOWN" : "UP");
-  
-  return 1;
+  int _len = snprintf(buf, len, "%s %s\n", kbd_in.keydown ? "kd" : "ku", keyname[kbd_in.keycode]);
+  printf("%s %d %s %d\n", buf, len, keyname[kbd_in.keycode], kbd_in.keydown);
+  return _len;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len)
