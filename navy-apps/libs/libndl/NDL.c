@@ -25,6 +25,27 @@ uint32_t NDL_GetTicks()
   int ret = gettimeofday(&timeval, &timezone);
   return timeval.tv_usec / 1000;
 }
+static void get_disp_size()
+{
+#define DISPINFO_LEN 64
+  char buf[DISPINFO_LEN];
+  assert(read(dispinfo_dev, buf, DISPINFO_LEN) != 0);
+  size_t i = 0;
+  // printf("buf is %s\n", buf);
+  for (; buf[i] != '\n'; ++i)
+  {
+    if (IS_NUM(buf[i]))
+      canvas_w = canvas_w * 10 + (buf[i] - '0');
+  }
+  ++i;
+  for (; buf[i] != '\n'; ++i)
+  {
+    if (IS_NUM(buf[i]))
+      canvas_h = canvas_h * 10 + (buf[i] - '0');
+  }
+  // assert(disp_size.w > 0 && disp_size.h <= 800);
+  // assert(disp_size.h > 0 && disp_size.h <= 640);
+}
 
 int NDL_PollEvent(char *buf, int len)
 {
