@@ -50,7 +50,7 @@ size_t events_read(void *buf, size_t offset, size_t len)
     return 0;
   }
 snprintf(buf, len, "%s %s\n", kbd_in.keydown ? "kd" : "ku", keyname[kbd_in.keycode]);
-  printf("%s %d %s %d\n", (char*)buf, len, keyname[kbd_in.keycode], kbd_in.keydown);
+  // printf("%s %d %s %d\n", (char*)buf, len, keyname[kbd_in.keycode], kbd_in.keydown);
   return 1;
 }
 
