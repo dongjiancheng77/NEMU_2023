@@ -41,9 +41,9 @@ static Finfo file_table[] __attribute__((used)) = {
     [FD_STDIN] = {"stdin", 0, 0, invalid_read, invalid_write},
     [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
     [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
-    [FD_EVENTS] = {"/dev/events", 0, 0, events_read, invalid_write},
     [FD_DISPINFO] = {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
     [FD_FB] = {"/dev/fb", 0, 0, invalid_read, fb_write},
+    [FD_EVENTS] = {"/dev/events", 0, 0, events_read, invalid_write},
 
 #include "files.h"
 };
@@ -85,9 +85,9 @@ size_t fs_read(int fd, void *buf, size_t len)
   }
   else
   {
-    real_len = info->open_offset + len <= info->size ? len : info->size - info->open_offset;
-    ramdisk_read(buf, info->disk_offset + info->open_offset, real_len);
-    info->open_offset += real_len;
+  real_len = info->open_offset + len <= info->size ? len : info->size - info->open_offset;
+  ramdisk_read(buf, info->disk_offset + info->open_offset, real_len);
+  info->open_offset += real_len;
   }
 
   return real_len;
