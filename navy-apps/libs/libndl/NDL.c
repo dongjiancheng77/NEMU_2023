@@ -26,27 +26,7 @@ uint32_t NDL_GetTicks()
   int ret = gettimeofday(&timeval, &timezone);
   return timeval.tv_usec / 1000;
 }
-static void get_disp_size()
-{
-#define DISPINFO_LEN 64
-  char buf[DISPINFO_LEN];
-  assert(read(dispinfo_dev, buf, DISPINFO_LEN) != 0);
-  size_t i = 0;
-  // printf("buf is %s\n", buf);
-  for (; buf[i] != '\n'; ++i)
-  {
-    if (IS_NUM(buf[i]))
-      canvas_w = canvas_w * 10 + (buf[i] - '0');
-  }
-  ++i;
-  for (; buf[i] != '\n'; ++i)
-  {
-    if (IS_NUM(buf[i]))
-      canvas_h = canvas_h * 10 + (buf[i] - '0');
-  }
-  // assert(disp_size.w > 0 && disp_size.h <= 800);
-  // assert(disp_size.h > 0 && disp_size.h <= 640);
-}
+
 
 int NDL_PollEvent(char *buf, int len)
 {
@@ -55,11 +35,6 @@ int NDL_PollEvent(char *buf, int len)
 
 void NDL_OpenCanvas(int *w, int *h)
 {
-  if (*w == 0 && *h == 0)
-  {
-    *w = canvas_w;
-    *h = canvas_h;
-  }
   if (getenv("NWM_APP"))
   {
     int fbctl = 4;
@@ -82,31 +57,40 @@ void NDL_OpenCanvas(int *w, int *h)
     }
     close(fbctl);
   }
-
+  if (*h == 0 && *w == 0)
+  {
+    canvas_h = screen_h;
+    canvas_w = screen_w;
+    *w = screen_w;
+    *h = screen_h;
+  }
+  else if (*h <= screen_h && *w <= screen_w)
+  {
+    canvas_h = *h;
+    canvas_w = *w;
+  }
+  else
+    printf("canvas size must < screen size (%d, %d)\n", screen_w, screen_h);
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
 {
-  if (w == 0 && h == 0)
+  x += (screen_w - canvas_w) / 2;
+  y += (screen_h - canvas_h) / 2;
+  int fd = open("/dev/fb", O_WRONLY);
+  assert(fd != -1);
+  // printf("drawing to %d, %08X: %d %d %d %d\n", fd, *pixels, x,y,w,h);
+  size_t base_offset = (y * screen_w + x) * sizeof(uint32_t);
+  size_t pixel_offset = 0;
+  int j, ret_seek, ret_write;
+  for (j = 0; j < h; ++j)
   {
-    w = canvas_w;
-    h = canvas_h;
+    ret_seek = lseek(fd, base_offset, SEEK_SET);
+    // printf("(%d, %s) ", ret_seek, strerror(errno));
+    ret_write = write(fd, pixels + pixel_offset, w * sizeof(uint32_t));
+    pixel_offset += w;
+    base_offset += screen_w * sizeof(uint32_t);
   }
-  printf("%d", w);
-  assert(w >= 0 && w <= canvas_w);
-  assert(h > 0 && h <= canvas_h);
-
-  // write(1, "here\n", 10);
-  // printf("draw [%d, %d] to [%d, %d]\n", w, h, x, y);
-  for (size_t row = 0; row < h; ++row)
-  {
-    // printf("draw row %d with len %d\n", row, w);
-    lseek(fbdev, x + (y + row) * canvas_w, SEEK_SET);
-    // printf("pixels pos %p with len %d\n",pixels + row * w, w);
-    write(fbdev, pixels + row * w, w);
-    // printf("draw row %d with len %d\n", row, w);
-  }
-  write(fbdev, 0, 0);
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples)
@@ -134,16 +118,40 @@ int NDL_Init(uint32_t flags)
     evtdev = 3;
   }
   evtdev = open("/dev/events", O_RDONLY);
-  fbdev = open("/dev/fb", 0, 0);
-  dispinfo_dev = open("/proc/dispinfo", 0, 0);
 
-  get_disp_size();
-  FILE *fp = fopen("/proc/dispinfo", "r");
-  fscanf(fp, "WIDTH:%d\nHEIGHT:%d\n", &canvas_w, &canvas_h);
-  // printf("disp size is %d,%d\n", disp_size.w, disp_size.h);
-  assert(disp_size.w >= 400 && disp_size.w <= 800);
-  assert(disp_size.h >= 300 && disp_size.h <= 640);
-  fclose(fp);
+  // aquire screen size
+  char buf[80], buf_kv[40];
+  int fd = open("/proc/dispinfo", O_RDONLY);
+  assert(fd);
+  read(fd, buf, 80);
+  char *tok0_k = strtok(buf, ":");
+  char *tok0_v = strtok(NULL, "\n");
+  char *tok1_k = strtok(NULL, ":");
+  char *tok1_v = strtok(NULL, "\n");
+  sscanf(tok0_k, "%s", buf_kv);
+  if (strcmp(buf_kv, "WIDTH") == 0)
+  {
+    screen_w = atoi(tok0_v);
+  }
+  else if (strcmp(buf_kv, "HEIGHT") == 0)
+  {
+    screen_h = atoi(tok0_v);
+  }
+  else
+    assert(0);
+  sscanf(tok1_k, "%s", buf_kv);
+  if (strcmp(buf_kv, "WIDTH") == 0)
+  {
+    screen_w = atoi(tok1_v);
+  }
+  else if (strcmp(buf_kv, "HEIGHT") == 0)
+  {
+    screen_h = atoi(tok1_v);
+  }
+  else
+    assert(0);
+  // close(fd);
+
   return 0;
 }
 
