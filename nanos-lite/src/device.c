@@ -1,5 +1,9 @@
 #include <common.h>
 // #include <fs.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdint.h>
+
 #if defined(MULTIPROGRAM) && !defined(TIME_SHARING)
 #define MULTIPROGRAM_YIELD() yield()
 #else
@@ -42,10 +46,11 @@ size_t events_read(void *buf, size_t offset, size_t len)
     fg_pcb = 3;
     break;
   default:
+
     break;
   }
   int _len = snprintf(buf, len, "%s %s\n", kbd_in.keydown ? "kd" : "ku", keyname[kbd_in.keycode]);
-  printf("%s %d %s %d\n", buf, len, keyname[kbd_in.keycode], kbd_in.keydown);
+  printf("%s %d %s %d\n", (char*)buf, len, keyname[kbd_in.keycode], kbd_in.keydown);
   return _len;
 }
 
