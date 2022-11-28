@@ -21,15 +21,16 @@ void sys_brk(Context *c)
   c->GPRx = mm_brk(addr);
   // c->GPRx = 0;
 }
-static AM_TIMER_UPTIME_T uptime;
+
 static inline intptr_t sys_gettimeofday(struct timeval * tv, struct timezone * tz) {
-  ioe_read(AM_TIMER_UPTIME, &uptime);
-  // important: must convert to int32_t as tv_usec/sec is int32_t
-  //            uptime.us is uint64_t, cause overflow!!!!!!!!!!!
-  //            make the tv_sec is always 0.....
-  tv->tv_usec = (int32_t)uptime.us;
-  tv->tv_sec = (int32_t)uptime.us / 1000000;
-  // printf("sec is %d, usec is %d\n",tv->tv_sec,tv->tv_usec);
+  uint64_t uptime = io_read(AM_TIMER_UPTIME).us;
+
+  tv->tv_sec = uptime / 1000000;
+  tv->tv_usec = uptime % 1000000; // according to man, usec ranges [0, 999999]
+  if (tz) {
+    tz->tz_dsttime = 0;
+    tz->tz_minuteswest = 0;
+  }
   return 0;
 }
 void do_syscall(Context *c)
