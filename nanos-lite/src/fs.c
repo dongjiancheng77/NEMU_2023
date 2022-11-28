@@ -130,15 +130,12 @@ size_t fs_lseek(int fd, size_t offset, int whence)
   switch (whence)
   {
   case SEEK_SET:
-    // assert(offset <= temp->size);
     temp->open_offset = offset;
     break;
   case SEEK_CUR:
-    // assert(offset + temp->open_offset <= temp->size);
     temp->open_offset += offset;
     break;
   case SEEK_END:
-    // assert(offset <= temp->size);
     temp->open_offset = temp->size + offset;
     break;
   default:
