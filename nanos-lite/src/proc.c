@@ -11,16 +11,17 @@ void switch_boot_pcb()
   current = &pcb_boot;
 }
 int program_index = 1;
-void switch_program_index(int new_index){
+void switch_program_index(int new_index)
+{
   if (new_index == program_index)
-    return ;
+    return;
 
-  switch_boot_pcb();  
-  
+  switch_boot_pcb();
+
   program_index = new_index;
   pcb[0].cp->pdir = NULL;
-  //TODO: 这是一种trade-off
-  //set_satp(pcb[1].cp->pdir);
+  // TODO: 这是一种trade-off
+  // set_satp(pcb[1].cp->pdir);
   printf("Switch to PCB[%d]\n", new_index);
 
   yield();
@@ -94,5 +95,5 @@ void exit(int status)
   //   execve("/bin/nterm", NULL, NULL);
   // }
   // else
-    halt(status);
+  halt(status);
 }

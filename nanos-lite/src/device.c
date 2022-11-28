@@ -49,9 +49,31 @@ size_t events_read(void *buf, size_t offset, size_t len)
     switch_program_index(3);
     return 0;
   }
-  int _len = snprintf(buf, len, "%s %s\n", kbd_in.keydown ? "kd" : "ku", keyname[kbd_in.keycode]);
-  printf("%s %d %s %d\n", (char *)buf, len, keyname[kbd_in.keycode], kbd_in.keydown);
-  return _len;
+  // int _len = snprintf(buf, len, "%s %s\n", kbd_in.keydown ? "kd" : "ku", keyname[kbd_in.keycode]);
+  // printf("%s %d %s %d\n", (char *)buf, len, keyname[kbd_in.keycode], kbd_in.keydown);
+  // return _len;
+
+  //int real_length = 4;
+  char *tag = kbd_in.keydown ? "kd " : "ku ";
+  //if (real_length <= len){
+  strcpy(buf, tag);
+  // }else {
+  //   assert(0);
+  //   return 0;
+  // }
+  
+  //real_length += strlen(keyname[ev.keycode]);
+  
+  //if (real_length<= len){
+  strcat(buf, keyname[kbd_in.keycode]);
+  // }else {
+  //   Log("Need %d for %s%s but got %d", strlen(keyname[ev.keycode]), (char *)buf, keyname[ev.keycode], len);
+  //   assert(0);
+  //   return 0;
+  // }
+  Log("Got  (kbd): %s (%d) %s\n", keyname[kbd_in.keycode], kbd_in.keycode, kbd_in.keydown ? "DOWN" : "UP");
+  
+  return 1;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len)
