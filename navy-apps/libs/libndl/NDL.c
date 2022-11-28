@@ -10,7 +10,7 @@
 static int evtdev = -1;
 static int fbdev = -1;
 static int dispinfo_dev = -1;
-static int screen_w = 0, screen_h = 0, canvas_w = 300, canvas_h = 400;
+static int screen_w = 0, screen_h = 0, canvas_w = 400, canvas_h = 300;
 typedef struct size
 {
   int w;
