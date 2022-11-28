@@ -10,10 +10,10 @@ int main()
   old_usec = old_tv.tv_sec * 1000000 + old_tv.tv_usec;
   while (count < 10)
   {
-    printf("tick0 %d\n", count);
+    // printf("tick0 %d\n", count);
     gettimeofday(&cur_tv, &tz);
     unsigned long cur_usec = cur_tv.tv_sec * 1000000 + cur_tv.tv_usec;
-    if (cur_usec - old_usec > 5)
+    if (cur_usec - old_usec > 500000)
     {
       old_usec = cur_usec;
       printf("tick %d\n", count);
