@@ -31,33 +31,30 @@ static uintptr_t loader(PCB *pcb, const char *filename)
   // return ehdr.e_entry;
 
   // return 0;
-  Elf32_Ehdr elf;
-  // ramdisk_read(&elf, 0, sizeof(Elf32_Ehdr));
+  Elf32_Ehdr ehdr;
   int fd = fs_open(filename, 0, 0);
   Log("load file: %s, fd: %d\n", filename, fd);
-  fs_read(fd, &elf, sizeof(Elf32_Ehdr));
+  fs_read(fd, &ehdr, sizeof(Elf32_Ehdr));
 
   /*elf magic number*/
-  assert(*(uint32_t *)elf.e_ident == 0x464c457f);
+  assert(*(uint32_t *)ehdr.e_ident == 0x464c457f);
 
   /*获取程序头表,程序头表在elf头的后面*/
-  Elf_Phdr phdr[elf.e_phnum];
+  Elf_Phdr phdr[ehdr.e_phnum];
   // ramdisk_read(phdr, elf.e_ehsize, sizeof(Elf_Phdr) * elf.e_phnum);
-  fs_lseek(fd, elf.e_ehsize, SEEK_SET);
-  fs_read(fd, phdr, sizeof(Elf_Phdr) * elf.e_phnum);
+  fs_lseek(fd, ehdr.e_ehsize, SEEK_SET);
+  fs_read(fd, phdr, sizeof(Elf_Phdr) * ehdr.e_phnum);
 
   /*开始加载*/
-  for (size_t i = 0; i < elf.e_phnum; i++) {
+  for (size_t i = 0; i < ehdr.e_phnum; i++) {
     if (phdr[i].p_type == PT_LOAD) {
-      // ramdisk_read((void *)phdr[i].p_vaddr, phdr[i].p_offset, phdr[i].p_memsz);
       fs_lseek(fd, phdr[i].p_offset, SEEK_SET);
       fs_read(fd, (void *)phdr[i].p_vaddr, phdr[i].p_memsz);
-      /*多与部分清零*/
       memset((void *)phdr[i].p_vaddr + phdr[i].p_filesz, 0, phdr[i].p_memsz - phdr[i].p_filesz);
     }
   }
   // printf("entry: %x\n", elf.e_entry);
-  return elf.e_entry;
+  return ehdr.e_entry;
 }
 
 void naive_uload(PCB *pcb, const char *filename)
