@@ -22,12 +22,14 @@ void sys_brk(Context *c)
   // c->GPRx = 0;
 }
 
-static inline intptr_t sys_gettimeofday(struct timeval * tv, struct timezone * tz) {
+static inline intptr_t sys_gettimeofday(struct timeval *tv, struct timezone *tz)
+{
   uint64_t uptime = io_read(AM_TIMER_UPTIME).us;
 
   tv->tv_sec = uptime / 1000000;
   tv->tv_usec = uptime % 1000000; // according to man, usec ranges [0, 999999]
-  if (tz) {
+  if (tz)
+  {
     tz->tz_dsttime = 0;
     tz->tz_minuteswest = 0;
   }
@@ -41,7 +43,9 @@ void do_syscall(Context *c)
   a[1] = c->GPR2;
   a[2] = c->GPR3;
   a[3] = c->GPR4;
-  Log("System call trace\nmcause\t\tGPR1\t\tGPR2\t\tGPR3\t\tGPR4 \n%d\t\t%d\t\t%d\t\t%x\t\t%d",c->mcause, c->GPR1, c->GPR2, c->GPR3, c->GPR4);
+// #ifdef CONFIG_STRACE
+  Log("System call trace\nmcause\t\tGPR1\t\tGPR2\t\tGPR3\t\tGPR4 \n%d\t\t%d\t\t%d\t\t%x\t\t%d", c->mcause, c->GPR1, c->GPR2, c->GPR3, c->GPR4);
+// #endif
   switch (a[0])
   {
   case SYS_yield:
@@ -104,7 +108,7 @@ void do_syscall(Context *c)
     //   putch(*x++);
     break;
   case SYS_gettimeofday:
-      c->GPRx = sys_gettimeofday((struct timeval*)a[1], (struct timezone*)a[2]);
+    c->GPRx = sys_gettimeofday((struct timeval *)a[1], (struct timezone *)a[2]);
     break;
   default:
     panic("Unhandled syscall ID = %d", a[0]);
