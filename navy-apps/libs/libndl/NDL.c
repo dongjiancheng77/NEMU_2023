@@ -157,5 +157,5 @@ int NDL_Init(uint32_t flags)
 
 void NDL_Quit()
 {
-  close(dispinfo_dev);
+  // close(dispinfo_dev);
 }
