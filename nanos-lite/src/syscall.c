@@ -18,9 +18,29 @@ void sys_brk(Context *c)
 {
   uintptr_t addr = (uintptr_t)(c->GPR2);
   c->GPRx = mm_brk(addr);
-    // c->GPRx = 0;
+  // c->GPRx = 0;
 }
+typedef struct timeval
+{
+  int32_t tv_sec;  /* seconds */
+  int32_t tv_usec; /* microseconds */
+} Timeval;
+typedef struct timezone
+{
+  int tz_minuteswest; /* minutes west of Greenwich */
+  int tz_dsttime;     /* type of DST correction */
+} Timezone;
+static inline intptr_t sys_gettimeofday(struct timeval * tv, struct timezone * tz) {
+  uint64_t uptime = io_read(AM_TIMER_UPTIME).us;
 
+  tv->tv_sec = uptime / 1000000;
+  tv->tv_usec = uptime % 1000000; // according to man, usec ranges [0, 999999]
+  if (tz) {
+    tz->tz_dsttime = 0;
+    tz->tz_minuteswest = 0;
+  }
+  return 0;
+}
 void do_syscall(Context *c)
 {
   // printf("dd");
@@ -73,20 +93,27 @@ void do_syscall(Context *c)
     //   }
     //   c->GPRx = c->GPR4;
     // }
-  int fd = c->GPR2;
-  char *buf = (char *)c->GPR3;
-  int count = c->GPR4;
-  if (fd == 1 || fd == 2) {
-    for (int i = 0; i < count; i++) {
-      putch(*buf++);
+    int fd = c->GPR2;
+    char *buf = (char *)c->GPR3;
+    int count = c->GPR4;
+    if (fd == 1 || fd == 2)
+    {
+      for (int i = 0; i < count; i++)
+      {
+        putch(*buf++);
+      }
     }
-  }else {
-    count = fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
-  }
-  c->GPRx = count;
+    else
+    {
+      count = fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
+    }
+    c->GPRx = count;
     // char *x = (char *)a[2];
     // for (int i = 0; i < a[3]; i++)
     //   putch(*x++);
+    break;
+  case SYS_gettimeofday:
+    c->GPRx = (int)sys_gettimeofday((Timeval *)c->GPR2, (Timezone *)c->GPR3);
     break;
   default:
     panic("Unhandled syscall ID = %d", a[0]);
