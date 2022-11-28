@@ -57,10 +57,33 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len)
   AM_GPU_CONFIG_T fbctl = io_read(AM_GPU_CONFIG);
   return snprintf(buf, len, "WIDTH : %d\n HEIGHT : %d\n", fbctl.width, fbctl.height);
 }
-
+static AM_GPU_CONFIG_T gpu_config;
+static AM_GPU_FBDRAW_T gpu_fbdraw;
 size_t fb_write(const void *buf, size_t offset, size_t len)
 {
-  return 0;
+  if (len == 0)
+  {
+    // printf("end!\n");
+    gpu_fbdraw.sync = 1;
+    gpu_fbdraw.w = 0;
+    gpu_fbdraw.h = 0;
+    ioe_write(AM_GPU_FBDRAW, &gpu_fbdraw);
+    return 0;
+  }
+
+  // ioe_read(AM_GPU_CONFIG, &gpu_config);
+  int width = gpu_config.width;
+  // printf("screen is %d\n", width);
+
+  gpu_fbdraw.pixels = (void *)buf;
+  gpu_fbdraw.w = len;
+  gpu_fbdraw.h = 1;
+  gpu_fbdraw.x = offset % width;
+  gpu_fbdraw.y = offset / width;
+  // printf("w,h is %d,%d\n",gpu_fbdraw.w,gpu_fbdraw.h);
+  gpu_fbdraw.sync = 0;
+  ioe_write(AM_GPU_FBDRAW, &gpu_fbdraw);
+  return len;
 }
 
 void init_device()

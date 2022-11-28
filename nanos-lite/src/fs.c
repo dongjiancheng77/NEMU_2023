@@ -50,9 +50,9 @@ static Finfo file_table[] __attribute__((used)) = {
 void init_fs()
 {
   // TODO: initialize the size of /dev/fb
-  // AM_GPU_CONFIG_T fbctl = io_read(AM_GPU_CONFIG);
-  // file_table[FD_FB].disk_offset = 0;
-  // file_table[FD_FB].size = fbctl.width * fbctl.height * sizeof(uint32_t);
+  AM_GPU_CONFIG_T fbctl = io_read(AM_GPU_CONFIG);
+  file_table[FD_FB].disk_offset = 0;
+  file_table[FD_FB].size = fbctl.width * fbctl.height * sizeof(uint32_t);
 }
 
 size_t ramdisk_read(void *buf, size_t offset, size_t len);
@@ -84,9 +84,9 @@ size_t fs_read(int fd, void *buf, size_t len)
   }
   else
   {
-  real_len = info->open_offset + len <= info->size ? len : info->size - info->open_offset;
-  ramdisk_read(buf, info->disk_offset + info->open_offset, real_len);
-  info->open_offset += real_len;
+    real_len = info->open_offset + len <= info->size ? len : info->size - info->open_offset;
+    ramdisk_read(buf, info->disk_offset + info->open_offset, real_len);
+    info->open_offset += real_len;
   }
 
   return real_len;

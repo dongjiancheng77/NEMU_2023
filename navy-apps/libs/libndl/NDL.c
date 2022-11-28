@@ -9,7 +9,7 @@
 
 static int evtdev = -1;
 static int fbdev = -1;
-static int screen_w = 0, screen_h = 0;
+static int screen_w = 0, screen_h = 0, canvas_w = 0, canvas_h = 0;
 
 uint32_t NDL_GetTicks()
 {
@@ -27,6 +27,18 @@ int NDL_PollEvent(char *buf, int len)
 
 void NDL_OpenCanvas(int *w, int *h)
 {
+  if (*h == 0 && *w == 0)
+  {
+    canvas_h = screen_h;
+    canvas_w = screen_w;
+    *w = screen_w;
+    *h = screen_h;
+  }
+  else if (*h <= screen_h && *w <= screen_w)
+  {
+    canvas_h = *h;
+    canvas_w = *w;
+  }
   if (getenv("NWM_APP"))
   {
     int fbctl = 4;
@@ -53,6 +65,25 @@ void NDL_OpenCanvas(int *w, int *h)
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
 {
+  if (w == 0 && h == 0)
+  {
+    w = disp_size.w;
+    h = disp_size.h;
+  }
+  assert(w > 0 && w <= disp_size.w);
+  assert(h > 0 && h <= disp_size.h);
+
+  // write(1, "here\n", 10);
+  // printf("draw [%d, %d] to [%d, %d]\n", w, h, x, y);
+  for (size_t row = 0; row < h; ++row)
+  {
+    // printf("draw row %d with len %d\n", row, w);
+    lseek(fbdev, x + (y + row) * disp_size.w, SEEK_SET);
+    // printf("pixels pos %p with len %d\n",pixels + row * w, w);
+    write(fbdev, pixels + row * w, w);
+    // printf("draw row %d with len %d\n", row, w);
+  }
+  write(fbdev, 0, 0);
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples)
