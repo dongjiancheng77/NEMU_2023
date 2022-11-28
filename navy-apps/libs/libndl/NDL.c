@@ -33,7 +33,11 @@ int NDL_PollEvent(char *buf, int len)
 
 void NDL_OpenCanvas(int *w, int *h)
 {
-
+  if (*w == 0 && *h == 0)
+  {
+    *w = canvas_w;
+    *h = canvas_h;
+  }
   if (getenv("NWM_APP"))
   {
     int fbctl = 4;
@@ -56,18 +60,7 @@ void NDL_OpenCanvas(int *w, int *h)
     }
     close(fbctl);
   }
-  if (*h == 0 && *w == 0)
-  {
-    canvas_h = screen_h;
-    canvas_w = screen_w;
-    *w = screen_w;
-    *h = screen_h;
-  }
-  else if (*h <= screen_h && *w <= screen_w)
-  {
-    canvas_h = *h;
-    canvas_w = *w;
-  }
+
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
@@ -78,8 +71,8 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
     h = canvas_h;
   }
   printf("%d", w);
-  // assert(w > 0 && w <= canvas_w);
-  // assert(h > 0 && h <= canvas_h);
+  assert(w > 0 && w <= canvas_w);
+  assert(h > 0 && h <= canvas_h);
 
   // write(1, "here\n", 10);
   // printf("draw [%d, %d] to [%d, %d]\n", w, h, x, y);
