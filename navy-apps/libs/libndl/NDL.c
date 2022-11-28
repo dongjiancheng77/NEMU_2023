@@ -115,12 +115,12 @@ int NDL_Init(uint32_t flags)
   fbdev = open("/dev/fb", 0, 0);
   dispinfo_dev = open("/proc/dispinfo", 0, 0);
 
-  // get_disp_size();
+  get_disp_size();
   FILE *fp = fopen("/proc/dispinfo", "r");
   fscanf(fp, "WIDTH:%d\nHEIGHT:%d\n", &canvas_w, &canvas_h);
   // printf("disp size is %d,%d\n", disp_size.w, disp_size.h);
-  // assert(disp_size.w >= 400 && disp_size.w <= 800);
-  // assert(disp_size.h >= 300 && disp_size.h <= 640);
+  assert(disp_size.w >= 400 && disp_size.w <= 800);
+  assert(disp_size.h >= 300 && disp_size.h <= 640);
   fclose(fp);
   return 0;
 }
