@@ -73,19 +73,19 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
 {
   if (w == 0 && h == 0)
   {
-    w = disp_size.w;
-    h = disp_size.h;
+    w = canvas_w;
+    h = canvas_h;
   }
-  printf("%d", w);
-  // assert(w > 0 && w <= disp_size.w);
-  // assert(h > 0 && h <= disp_size.h);
+  // printf("%d", w);
+  assert(w > 0 && w <= canvas_w);
+  assert(h > 0 && h <= canvas_h);
 
   // write(1, "here\n", 10);
   // printf("draw [%d, %d] to [%d, %d]\n", w, h, x, y);
   for (size_t row = 0; row < h; ++row)
   {
     // printf("draw row %d with len %d\n", row, w);
-    lseek(fbdev, x + (y + row) * disp_size.w, SEEK_SET);
+    lseek(fbdev, x + (y + row) * canvas_w, SEEK_SET);
     // printf("pixels pos %p with len %d\n",pixels + row * w, w);
     write(fbdev, pixels + row * w, w);
     // printf("draw row %d with len %d\n", row, w);
