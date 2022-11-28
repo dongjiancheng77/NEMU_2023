@@ -10,7 +10,12 @@
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0, canvas_w = 0, canvas_h = 0;
-
+typedef struct size
+{
+  int w;
+  int h;
+} Size;
+Size disp_size;
 uint32_t NDL_GetTicks()
 {
   // return 0;
