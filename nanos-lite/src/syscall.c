@@ -43,9 +43,9 @@ void do_syscall(Context *c)
   a[1] = c->GPR2;
   a[2] = c->GPR3;
   a[3] = c->GPR4;
-// #ifdef CONFIG_STRACE
-  Log("System call trace\nmcause\t\tGPR1\t\tGPR2\t\tGPR3\t\tGPR4 \n%d\t\t%d\t\t%d\t\t%x\t\t%d", c->mcause, c->GPR1, c->GPR2, c->GPR3, c->GPR4);
-// #endif
+// // #ifdef CONFIG_STRACE
+//   Log("System call trace\nmcause\t\tGPR1\t\tGPR2\t\tGPR3\t\tGPR4 \n%d\t\t%d\t\t%d\t\t%x\t\t%d", c->mcause, c->GPR1, c->GPR2, c->GPR3, c->GPR4);
+// // #endif
   switch (a[0])
   {
   case SYS_yield:
