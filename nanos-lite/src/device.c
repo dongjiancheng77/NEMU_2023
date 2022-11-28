@@ -55,7 +55,8 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len)
 {
   // return 0;
   AM_GPU_CONFIG_T fbctl = io_read(AM_GPU_CONFIG);
-  return snprintf(buf, len, "WIDTH : %d\n HEIGHT : %d\n", fbctl.width, fbctl.height);
+  int _len = snprintf(buf, len, "WIDTH : %d\n HEIGHT : %d\n", fbctl.width, fbctl.height);
+  return _len;
 }
 static AM_GPU_CONFIG_T gpu_config;
 static AM_GPU_FBDRAW_T gpu_fbdraw;
