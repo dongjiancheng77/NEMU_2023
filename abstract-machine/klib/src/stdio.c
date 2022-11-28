@@ -199,7 +199,12 @@ int sprintf(char *out, const char *fmt, ...)
 
 int snprintf(char *out, size_t n, const char *fmt, ...)
 {
-  return 0;
+  va_list ap;
+  int cnt;
+  va_start(ap, fmt);
+  cnt = vsnprintf(out, n, fmt, ap);
+  va_end(ap);
+  return cnt;
 }
 
 #endif

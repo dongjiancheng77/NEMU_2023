@@ -10,6 +10,21 @@ void switch_boot_pcb()
 {
   current = &pcb_boot;
 }
+int program_index = 1;
+void switch_program_index(int new_index){
+  if (new_index == program_index)
+    return ;
+
+  switch_boot_pcb();  
+  
+  program_index = new_index;
+  pcb[0].cp->pdir = NULL;
+  //TODO: 这是一种trade-off
+  //set_satp(pcb[1].cp->pdir);
+  printf("Switch to PCB[%d]\n", new_index);
+
+  yield();
+}
 
 void hello_fun(void *arg)
 {

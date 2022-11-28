@@ -1,5 +1,6 @@
 #include <common.h>
 // #include <fs.h>
+#include <proc.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -37,20 +38,19 @@ size_t events_read(void *buf, size_t offset, size_t len)
   switch (kbd_in.keycode)
   {
   case AM_KEY_F1:
-    fg_pcb = 1;
-    break;
-  case AM_KEY_F2:
-    fg_pcb = 2;
-    break;
-  case AM_KEY_F3:
-    fg_pcb = 3;
-    break;
-  default:
+    switch_program_index(1);
+    return 0;
 
-    break;
+  case AM_KEY_F2:
+    switch_program_index(2);
+    return 0;
+
+  case AM_KEY_F3:
+    switch_program_index(3);
+    return 0;
   }
   int _len = snprintf(buf, len, "%s %s\n", kbd_in.keydown ? "kd" : "ku", keyname[kbd_in.keycode]);
-  printf("%s %d %s %d\n", (char*)buf, len, keyname[kbd_in.keycode], kbd_in.keydown);
+  printf("%s %d %s %d\n", (char *)buf, len, keyname[kbd_in.keycode], kbd_in.keydown);
   return _len;
 }
 
