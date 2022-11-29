@@ -117,7 +117,7 @@ int NDL_Init(uint32_t flags)
   {
     screen_w = atoi(buf1);
   }
-  else if (strcmp(buf0, "HEIGHT") == 0)
+  else
   {
     screen_h = atoi(buf1);
   }
@@ -127,7 +127,7 @@ int NDL_Init(uint32_t flags)
   {
     screen_w = atoi(buf3);
   }
-  else if (strcmp(buf2, "HEIGHT") == 0)
+  else
   {
     screen_h = atoi(buf3);
   }
