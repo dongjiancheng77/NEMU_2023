@@ -9,8 +9,7 @@
 
 static int evtdev = -1;
 static int fbdev = -1;
-static int dispinfo_dev = -1;
-static int screen_w = 0, screen_h = 0, canvas_w = 0, canvas_h = 0;
+static int dispinfo_dev = -1, screen_w = 0, screen_h = 0, canvas_w = 0, canvas_h = 0;
 
 uint32_t NDL_GetTicks()
 {
@@ -110,29 +109,27 @@ int NDL_Init(uint32_t flags)
   evtdev = open("/dev/events", O_RDONLY);
   fbdev = open("/dev/fb", O_RDONLY);
   dispinfo_dev = open("/proc/dispinfo", O_RDONLY);
-  char buf[128], buf_kv[64];
+  char buf[128];
   read(dispinfo_dev, buf, 128);
-  char *tok0_k = strtok(buf, ":");
-  char *tok0_v = strtok(NULL, "\n");
-  char *tok1_k = strtok(NULL, ":");
-  char *tok1_v = strtok(NULL, "\n");
-  sscanf(tok0_k, "%s", buf_kv);
-  if (strcmp(tok0_k, "WIDTH") == 0)
+  char *buf0 = strtok(buf, ":");
+  char *buf1 = strtok(NULL, "\n");
+  if (strcmp(buf0, "WIDTH") == 0)
   {
-    screen_w = atoi(tok0_v);
+    screen_w = atoi(buf1);
   }
-  else if (strcmp(tok0_k, "HEIGHT") == 0)
+  else if (strcmp(buf0, "HEIGHT") == 0)
   {
-    screen_h = atoi(tok0_v);
+    screen_h = atoi(buf1);
   }
-  sscanf(tok1_k, "%s", buf_kv);
-  if (strcmp(tok1_k, "WIDTH") == 0)
+  char *buf2 = strtok(NULL, ":");
+  char *buf3 = strtok(NULL, "\n");
+  if (strcmp(buf2, "WIDTH") == 0)
   {
-    screen_w = atoi(tok1_v);
+    screen_w = atoi(buf3);
   }
-  else if (strcmp(tok1_k, "HEIGHT") == 0)
+  else if (strcmp(buf2, "HEIGHT") == 0)
   {
-    screen_h = atoi(tok1_v);
+    screen_h = atoi(buf3);
   }
   return 0;
 }
