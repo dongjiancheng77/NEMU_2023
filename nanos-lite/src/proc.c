@@ -44,7 +44,7 @@ void init_proc()
 
   Log("Initializing processes...");
 
-  naive_uload(NULL, "/bin/bmp-test");
+  naive_uload(NULL, "/bin/nslider");
   // load program here
 }
 
