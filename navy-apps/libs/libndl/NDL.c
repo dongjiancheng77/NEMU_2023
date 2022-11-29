@@ -57,11 +57,11 @@ void NDL_OpenCanvas(int *w, int *h)
     *w = screen_w;
     *h = screen_h;
   }
-  // else if (*h <= screen_h && *w <= screen_w)
-  // {
-  //   canvas_h = *h;
-  //   canvas_w = *w;
-  // }
+  else if (*h <= screen_h && *w <= screen_w)
+  {
+    canvas_h = *h;
+    canvas_w = *w;
+  }
   // printf("%d,%d a/n", *w, *h);
   // printf("%d,%d b/n", canvas_w, canvas_h);
   // printf("%d,%d c/n", screen_w, screen_h);
