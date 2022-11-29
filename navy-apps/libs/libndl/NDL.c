@@ -117,20 +117,20 @@ int NDL_Init(uint32_t flags)
   char *tok1_k = strtok(NULL, ":");
   char *tok1_v = strtok(NULL, "\n");
   sscanf(tok0_k, "%s", buf_kv);
-  if (strcmp(buf_kv, "WIDTH") == 0)
+  if (strcmp(tok0_k, "WIDTH") == 0)
   {
     screen_w = atoi(tok0_v);
   }
-  else if (strcmp(buf_kv, "HEIGHT") == 0)
+  else if (strcmp(tok0_k, "HEIGHT") == 0)
   {
     screen_h = atoi(tok0_v);
   }
   sscanf(tok1_k, "%s", buf_kv);
-  if (strcmp(buf_kv, "WIDTH") == 0)
+  if (strcmp(tok1_k, "WIDTH") == 0)
   {
     screen_w = atoi(tok1_v);
   }
-  else if (strcmp(buf_kv, "HEIGHT") == 0)
+  else if (strcmp(tok1_k, "HEIGHT") == 0)
   {
     screen_h = atoi(tok1_v);
   }
