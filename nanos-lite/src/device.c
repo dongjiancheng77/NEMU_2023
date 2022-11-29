@@ -32,10 +32,10 @@ size_t serial_write(const void *buf, size_t offset, size_t len)
 size_t events_read(void *buf, size_t offset, size_t len)
 {
   // printf("!");
-  AM_INPUT_KEYBRD_T kbd_in = io_read(AM_INPUT_KEYBRD);
-  if (kbd_in.keycode == AM_KEY_NONE)
+  AM_INPUT_KEYBRD_T event_kbd = io_read(AM_INPUT_KEYBRD);
+  if (event_kbd.keycode == AM_KEY_NONE)
     return 0;
-  switch (kbd_in.keycode)
+  switch (event_kbd.keycode)
   {
   case AM_KEY_F1:
     switch_program_index(1);
@@ -47,7 +47,7 @@ size_t events_read(void *buf, size_t offset, size_t len)
     switch_program_index(3);
     return 0;
   }
-  snprintf(buf, len, "%s %s\n", kbd_in.keydown ? "kd" : "ku", keyname[kbd_in.keycode]);
+  snprintf(buf, len, "%s %s\n", event_kbd.keydown ? "kd" : "ku", keyname[event_kbd.keycode]);
   return 1;
 }
 
@@ -55,8 +55,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len)
 {
   // return 0;
   AM_GPU_CONFIG_T fbctl = io_read(AM_GPU_CONFIG);
-  int _len = snprintf(buf, len, "WIDTH : %d\n HEIGHT : %d\n", fbctl.width, fbctl.height);
-  return _len;
+  return snprintf(buf, len, "WIDTH : %d\n HEIGHT : %d\n", fbctl.width, fbctl.height);
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len)
@@ -64,7 +63,6 @@ size_t fb_write(const void *buf, size_t offset, size_t len)
   uintptr_t *ptr;
   ptr = (uintptr_t *)(&buf);
   io_write(AM_GPU_FBDRAW, (offset/4)%400,(offset/4)/400, (void *)*ptr, len/4, 1, true);
-  
   return len;
 }
 
