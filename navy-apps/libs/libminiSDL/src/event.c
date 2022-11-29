@@ -2,11 +2,9 @@
 #include <SDL.h>
 
 #define keyname(k) #k,
-#define NR_KEYS (sizeof(keyname) / sizeof(keyname[0]))
 static const char *keyname[] = {
     "NONE",
     _KEYS(keyname)};
-static uint8_t keysnap[NR_KEYS] = {0};
 int SDL_PushEvent(SDL_Event *ev)
 {
   return 0;
@@ -19,24 +17,32 @@ int SDL_PollEvent(SDL_Event *ev)
 
 int SDL_WaitEvent(SDL_Event *event)
 {
-  char buf[32];
+  char buf[32], key_buf[32];
   memset(buf, 0, 32);
-  printf("1event is %s in SDL\n", buf);
+  // printf("1");
   while (NDL_PollEvent(buf, 32) == 0)
-  {
-  };
-  printf("event is %s in SDL\n", buf);
+    ;
+  // printf("2 %s \n", buf);
   if (strncmp(buf, "kd", 2) == 0)
-    event->type = SDL_KEYDOWN;
-  else if (strncmp(buf, "ku", 2) == 0)
-    event->type = SDL_KEYUP;
-
-  for (size_t i = 0; i < (sizeof(keyname) / sizeof(keyname[0])); ++i)
   {
+    event->type = SDL_KEYDOWN;
+    // printf("3%s in SDL\n", buf);
+  }
+  else if (strncmp(buf, "ku", 2) == 0)
+  {
+    event->type = SDL_KEYUP;
+    // printf("4%s in SDL\n", buf);
+  }
+  for (int i = 0; i < (sizeof(keyname) / sizeof(char *)); ++i)
+  {
+    // printf("%s in SDL\n", buf);
     if (((strlen(buf + 3) - 1) == strlen(keyname[i])) && (strncmp(buf + 3, keyname[i], strlen(keyname[i])) == 0))
     {
       event->key.keysym.sym = i;
-      keysnap[i] = (event->type == SDL_KEYDOWN) ? 1 : 0;
+      if (event->type == SDL_KEYDOWN)
+        key_buf[i] = 1;
+      else if (event->type == SDL_KEYUP)
+        key_buf[i] = 0;
       break;
     }
   }
