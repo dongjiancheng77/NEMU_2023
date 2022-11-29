@@ -78,23 +78,19 @@ void NDL_OpenCanvas(int *w, int *h)
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
 {
   printf("%d,%d d/n", w, h);
-
-  // x += (screen_w - canvas_w) / 2;
-  // y += (screen_h - canvas_h) / 2;
+  x += (screen_w - canvas_w) / 2;
+  y += (screen_h - canvas_h) / 2;
   int fd = open("/dev/fb", O_WRONLY);
-  assert(fd != -1);
-  // printf("drawing to %d, %08X: %d %d %d %d\n", fd, *pixels, x, y, w, h);
   size_t base_offset = (y * screen_w + x) * sizeof(uint32_t);
   size_t pixel_offset = 0;
-  int j, ret_seek=0, ret_write;
+  int  ret_seek=0, ret_write;
   printf("%d \n", ret_seek);
-  for (j = 0; j < h; ++j)
+  for (int j = 0; j < h; ++j)
   {
-    printf("%d \n ", ret_seek);
+    // printf("%d \n ", ret_seek);
     ret_seek = lseek(fd, base_offset, SEEK_SET);
-    printf("%d ,%d,%d\n ", fd,*pixels,pixel_offset);
-    ret_write = write(fd, pixels + pixel_offset, w * sizeof(uint32_t));
-    pixel_offset += w;
+    // printf("%d ,%d,%d\n ", fd,*pixels,pixel_offset);
+    ret_write = write(fd, pixels +j*w, w * sizeof(uint32_t));
     base_offset += screen_w * sizeof(uint32_t);
   }
 }
