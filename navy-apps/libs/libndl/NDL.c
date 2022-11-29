@@ -11,7 +11,7 @@
 static int evtdev = -1;
 static int fbdev = -1;
 static int dispinfo_dev = -1;
-static int screen_w = 0, screen_h = 0, canvas_w = 400, canvas_h = 300;
+static int screen_w = 0, screen_h = 0, canvas_w = 0, canvas_h = 0;
 typedef struct size
 {
   int w;
@@ -70,9 +70,9 @@ void NDL_OpenCanvas(int *w, int *h)
   }
   else
     printf("canvas size must < screen size (%d, %d)\n", screen_w, screen_h);
-  printf("%d,%d", *w, *h);
-  printf("%d,%d", canvas_w, canvas_h);
-  printf("%d,%d", screen_w, screen_h);
+  // printf("%d,%d", *w, *h);
+  // printf("%d,%d", canvas_w, canvas_h);
+  // printf("%d,%d", screen_w, screen_h);
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
