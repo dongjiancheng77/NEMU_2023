@@ -86,14 +86,14 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
   size_t base_offset = (y * screen_w + x) * sizeof(uint32_t);
   size_t pixel_offset = 0;
   int j, ret_seek, ret_write;
-  // for (j = 0; j < h; ++j)
-  // {
-  //   ret_seek = lseek(fd, base_offset, SEEK_SET);
+  for (j = 0; j < h; ++j)
+  {
+    ret_seek = lseek(fd, base_offset, SEEK_SET);
   //   // printf("(%d, %s) ", ret_seek, strerror(errno));
   //   ret_write = write(fd, pixels + pixel_offset, w * sizeof(uint32_t));
   //   pixel_offset += w;
   //   base_offset += screen_w * sizeof(uint32_t);
-  // }
+  }
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples)
