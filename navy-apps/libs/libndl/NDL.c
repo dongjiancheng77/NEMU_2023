@@ -82,13 +82,14 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
   y += (screen_h - canvas_h) / 2;
   int fd = open("/dev/fb", O_WRONLY);
   assert(fd != -1);
-  printf("drawing to %d, %08X: %d %d %d %d\n", fd, *pixels, x,y,w,h);
+  printf("drawing to %d, %08X: %d %d %d %d\n", fd, *pixels, x, y, w, h);
   size_t base_offset = (y * screen_w + x) * sizeof(uint32_t);
   size_t pixel_offset = 0;
-  int j, ret_seek, ret_write;
+  int j, ret_seek=0, ret_write;
+  printf("(%d) ", ret_seek);
   for (j = 0; j < h; ++j)
   {
-        printf("(%d) ", ret_seek);
+    printf("(%d) ", ret_seek);
     ret_seek = lseek(fd, base_offset, SEEK_SET);
     printf("(%d) ", ret_seek);
     ret_write = write(fd, pixels + pixel_offset, w * sizeof(uint32_t));
