@@ -47,11 +47,3 @@ void __am_gpu_status(AM_GPU_STATUS_T *status)
 {
   status->ready = true;
 }
-void __am_gpu_memcpy(AM_GPU_MEMCPY_T *gpu_memcpy) {
-  int i;
-  const char* src = (char *)gpu_memcpy->src;
-  for (i = 0; i < gpu_memcpy->size; ++ i) {
-    outb(FB_ADDR + i + gpu_memcpy->dest, *(src + i));
-  }
-  outl(SYNC_ADDR, 1);
-}

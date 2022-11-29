@@ -70,18 +70,17 @@ void NDL_OpenCanvas(int *w, int *h)
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
 {
   // printf("%d,%d d/n", w, h);
-  x += (screen_w - canvas_w) / 2;
   y += (screen_h - canvas_h) / 2;
-  int fd = open("/dev/fb", 0,0);
-  size_t offset_0 = (y * screen_w + x) * sizeof(uint32_t);
-  int  ret_seek=0, ret_write;
+  // int fd = open("/dev/fb", O_RDONLY);
+  size_t offset_0 = (y * screen_w + x + (screen_w - canvas_w) / 2) * sizeof(uint32_t);
+  int ret_seek = 0, ret_write;
   // printf("%d \n", ret_seek);
   for (int j = 0; j < h; ++j)
   {
     // printf("%d \n ", ret_seek);
-    ret_seek = lseek(fd, offset_0+j*screen_w * sizeof(uint32_t), SEEK_SET);
+    ret_seek = lseek(fbdev, offset_0 + j * screen_w * sizeof(uint32_t), SEEK_SET);
     // printf("%d ,%d,%d\n ", fd,*pixels,pixel_offset);
-    ret_write = write(fd, pixels +j*w, w * sizeof(uint32_t));
+    ret_write = write(fbdev, pixels + j * w, w * sizeof(uint32_t));
   }
 }
 
@@ -111,38 +110,18 @@ int NDL_Init(uint32_t flags)
   }
   evtdev = open("/dev/events", O_RDONLY);
 
-  // aquire screen size
-  char buf[80], buf_kv[40];
-  int fd = open("/proc/dispinfo", O_RDONLY);
-  assert(fd);
-  read(fd, buf, 80);
-  char *tok0_k = strtok(buf, ":");
-  char *tok0_v = strtok(NULL, "\n");
-  char *tok1_k = strtok(NULL, ":");
-  char *tok1_v = strtok(NULL, "\n");
-  sscanf(tok0_k, "%s", buf_kv);
-  if (strcmp(buf_kv, "WIDTH") == 0)
-  {
-    screen_w = atoi(tok0_v);
-  }
-  else if (strcmp(buf_kv, "HEIGHT") == 0)
-  {
-    screen_h = atoi(tok0_v);
-  }
-  else
-    assert(0);
-  sscanf(tok1_k, "%s", buf_kv);
-  if (strcmp(buf_kv, "WIDTH") == 0)
-  {
-    screen_w = atoi(tok1_v);
-  }
-  else if (strcmp(buf_kv, "HEIGHT") == 0)
-  {
-    screen_h = atoi(tok1_v);
-  }
-  else
-    assert(0);
-  // close(fd);
+  evtdev = open("/dev/events", 0, 0);
+  fbdev = open("/dev/fb", 0, 0);
+  dispinfo_dev = open("/proc/dispinfo", 0, 0);
+
+  // get_disp_size();
+  FILE *fp = fopen("/proc/dispinfo", "r");
+  fscanf(fp, "WIDTH:%d\nHEIGHT:%d\n", &disp_size.w, &disp_size.h);
+  // printf("disp size is %d,%d\n", disp_size.w, disp_size.h);
+  assert(disp_size.w >= 400 && disp_size.w <= 800);
+  assert(disp_size.h >= 300 && disp_size.h <= 640);
+  fclose(fp);
+  return 0;
 
   return 0;
 }
