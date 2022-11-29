@@ -63,8 +63,6 @@ size_t fb_write(const void *buf, size_t offset, size_t len)
 {
   uintptr_t *ptr;
   ptr = (uintptr_t *)(&buf);
-
-
   io_write(AM_GPU_FBDRAW, (offset/4)%400,(offset/4)/400, (void *)*ptr, len/4, 1, true);
   
   return len;

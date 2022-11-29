@@ -19,8 +19,8 @@ enum
   FD_STDIN,
   FD_STDOUT,
   FD_STDERR,
-  FD_FB,
   FD_EVENTS,
+  FD_FB,
   FD_DISPINFO
 };
 
