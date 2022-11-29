@@ -70,6 +70,9 @@ void NDL_OpenCanvas(int *w, int *h)
   }
   else
     printf("canvas size must < screen size (%d, %d)\n", screen_w, screen_h);
+  printf("%d,%d", *w, *h);
+  printf("%d,%d", canvas_w, canvas_h);
+  printf("%d,%d", screen_w, screen_h);
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
