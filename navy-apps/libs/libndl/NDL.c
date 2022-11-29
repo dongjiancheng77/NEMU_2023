@@ -71,7 +71,6 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
 {
   // printf("%d,%d d/n", w, h);
   y += (screen_h - canvas_h) / 2;
-  // int fd = open("/dev/fb", O_RDONLY);
   size_t offset_0 = (y * screen_w + x + (screen_w - canvas_w) / 2) * sizeof(uint32_t);
   int ret_seek = 0, ret_write;
   // printf("%d \n", ret_seek);
@@ -109,18 +108,32 @@ int NDL_Init(uint32_t flags)
     evtdev = 3;
   }
   evtdev = open("/dev/events", O_RDONLY);
-
-  evtdev = open("/dev/events", 0, 0);
-  fbdev = open("/dev/fb", 0, 0);
-  dispinfo_dev = open("/proc/dispinfo", 0, 0);
-
-  // get_disp_size();
-  FILE *fp = fopen("/proc/dispinfo", "r");
-  fscanf(fp, "WIDTH:%d\nHEIGHT:%d\n", &canvas_w, &canvas_h);
-  // printf("disp size is %d,%d\n", disp_size.w, disp_size.h);
-  fclose(fp);
-  return 0;
-
+  fbdev = open("/dev/fb", O_RDONLY);
+  dispinfo_dev = open("/proc/dispinfo", O_RDONLY);
+  char buf[128], buf_kv[64];
+  read(dispinfo_dev, buf, 128);
+  char *tok0_k = strtok(buf, ":");
+  char *tok0_v = strtok(NULL, "\n");
+  char *tok1_k = strtok(NULL, ":");
+  char *tok1_v = strtok(NULL, "\n");
+  sscanf(tok0_k, "%s", buf_kv);
+  if (strcmp(buf_kv, "WIDTH") == 0)
+  {
+    screen_w = atoi(tok0_v);
+  }
+  else if (strcmp(buf_kv, "HEIGHT") == 0)
+  {
+    screen_h = atoi(tok0_v);
+  }
+  sscanf(tok1_k, "%s", buf_kv);
+  if (strcmp(buf_kv, "WIDTH") == 0)
+  {
+    screen_w = atoi(tok1_v);
+  }
+  else if (strcmp(buf_kv, "HEIGHT") == 0)
+  {
+    screen_h = atoi(tok1_v);
+  }
   return 0;
 }
 
