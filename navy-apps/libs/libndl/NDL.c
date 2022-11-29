@@ -74,23 +74,23 @@ void NDL_OpenCanvas(int *w, int *h)
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
 {
-  printf("%d,%d", w, h);
-  x += (screen_w - canvas_w) / 2;
-  y += (screen_h - canvas_h) / 2;
-  int fd = open("/dev/fb", O_WRONLY);
-  assert(fd != -1);
-  // printf("drawing to %d, %08X: %d %d %d %d\n", fd, *pixels, x,y,w,h);
-  size_t base_offset = (y * screen_w + x) * sizeof(uint32_t);
-  size_t pixel_offset = 0;
-  int j, ret_seek, ret_write;
-  for (j = 0; j < h; ++j)
-  {
-    ret_seek = lseek(fd, base_offset, SEEK_SET);
-    // printf("(%d, %s) ", ret_seek, strerror(errno));
-    ret_write = write(fd, pixels + pixel_offset, w * sizeof(uint32_t));
-    pixel_offset += w;
-    base_offset += screen_w * sizeof(uint32_t);
-  }
+  // printf("%d,%d", w, h);
+  // x += (screen_w - canvas_w) / 2;
+  // y += (screen_h - canvas_h) / 2;
+  // int fd = open("/dev/fb", O_WRONLY);
+  // assert(fd != -1);
+  // // printf("drawing to %d, %08X: %d %d %d %d\n", fd, *pixels, x,y,w,h);
+  // size_t base_offset = (y * screen_w + x) * sizeof(uint32_t);
+  // size_t pixel_offset = 0;
+  // int j, ret_seek, ret_write;
+  // for (j = 0; j < h; ++j)
+  // {
+  //   ret_seek = lseek(fd, base_offset, SEEK_SET);
+  //   // printf("(%d, %s) ", ret_seek, strerror(errno));
+  //   ret_write = write(fd, pixels + pixel_offset, w * sizeof(uint32_t));
+  //   pixel_offset += w;
+  //   base_offset += screen_w * sizeof(uint32_t);
+  // }
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples)
