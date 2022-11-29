@@ -11,7 +11,7 @@
 static int evtdev = -1;
 static int fbdev = -1;
 static int dispinfo_dev = -1;
-static int screen_w = 0, screen_h = 0, canvas_w = 0, canvas_h = 0,canvas_x = 0, canvas_y = 0;
+static int screen_w = 0, screen_h = 0, canvas_w = 0, canvas_h = 0;
 typedef struct size
 {
   int w;
@@ -77,11 +77,22 @@ void NDL_OpenCanvas(int *w, int *h)
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
 {
-  int graphics = open("/dev/fb", O_RDWR);
-  
-  for (int i = 0; i < h; ++i){
-    lseek(graphics, ((canvas_y + y + i) * screen_w + (canvas_x + x)) * sizeof(uint32_t), SEEK_SET);
-    ssize_t s = write(graphics, pixels + w * i, w * sizeof(uint32_t));
+  printf("%d,%d d/n", w, h);
+  x += (screen_w - canvas_w) / 2;
+  y += (screen_h - canvas_h) / 2;
+  int fd = open("/dev/fb", O_WRONLY);
+  assert(fd != -1);
+  printf("drawing to %d, %08X: %d %d %d %d\n", fd, *pixels, x,y,w,h);
+  size_t base_offset = (y * screen_w + x) * sizeof(uint32_t);
+  size_t pixel_offset = 0;
+  int j, ret_seek, ret_write;
+  for (j = 0; j < h; ++j)
+  {
+    ret_seek = lseek(fd, base_offset, SEEK_SET);
+    // printf("(%d, %s) ", ret_seek, strerror(errno));
+    ret_write = write(fd, pixels + pixel_offset, w * sizeof(uint32_t));
+    pixel_offset += w;
+    base_offset += screen_w * sizeof(uint32_t);
   }
 }
 

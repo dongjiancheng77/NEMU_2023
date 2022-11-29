@@ -61,7 +61,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len)
 
 size_t fb_write(const void *buf, size_t offset, size_t len)
 {
-  // MULTIPROGRAM_YIELD();
+  MULTIPROGRAM_YIELD();
   AM_GPU_CONFIG_T fbctl = io_read(AM_GPU_CONFIG);
   size_t max_offset = fbctl.height * fbctl.width * sizeof(uint32_t);
   if (offset + len > max_offset)
