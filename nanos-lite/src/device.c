@@ -65,7 +65,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len)
   ptr = (uintptr_t *)(&buf);
 
   io_write(AM_GPU_MEMCPY, offset, (void *)*ptr, len);
-  io_write(AM_GPU_FBDRAW, 0, 0, NULL, 0, 0, 1);
+  io_write(AM_GPU_FBDRAW, 0, 0, NULL, 0, 0, true);
   
   return len;
 }
