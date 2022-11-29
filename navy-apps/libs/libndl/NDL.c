@@ -6,18 +6,12 @@
 #include <sys/time.h>
 #include <assert.h>
 #include <fcntl.h>
-#define IS_NUM(ch) (ch >= '0' && ch <= '9')
 
 static int evtdev = -1;
 static int fbdev = -1;
 static int dispinfo_dev = -1;
 static int screen_w = 0, screen_h = 0, canvas_w = 0, canvas_h = 0;
-typedef struct size
-{
-  int w;
-  int h;
-} Size;
-Size disp_size;
+
 uint32_t NDL_GetTicks()
 {
   // return 0;
@@ -80,7 +74,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
   printf("%d,%d d/n", w, h);
   x += (screen_w - canvas_w) / 2;
   y += (screen_h - canvas_h) / 2;
-  int fd = open("/dev/fb", O_WRONLY);
+  int fd = open("/dev/fb", 0,0);
   size_t base_offset = (y * screen_w + x) * sizeof(uint32_t);
   size_t pixel_offset = 0;
   int  ret_seek=0, ret_write;
