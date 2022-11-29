@@ -18,21 +18,21 @@ int SDL_PollEvent(SDL_Event *ev)
 int SDL_WaitEvent(SDL_Event *event)
 {
   char buf[32], key_buf[32];
-  memset(buf, 0, 32);
+
   // printf("1");
   while (NDL_PollEvent(buf, 32) == 0)
     ;
   // printf("2 %s \n", buf);
-  if (strncmp(buf, "kd", 2) == 0)
-  {
-    event->type = SDL_KEYDOWN;
-    // printf("3%s in SDL\n", buf);
-  }
-  else if (strncmp(buf, "ku", 2) == 0)
-  {
-    event->type = SDL_KEYUP;
-    // printf("4%s in SDL\n", buf);
-  }
+  // if (strncmp(buf, "kd", 2) == 0)
+  // {
+  //   event->type = SDL_KEYDOWN;
+  //   // printf("3%s in SDL\n", buf);
+  // }
+  // else if (strncmp(buf, "ku", 2) == 0)
+  // {
+  //   event->type = SDL_KEYUP;
+  //   // printf("4%s in SDL\n", buf);
+  // }
   for (int i = 0; i < (sizeof(keyname) / sizeof(char *)); ++i)
   {
     // printf("%s in SDL\n", buf);
