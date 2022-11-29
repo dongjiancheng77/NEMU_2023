@@ -62,11 +62,9 @@ void NDL_OpenCanvas(int *w, int *h)
     canvas_h = *h;
     canvas_w = *w;
   }
-  else
-    printf("canvas size must < screen size (%d, %d)\n", screen_w, screen_h);
-  printf("%d,%d a/n", *w, *h);
-  printf("%d,%d b/n", canvas_w, canvas_h);
-  printf("%d,%d c/n", screen_w, screen_h);
+  // printf("%d,%d a/n", *w, *h);
+  // printf("%d,%d b/n", canvas_w, canvas_h);
+  // printf("%d,%d c/n", screen_w, screen_h);
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
@@ -78,7 +76,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h)
   size_t base_offset = (y * screen_w + x) * sizeof(uint32_t);
   size_t pixel_offset = 0;
   int  ret_seek=0, ret_write;
-  printf("%d \n", ret_seek);
+  // printf("%d \n", ret_seek);
   for (int j = 0; j < h; ++j)
   {
     // printf("%d \n ", ret_seek);
@@ -153,5 +151,5 @@ int NDL_Init(uint32_t flags)
 
 void NDL_Quit()
 {
-  // close(dispinfo_dev);
+  close(dispinfo_dev);
 }
