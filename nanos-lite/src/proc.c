@@ -22,7 +22,7 @@ void switch_program_index(int new_index)
   pcb[0].cp->pdir = NULL;
   // TODO: 这是一种trade-off
   // set_satp(pcb[1].cp->pdir);
-  printf("Switch to PCB[%d]\n", new_index);
+  // printf("Switch to PCB[%d]\n", new_index);
 
   yield();
 }
@@ -44,7 +44,7 @@ void init_proc()
 
   Log("Initializing processes...");
 
-  naive_uload(NULL, "/bin/brid");
+  naive_uload(NULL, "/bin/nterm");
   // load program here
 }
 
@@ -54,38 +54,19 @@ Context *schedule(Context *prev)
 }
 int execve(const char *pathname, char *const argv[], char *const envp[])
 {
-  // // char *envp1[] = {NULL};
-  // // printf("execve pathname is %s\n", pathname);
-  // int fd = fs_open(pathname, 0, 0);
-  // if (fd == -1)
-  // {
+  // if (fs_open(filename, 0, 0) == -1){// 文件不存在
   //   return -1;
   // }
-  // else
-  //   fs_close(fd);
+  // printf("Loading from %s ...\n", filename);
+  // context_uload(&pcb[program_index], filename, argv, envp);
+  // switch_boot_pcb();  
+  
+  // pcb[0].cp->pdir = NULL;
+  // //TODO: 这是一种trade-off
+  // //set_satp(pcb[1].cp->pdir);
+  // printf("PCB[0] pdir: %p cp: %p\n", pcb[0].cp->pdir, pcb[0].cp);
 
-  // // char* pathname2 = "/bin/pal";
-  // // printf("brk is %p\n",heap_brk);
-  // // naive_uload(NULL, pathname);
-  // // if (argv != NULL)
-  // //   for (int i = 0; argv[i] != NULL; ++i)
-  // //     printf("argv%d is %s\n", i, argv[i]);
-  // // if (envp != NULL)
-  // //   for (int i = 0; envp[i] != NULL; ++i)
-  // //     printf("envp%d is %s\n", i, envp[i]);
-
-  // // printf("envp %s\n", envp[0]);
-  // current->cp = context_uload(current, (char *)pathname, argv, envp);
-  // NR_PROC--;
-  // assert(NR_PROC >= 0 && NR_PROC <= MAX_NR_PROC);
-  // switch_boot_pcb();
-  // // printf("yield for execve\n");
-  // // printf("return ctx address is %p\n", pcb[1].cp);
-  // // pre_process();
   // yield();
-  // // printf("return address is %p\n", pcb[1].cp);
-  // // schedule(NULL);
-
   return 0;
 }
 void exit(int status)
