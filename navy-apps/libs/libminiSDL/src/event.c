@@ -11,39 +11,44 @@ int SDL_PushEvent(SDL_Event *ev)
 }
 static char *key_action, *key_key;
 static uint8_t key_buf[sizeof(keyname) / sizeof(char *)] = {0};
-static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
-
-}
 int SDL_PollEvent(SDL_Event *ev)
 {
   uint8_t type = 0, sym = 0;
-    char key[64];
+  char key[64];
   int ret = NDL_PollEvent(key, sizeof(key));
-  //printf("%s\n", key_buf);
+  // printf("%s\n", key_buf);
   key_action = key;
   int i;
-  for (i = 0; key[i] != ' '; i++){}
+  for (i = 0; key[i] != ' '; i++)
+  {
+  }
   key[i] = '\0';
-  key_key = &key[i + 1]; 
-  
+  key_key = &key[i + 1];
+
   //截断\n
-  for (i = 0;  key_key[i] != '\0' && key_key[i] != '\n'; i++){}
-  if (key_key[i] == '\n'){
+  for (i = 0; key_key[i] != '\0' && key_key[i] != '\n'; i++)
+  {
+  }
+  if (key_key[i] == '\n')
+  {
     key_key[i] = '\0';
   }
-  
-  //strcmp("kd", key_action) == 0
-  if (key_action[1] == 'd'){//加速！！
+  // strcmp("kd", key_action) == 0
+  if (key_action[1] == 'd')
+  { //加速！！
     type = SDL_KEYDOWN;
-  }else{
+  }
+  else
+  { 
     type = SDL_KEYUP;
   }
-
-  for (i = 0; i < sizeof(keyname) / sizeof(char *); ++i){
+  for (i = 0; i < sizeof(keyname) / sizeof(char *); ++i)
+  {
     //剪枝掉很多
-    if (key_key[0] == keyname[i][0] && strcmp(key_key, keyname[i]) == 0){
+    if (key_key[0] == keyname[i][0] && strcmp(key_key, keyname[i]) == 0)
+    {
       sym = i;
-      //printf("%d %d\n", *type, *sym);
+      // printf("%d %d\n", *type, *sym);
       break;
     }
   }
@@ -61,7 +66,6 @@ int SDL_PollEvent(SDL_Event *ev)
   {
     return 0;
   }
-
   return 1;
 }
 
@@ -95,7 +99,6 @@ int SDL_WaitEvent(SDL_Event *event)
       break;
     }
   }
-
   return 1;
 }
 
