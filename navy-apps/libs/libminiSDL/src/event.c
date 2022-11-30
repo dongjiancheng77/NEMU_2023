@@ -12,11 +12,13 @@ int SDL_PushEvent(SDL_Event *ev)
 static char *key_action, *key_key;
 static uint8_t key_buf[sizeof(keyname) / sizeof(char *)] = {0};
 static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
-  char key[64];
+
+}
+int SDL_PollEvent(SDL_Event *ev)
+{
+  uint8_t type = 0, sym = 0;
+    char key[64];
   int ret = NDL_PollEvent(key, sizeof(key));
-  if (!ret){
-    return 0;
-  }
   //printf("%s\n", key_buf);
   key_action = key;
   int i;
@@ -32,24 +34,20 @@ static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
   
   //strcmp("kd", key_action) == 0
   if (key_action[1] == 'd'){//加速！！
-    *type = SDL_KEYDOWN;
+    type = SDL_KEYDOWN;
   }else{
-    *type = SDL_KEYUP;
+    type = SDL_KEYUP;
   }
 
   for (i = 0; i < sizeof(keyname) / sizeof(char *); ++i){
     //剪枝掉很多
     if (key_key[0] == keyname[i][0] && strcmp(key_key, keyname[i]) == 0){
-      *sym = i;
+      sym = i;
       //printf("%d %d\n", *type, *sym);
-      return ret;
+      break;
     }
   }
-}
-int SDL_PollEvent(SDL_Event *ev)
-{
-  uint8_t type = 0, sym = 0;
-  if (read_keyinfo(&type, &sym))
+  if (ret)
   {
     ev->type = type;
     ev->key.keysym.sym = sym;
