@@ -1,5 +1,5 @@
 #include <proc.h>
-
+#include <fs.h>
 #define MAX_NR_PROC 4
 
 static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
@@ -52,21 +52,23 @@ Context *schedule(Context *prev)
 {
   return NULL;
 }
+void context_uload(PCB* ptr_pcb, const char* filename, char* const argv[], char* const envp[]);
+
 int execve(const char *pathname, char *const argv[], char *const envp[])
 {
-  // if (fs_open(filename, 0, 0) == -1){// 文件不存在
-  //   return -1;
-  // }
-  // printf("Loading from %s ...\n", filename);
-  // context_uload(&pcb[program_index], filename, argv, envp);
-  // switch_boot_pcb();  
+  if (fs_open(pathname, 0, 0) == -1){// 文件不存在
+    return -1;
+  }
+  printf("Loading from %s ...\n", pathname);
+  context_uload(&pcb[program_index], pathname, argv, envp);
+  switch_boot_pcb();  
   
-  // pcb[0].cp->pdir = NULL;
-  // //TODO: 这是一种trade-off
-  // //set_satp(pcb[1].cp->pdir);
-  // printf("PCB[0] pdir: %p cp: %p\n", pcb[0].cp->pdir, pcb[0].cp);
+  pcb[0].cp->pdir = NULL;
+  //TODO: 这是一种trade-off
+  //set_satp(pcb[1].cp->pdir);
+  printf("PCB[0] pdir: %p cp: %p\n", pcb[0].cp->pdir, pcb[0].cp);
 
-  // yield();
+  yield();
   return 0;
 }
 void exit(int status)
