@@ -75,7 +75,7 @@ int SDL_WaitEvent(SDL_Event *event)
   if (strncmp(buf, "kd", 2) == 0)
   {
     event->type = SDL_KEYDOWN;
-    printf("3%s in SDL\n", buf);
+    // printf("3%s in SDL\n", buf);
   }
   else if (strncmp(buf, "ku", 2) == 0)
   {
